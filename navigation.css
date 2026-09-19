@@ -1,0 +1,32 @@
+.site-navigation {
+  position: absolute;
+  top: 16px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+  padding: 0 16px;
+  font-family: "SF Pro Display", "SF Pro", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 24px;
+}
+.site-navigation a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: #3F3F3F;
+  text-decoration: none;
+}
+.site-navigation a[aria-current="page"],
+.site-navigation a:hover {
+  text-decoration: underline;
+  text-underline-offset: 6px;
+  text-decoration-thickness: 1px;
+}
+.site-navigation a:focus-visible { outline: 2px solid #000; outline-offset: 4px; }
+.site-navigation + .page { padding-top: calc(var(--page-gutter) + 64px); }
+@media (min-width: 901px) {
+  .site-navigation + .page .hero { height: calc(100vh - 2 * var(--page-gutter) - 64px); }
+}
