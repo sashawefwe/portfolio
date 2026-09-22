@@ -2,6 +2,9 @@
 * { box-sizing:border-box; }
 html { scroll-behavior:smooth; }
 body { margin:0; min-width:0; overflow-x:clip; background:#F5F5F7; }
+@media (min-width:901px) {
+  #luxy { width:100%; will-change:transform; backface-visibility:hidden; }
+}
 button { font:inherit; }
 .page { min-height:320vh; padding:var(--page-gutter); }
 .hero { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:16px; height:calc(100vh - 2 * var(--page-gutter)); }

@@ -24,15 +24,29 @@
 </head>
 <body>
   <nav class="site-navigation" aria-label="Основная навигация">
-    <a href="index.html" aria-current="page">Знакомство</a>
-    <a href="pinterest.html">Pinterest</a>
+    <a href="index.html" aria-current="page">
+      <span class="site-navigation__icon site-navigation__icon--portrait"><img src="assets/home/images/portrait.png" alt=""></span>
+      <span>Пронченко Саша</span>
+    </a>
+    <div class="site-navigation__cases">
+      <a href="pinterest.html">
+        <span>Pinterest</span>
+      </a>
+      <span class="site-navigation__item" aria-disabled="true">
+        <span>Орбита</span>
+      </span>
+    </div>
+    <div class="site-navigation__utilities">
+      <span class="site-navigation__item" aria-disabled="true">Telegram</span>
+      <span class="site-navigation__item" aria-disabled="true">CV</span>
+    </div>
   </nav>
   <main>
     <section class="home-hero" aria-label="Знакомство">
       <div class="home-hero__composition">
         <div class="home-hero__intro">
           <h1>
-            <span class="home-hero__line">Привет! Я Саша Пронченко, продуктовый дизайнер из Москвы.</span>
+            <span class="home-hero__line">Привет! Я Пронченко Саша, продуктовый дизайнер из Москвы.</span>
             <span class="home-hero__line">Сейчас я <span class="home-hero__status-dot" aria-hidden="true"></span> в поиске своей команды. Хочу растить <img class="home-hero__inline-image" src="assets/home/images/grass.jpg" width="1024" height="678" alt=""> продукт,</span>
             <span class="home-hero__line">а не просто закрывать таски. Ищу решения, полезные и юзеру</span>
             <span class="home-hero__line"><img class="home-hero__inline-image" src="assets/home/images/angry%20cat.jpeg" alt=""> и бизнесу.</span>
@@ -47,5 +61,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js" defer></script>
   <script src="home.js"></script>
   <script src="home-previews.js"></script>
+  <script src="navigation.js"></script>
 </body>
 </html>

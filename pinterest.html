@@ -9,9 +9,24 @@
   <link rel="stylesheet" href="navigation.css">
 </head>
 <body>
+  <div id="luxy">
   <nav class="site-navigation" aria-label="Основная навигация">
-    <a href="index.html">Знакомство</a>
-    <a href="pinterest.html" aria-current="page">Pinterest</a>
+    <a href="index.html">
+      <span class="site-navigation__icon site-navigation__icon--portrait"><img src="assets/home/images/portrait.png" alt=""></span>
+      <span>Пронченко Саша</span>
+    </a>
+    <div class="site-navigation__cases">
+      <a href="pinterest.html" aria-current="page">
+        <span>Pinterest</span>
+      </a>
+      <span class="site-navigation__item" aria-disabled="true">
+        <span>Орбита</span>
+      </span>
+    </div>
+    <div class="site-navigation__utilities">
+      <span class="site-navigation__item" aria-disabled="true">Telegram</span>
+      <span class="site-navigation__item" aria-disabled="true">CV</span>
+    </div>
   </nav>
   <main class="page">
     <div class="hero">
@@ -130,7 +145,10 @@
       </div>
     </section>
   </main>
+  </div>
   <div class="summary-backdrop" aria-hidden="true"></div>
+  <script src="https://min30327.github.io/luxy.js/dist/js/luxy.js"></script>
   <script src="script.js"></script>
+  <script src="navigation.js"></script>
 </body>
 </html>

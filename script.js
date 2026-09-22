@@ -12,6 +12,15 @@ const caseSectionTitleReveal = caseSection.querySelector('.case-section__title-r
 const iphoneDemos = document.querySelectorAll('.iphone-demo');
 let manualExpanded = false;
 
+const desktopSmoothScroll = window.matchMedia('(min-width:901px)');
+const reducedScrollMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+if (desktopSmoothScroll.matches && !reducedScrollMotion.matches && window.luxy) {
+  window.luxy.init({
+    wrapper:'#luxy',
+    wrapperSpeed:0.055
+  });
+}
+
 function updateIphoneScale(iphoneDemo) {
   iphoneDemo.style.setProperty('--iphone-scale', String(iphoneDemo.clientWidth / 449));
 }
@@ -31,6 +40,7 @@ const pinSaveVideoProgress = block.querySelector('.video-progress');
 const pinSaveVideoProgressArc = pinSaveVideoProgress.querySelector('.video-progress__arc');
 const pinSaveVideoProgressIcon = pinSaveVideoProgress.querySelector('.video-progress__icon');
 let pinSaveProgressFrame;
+let lastPinSaveProgressUpdate = 0;
 
 function togglePinSaveVideo() {
   pinSaveVideoTest.dataset.userPaused = String(!pinSaveVideoTest.paused);
@@ -48,10 +58,13 @@ function updatePinSaveVideoControl() {
   pinSaveVideoProgress.setAttribute('aria-label', paused ? 'Продолжить видео' : 'Поставить видео на паузу');
 }
 
-function updatePinSaveVideoProgress() {
+function updatePinSaveVideoProgress(timestamp = performance.now()) {
   const duration = pinSaveVideoTest.duration;
-  const progress = Number.isFinite(duration) && duration > 0 ? pinSaveVideoTest.currentTime / duration : 0;
-  pinSaveVideoProgressArc.setAttribute('stroke-dashoffset', String(1 - Math.min(1, Math.max(0, progress))));
+  if (timestamp - lastPinSaveProgressUpdate >= 50 || pinSaveVideoTest.paused) {
+    const progress = Number.isFinite(duration) && duration > 0 ? pinSaveVideoTest.currentTime / duration : 0;
+    pinSaveVideoProgressArc.setAttribute('stroke-dashoffset', String(1 - Math.min(1, Math.max(0, progress))));
+    lastPinSaveProgressUpdate = timestamp;
+  }
   if (!pinSaveVideoTest.paused) pinSaveProgressFrame = requestAnimationFrame(updatePinSaveVideoProgress);
 }
 
@@ -110,6 +123,13 @@ summaryResizeObserver.observe(summary);
 function applyState(state) {
   // Preserve the placeholder before the card leaves the document flow.
   syncSummarySlotHeight();
+
+  // A fixed element inside Luxy's transformed wrapper is fixed to that
+  // wrapper. Move the floating card outside it, then restore it in flow.
+  const target = state === 'expanded' ? summarySlot :
+    (!mobileLayout.matches ? document.body : summary.parentElement);
+  if (summary.parentElement !== target) target.append(summary);
+
   summary.dataset.state = state;
   const overlay = state === 'overlay';
   const compact = state === 'compact';
@@ -344,6 +364,25 @@ const caseSectionObserver = new IntersectionObserver(([entry]) => {
 
 caseSectionObserver.observe(caseSectionTitleReveal);
 
+// Luxy moves the page with a transform, which can make IntersectionObserver
+// unreliable in some desktop browsers. Keep the reveal in sync with the
+// element's actual on-screen position as a fallback.
+let caseTitleRevealFrame = 0;
+function syncCaseTitleReveal() {
+  caseTitleRevealFrame = 0;
+  const bounds = caseSectionTitleReveal.getBoundingClientRect();
+  if (bounds.top <= window.innerHeight * .85) {
+    caseSection.classList.add('is-visible');
+  } else if (bounds.top >= window.innerHeight) {
+    caseSection.classList.remove('is-visible');
+  }
+}
+window.addEventListener('scroll', () => {
+  if (!caseTitleRevealFrame) caseTitleRevealFrame = requestAnimationFrame(syncCaseTitleReveal);
+}, { passive:true });
+window.addEventListener('resize', syncCaseTitleReveal);
+syncCaseTitleReveal();
+
 const savingPinTitle = document.querySelector('#saving-pin-title');
 function fitMobileTitle() {
   savingPinTitle.style.removeProperty('--mobile-title-size');
@@ -361,7 +400,14 @@ document.fonts.ready.then(fitMobileTitle);
 mobileLayout.addEventListener('change', fitMobileTitle);
 fitMobileTitle();
 
-window.addEventListener('scroll', onScroll, { passive:true });
+let scrollUpdateFrame = 0;
+window.addEventListener('scroll', () => {
+  if (scrollUpdateFrame) return;
+  scrollUpdateFrame = requestAnimationFrame(() => {
+    scrollUpdateFrame = 0;
+    onScroll();
+  });
+}, { passive:true });
 window.addEventListener('resize', () => {
   syncSummarySlotHeight();
   onScroll();
