@@ -93,7 +93,7 @@
     <section class="case-section" aria-labelledby="saving-pin-title">
       <div class="case-section__title-reveal">
         <p class="case-section__eyebrow">#1 Сохранение пина</p>
-        <h2 id="saving-pin-title"><span class="saving-pin-title__first-line">Если хочется сохранить пин,</span><br class="saving-pin-title__break"> <span class="saving-pin-title__second-line">не выбирая доску прямо сейчас</span></h2>
+        <h2 class="case-section__title" id="saving-pin-title"><span class="saving-pin-title__first-line">Если хочется сохранить пин,</span><br class="saving-pin-title__break"> <span class="saving-pin-title__second-line">не выбирая доску прямо сейчас</span></h2>
       </div>
       <div class="pin-save-videos">
 <div class="pin-save-video-test pin-save-video-test--before">
@@ -138,6 +138,45 @@
           <button class="video-replay" type="button" aria-label="Воспроизвести видео заново">Replay</button>
           </div>
       </div>
+      </div>
+      <div class="video-segment" role="group" aria-label="Сравнение до и после">
+        <button type="button" data-slide="0" aria-pressed="true">До</button>
+        <button type="button" data-slide="1" aria-pressed="false">После</button>
+      </div>
+    </section>
+    <section class="case-section" aria-labelledby="deleting-pin-title">
+      <div class="case-section__title-reveal">
+        <p class="case-section__eyebrow">#2 Удаление пина</p>
+        <h2 class="case-section__title" id="deleting-pin-title"><span>Когда хочется удалить пин</span></h2>
+      </div>
+      <div class="pin-save-videos">
+        <div class="pin-save-video-test pin-save-video-test--before">
+          <div class="pin-save-comparison__text pin-save-video-test__text">
+            <h3>До</h3>
+            <p>Удаление спрятано внутри «Редактирования». Во время проверки три участника находили нужное действие только с 3–5 попытки</p>
+          </div>
+          <div class="pin-save-video-test__media">
+            <video autoplay muted loop playsinline>
+              <source src="assets/cases/pinterest/videos/9.webm" type="video/webm">
+            </video>
+          </div>
+          <div class="video-controls">
+            <button class="video-progress" type="button" aria-label="Поставить видео на паузу" data-state="playing">
+              <svg class="video-progress__ring" width="44" height="44" viewBox="0 0 44 44" fill="none" aria-hidden="true">
+                <circle cx="22" cy="22" r="21" stroke="#DDDDDD" stroke-width="2"/>
+                <circle class="video-progress__arc" cx="22" cy="22" r="21" stroke="#969696" stroke-width="2" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" transform="rotate(-90 22 22)"/>
+              </svg>
+              <img class="video-progress__icon" src="assets/icons/video/pause.svg" width="20" height="20" alt="" aria-hidden="true">
+            </button>
+            <button class="video-replay" type="button" aria-label="Воспроизвести видео заново">Replay</button>
+          </div>
+        </div>
+        <div class="pin-save-video-test pin-save-video-test--after">
+          <div class="pin-save-comparison__text pin-save-video-test__text">
+            <h3>После</h3>
+          </div>
+          <div class="pin-save-video-test__media pin-save-video-test__media--empty" aria-label="Видео будет добавлено позже"></div>
+        </div>
       </div>
       <div class="video-segment" role="group" aria-label="Сравнение до и после">
         <button type="button" data-slide="0" aria-pressed="true">До</button>

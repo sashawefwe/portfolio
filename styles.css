@@ -14,7 +14,7 @@ button { font:inherit; }
 .case-section { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:clamp(140px,22vh,200px) 0 clamp(80px,12vh,160px); text-align:center; }
 .case-section__title-reveal { width:100%; }
 .case-section__eyebrow { margin:0 0 12px; color:#AEAEB2; font-family:"SF Pro Display", "SF Pro", -apple-system, BlinkMacSystemFont, sans-serif; font-size:clamp(13px,1vw,15px); line-height:1.4; font-weight:400; }
-#saving-pin-title { max-width:32ch; margin-inline:auto; font-family:"SF Pro Display", "SF Pro", -apple-system, BlinkMacSystemFont, sans-serif; font-size:clamp(30.685px,2.61725vw,46.93px); color:#1C1C1E; text-wrap:normal; line-height:1.15; }
+.case-section .case-section__title { max-width:32ch; margin-inline:auto; font-family:"SF Pro Display", "SF Pro", -apple-system, BlinkMacSystemFont, sans-serif; font-size:clamp(30.685px,2.61725vw,46.93px); color:#1C1C1E; text-wrap:normal; line-height:1.15; }
 .case-section h2 { margin:0; font-size:clamp(36px,3.05vw,55px); line-height:1; letter-spacing:-.04em; font-weight:400; text-wrap:balance; opacity:0; transform:translateY(72px); transition:opacity .75s ease,transform 1.05s cubic-bezier(.22,1,.36,1); }
 .case-section.is-visible h2 { opacity:1; transform:translateY(0); }
 .pin-save-demo { width:100%; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:clamp(12px,1vw,16px); margin-top:clamp(36px,5vh,56px); padding:clamp(16px,1.25vw,24px); border-radius:28px; background:#f2f2f7; overflow:visible; text-align:left; }
@@ -52,6 +52,7 @@ button { font:inherit; }
 }
 .video-progress { --video-progress:0deg; position:relative; display:flex; align-items:center; justify-content:center; width:44px; height:44px; margin-top:20px; padding:0; border:0; border-radius:50%; background:transparent; color:#555451; cursor:pointer; }
 .pin-save-video-test__media { position:relative; width:100%; min-width:0; }
+.pin-save-video-test__media--empty { aspect-ratio:9/16; background:#FFFFFF; }
 .video-controls { display:flex; align-items:center; justify-content:space-between; gap:12px; width:100%; padding:0 clamp(16px,2vw,28px) 20px; margin-top:0; }
 .video-controls button { width:36px; height:36px; pointer-events:auto; }
 .video-controls .video-progress__ring { width:36px; height:36px; }
@@ -121,7 +122,7 @@ body.summary-overlay-open .summary-backdrop { opacity:1; visibility:visible; poi
   .case-cover { order:1; width:100%; height:clamp(360px,64svh,560px); }
   .case-section { padding:clamp(80px,12vh,120px) 0 clamp(64px,10vh,100px); }
   .case-section h2 { font-size:clamp(38px,7.4vw,54px); }
-  #saving-pin-title { width:calc(100% + 2 * var(--page-gutter) - 16px); max-width:none; margin-inline:calc(8px - var(--page-gutter)); text-align:center; font-size:var(--mobile-title-size,clamp(20px,6.5vw,46px)); }
+  .case-section .case-section__title { width:calc(100% + 2 * var(--page-gutter) - 16px); max-width:none; margin-inline:calc(8px - var(--page-gutter)); text-align:center; font-size:var(--mobile-title-size,clamp(20px,6.5vw,46px)); }
   .saving-pin-title__first-line,.saving-pin-title__second-line { display:inline-block; white-space:nowrap; }
   .saving-pin-title__break { display:initial; }
   .case-section__eyebrow { font-size:15px; }
