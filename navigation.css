@@ -134,8 +134,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 34px;
-    height: 34px;
+    width: 48px;
+    height: 48px;
     padding: 0;
     border: 1px solid rgba(255, 255, 255, .65);
     border-radius: 999px;
@@ -152,8 +152,8 @@
 
   .mobile-navigation__trigger img {
     display: block;
-    width: 16px;
-    height: 16px;
+    width: 24px;
+    height: 24px;
     opacity: .72;
     transition: transform .38s cubic-bezier(.34, 1.56, .64, 1);
   }
@@ -173,7 +173,7 @@
 
   .mobile-navigation__menu {
     position: absolute;
-    top: 42px;
+    top: 56px;
     left: 0;
     width: 196px;
     padding: 6px;
