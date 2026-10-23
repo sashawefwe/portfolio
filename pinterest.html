@@ -74,8 +74,8 @@
           </div>
           <ul class="summary__results">
             <li>Пользователи чаще сохраняют пины прямо из ленты</li>
-            <li>Быстрее находят и удаляют ненужные пины</li>
-            <li>Быстрее находят и чаще используют мультиселект</li>
+            <li>Быстрее находят, как удалить пин</li>
+            <li>Чаще переносят несколько пинов через мультиселект, а не по одному</li>
           </ul>
         </div>
         </div>
@@ -174,13 +174,172 @@
         <div class="pin-save-video-test pin-save-video-test--after">
           <div class="pin-save-comparison__text pin-save-video-test__text">
             <h3>После</h3>
+            <p class="pin-delete-after__description">Удалить пин можно через ту же закладку, с помощью которой он был сохранён — без поиска нужного действия в меню.</p>
           </div>
-          <div class="pin-save-video-test__media pin-save-video-test__media--empty" aria-label="Видео будет добавлено позже"></div>
+          <div class="pin-save-video-test__media">
+            <video muted loop playsinline>
+              <source src="assets/cases/pinterest/videos/10.webm" type="video/webm">
+            </video>
+          </div>
+          <div class="video-controls">
+            <button class="video-progress" type="button" aria-label="Поставить видео на паузу" data-state="playing">
+              <svg class="video-progress__ring" width="44" height="44" viewBox="0 0 44 44" fill="none" aria-hidden="true">
+                <circle cx="22" cy="22" r="21" stroke="#DDDDDD" stroke-width="2"/>
+                <circle class="video-progress__arc" cx="22" cy="22" r="21" stroke="#969696" stroke-width="2" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" transform="rotate(-90 22 22)"/>
+              </svg>
+              <img class="video-progress__icon" src="assets/icons/video/pause.svg" width="20" height="20" alt="" aria-hidden="true">
+            </button>
+            <button class="video-replay" type="button" aria-label="Воспроизвести видео заново">Replay</button>
+          </div>
         </div>
       </div>
       <div class="video-segment" role="group" aria-label="Сравнение до и после">
         <button type="button" data-slide="0" aria-pressed="true">До</button>
         <button type="button" data-slide="1" aria-pressed="false">После</button>
+      </div>
+    </section>
+    <section class="case-section" aria-labelledby="moving-pins-title">
+      <div class="case-section__title-reveal">
+        <p class="case-section__eyebrow">#3 Перенос пинов через мультиселект</p>
+        <h2 class="case-section__title" id="moving-pins-title"><span>Когда нужно быстро навести порядок в коллекции</span></h2>
+      </div>
+    </section>
+    <section class="case-section" aria-labelledby="result-title">
+      <div class="case-section__title-reveal">
+        <h2 class="case-section__title" id="result-title"><span>Результат</span></h2>
+      </div>
+      <article class="result-feature">
+        <div class="result-feature__text">
+          <h3>Действия с пином в одной панели</h3>
+          <p>Сохранение, распределение по доскам, перенос и удаление теперь собраны в одном месте. Для мультиселекта я отдельно продумала поведение панели при выборе нескольких пинов.</p>
+        </div>
+        <div class="result-feature__image" aria-hidden="true"></div>
+      </article>
+      <div class="result-metrics" aria-labelledby="result-metrics-title">
+        <h3 class="result-metrics__heading" id="result-metrics-title">По каким метрикам<br>оценивала бы эффект</h3>
+        <div class="result-metrics__card result-metrics__card--save">
+          <span class="result-metrics__icon result-metrics__icon--save" aria-hidden="true"></span>
+          <div><span class="result-metrics__label">Save Rate</span><p>Ожидала бы рост сохранений из ленты.</p></div>
+        </div>
+        <div class="result-metrics__card result-metrics__card--multi">
+          <span class="result-metrics__icon result-metrics__icon--multi" aria-hidden="true"></span>
+          <div><span class="result-metrics__label">Multi-select Usage Rate</span><p>Ожидала бы, что пользователи будут чаще переносить несколько пинов группой.</p></div>
+        </div>
+        <div class="result-metrics__card result-metrics__card--workaround">
+          <span class="result-metrics__icon result-metrics__icon--workaround" aria-hidden="true"></span>
+          <div><span class="result-metrics__label">Workaround rate</span><p>Ожидала бы снижение обходного сценария «удалить + пересохранить».</p></div>
+        </div>
+        <div class="result-metrics__card result-metrics__card--task">
+          <span class="result-metrics__icon result-metrics__icon--task" aria-hidden="true"></span>
+          <div><span class="result-metrics__label">Task Success Rate, Time on Task</span><p>Ожидала бы, что пользователи будут быстрее находить удаление и тратить меньше времени на действие.</p></div>
+        </div>
+        <div class="result-metrics__card result-metrics__card--return">
+          <span class="result-metrics__icon result-metrics__icon--return" aria-hidden="true"></span>
+          <div><span class="result-metrics__label">Return Rate</span><p>Ожидала бы больше возвратов к сохранённому контенту и работы с коллекцией.</p></div>
+        </div>
+      </div>
+      <article class="result-feature result-feature--contribution">
+        <div class="result-feature__text">
+          <h3>Мой вклад</h3>
+          <p>Расширила задачу от локальных сценариев до общей модели управления пинами. Я увидела, что удаление и перенос нельзя рассматривать отдельно от сохранения. Поэтому пересобрала связи между сохранением, организацией и управлением пинами — общая коллекция стала базовым состоянием, а доски способом дальнейшей организации.</p>
+        </div>
+        <div class="result-feature__image"><img src="assets/cases/pinterest/images/result-contribution.jpg" alt="Мем «Возьмите на работу пж»"></div>
+      </article>
+    </section>
+    <section class="case-section project-brief" aria-labelledby="project-brief-title">
+      <div class="case-section__title-reveal">
+        <p class="case-section__eyebrow">Как работала над проектом</p>
+        <h2 class="case-section__title" id="project-brief-title"><span>Постановка задачи</span></h2>
+      </div>
+      <div class="project-brief__grid">
+        <article class="project-brief__card project-brief__card--context">
+          <div>
+            <h3>Контекст и боль</h3>
+            <p>Pinterest годами игнорирует базовую гигиену управления контентом:</p>
+            <ul>
+              <li>удалить пин — квест</li>
+              <li>мультиселект есть, но найти сложно</li>
+              <li>путь переноса пинов настолько длинный, что проще забыть</li>
+            </ul>
+          </div>
+          <p><span class="project-brief__link-look">Открытый ресёрч</span> подтвердил — это массовые запросы с 2012 года</p>
+        </article>
+        <article class="project-brief__card project-brief__card--mission">
+          <h3>Миссия</h3>
+          <p>Пользователь должен вдохновляться и работать с идеями, а не заниматься «раскопками» нужных действий.</p>
+        </article>
+        <article class="project-brief__card project-brief__card--goal">
+          <h3>Цель</h3>
+          <p>Сделать работу с сохранённым контентом проще, чтобы поддержать возвраты к доскам и коллекциям.</p>
+        </article>
+        <article class="project-brief__card project-brief__card--audience">
+          <h3>Аудитория</h3>
+          <p>Активные кураторы с библиотекой 800–1000 пинов. Для них неудобное управление — не мелочь, а реальный барьер.</p>
+        </article>
+        <article class="project-brief__card project-brief__card--criteria">
+          <div>
+            <h3>Критерии успеха</h3>
+            <ul>
+              <li>снижение Time on Task Delete Pin</li>
+              <li>рост Multi-select Usage Rate</li>
+              <li>рост Save Rate из ленты</li>
+              <li>снижение Task Success Rate</li>
+              <li>рост Return Rate</li>
+              <li>снижение Workaround rate</li>
+            </ul>
+          </div>
+          <div class="project-brief__references" aria-label="Будущие вложения">
+            <span class="project-brief__link-look">Что делаем, если эффекта нет</span>
+            <span class="project-brief__link-look">Как будем проверять</span>
+            <span class="project-brief__link-look">Что не хотим сломать</span>
+          </div>
+        </article>
+      </div>
+    </section>
+    <section class="case-section" aria-labelledby="process-map-title">
+      <div class="case-section__title-reveal">
+        <h2 class="case-section__title" id="process-map-title"><span>Карта процесса</span></h2>
+      </div>
+      <div class="process-map" aria-label="Этапы работы над проектом">
+        <div class="process-map__desktop">
+        <div class="process-map__stages">
+          <div><span>01</span>Исследование</div>
+          <div><span>02</span>Синтез исследования</div>
+          <div><span>03</span>Концепция</div>
+          <div><span>04</span>Глубинное интервью</div>
+          <div><span>05</span>Синтез интервью</div>
+          <div><span>06</span>Прототипирование</div>
+          <div><span>07</span>Тестирование</div>
+          <div><span>08</span>Результат</div>
+        </div>
+        <div class="process-map__grid">
+          <div class="process-map__card process-map__card--filled"><div class="process-map__label"><span class="process-map__icons"><img class="process-map__document" src="assets/cases/pinterest/images/process-map/document.png" alt=""><img class="process-map__brand" src="assets/cases/pinterest/images/process-map/figma.png" alt=""></span><span>Открытый ресёрч</span></div><div class="process-map__content"><img src="assets/cases/pinterest/images/process-map/content/open-research.jpg" alt="Инструменты открытого ресёрча"></div></div>
+          <div class="process-map__card"></div><div class="process-map__card"></div><div class="process-map__card"></div>
+          <div class="process-map__card"></div><div class="process-map__card"></div><div class="process-map__card"></div><div class="process-map__card"></div>
+          <div class="process-map__card process-map__card--filled"><div class="process-map__label"><span class="process-map__icons"><img class="process-map__document" src="assets/cases/pinterest/images/process-map/document.png" alt=""><img class="process-map__brand" src="assets/cases/pinterest/images/process-map/figma.png" alt=""></span><span>Аудит as-is</span></div><div class="process-map__content"><img src="assets/cases/pinterest/images/process-map/content/audit-as-is.jpg" alt="Иллюстрация аудита as-is"></div></div>
+          <div class="process-map__card process-map__card--filled"><div class="process-map__label"><span class="process-map__icons"><img class="process-map__document" src="assets/cases/pinterest/images/process-map/document.png" alt=""></span><span>Первые JTBD</span></div><div class="process-map__content"><img src="assets/cases/pinterest/images/process-map/content/first-jtbd.jpg" alt="Иллюстрация первых JTBD"></div></div>
+          <div class="process-map__card process-map__card--filled"><div class="process-map__label"><span class="process-map__icons"><img class="process-map__document" src="assets/cases/pinterest/images/process-map/document.png" alt=""><img class="process-map__brand" src="assets/cases/pinterest/images/process-map/figma.png" alt=""></span><span>lo-fi и гипотезы</span></div><div class="process-map__content"><img src="assets/cases/pinterest/images/process-map/content/lo-fi-hypotheses.jpg" alt="Иллюстрация lo-fi и гипотез"></div></div>
+          <div class="process-map__card process-map__card--filled"><div class="process-map__label"><span class="process-map__icons"><img class="process-map__document" src="assets/cases/pinterest/images/process-map/document.png" alt=""><img class="process-map__brand" src="assets/cases/pinterest/images/process-map/notion.png" alt=""></span><span>Интервью x3</span></div><div class="process-map__content"><img src="assets/cases/pinterest/images/process-map/content/interviews.jpg" alt="Иллюстрация интервью"></div></div>
+          <div class="process-map__card process-map__card--filled"><div class="process-map__label"><span class="process-map__icons"><img class="process-map__document" src="assets/cases/pinterest/images/process-map/document.png" alt=""><img class="process-map__brand" src="assets/cases/pinterest/images/process-map/notion.png" alt=""></span><span>CJM</span></div><div class="process-map__content"><img src="assets/cases/pinterest/images/process-map/content/cjm.jpg" alt="Иллюстрация CJM"></div></div>
+          <div class="process-map__card"></div><div class="process-map__card"></div><div class="process-map__card"></div>
+          <div class="process-map__card process-map__card--filled"><div class="process-map__label"><span class="process-map__icons"><img class="process-map__document" src="assets/cases/pinterest/images/process-map/document.png" alt=""><img class="process-map__brand" src="assets/cases/pinterest/images/process-map/notion.png" alt=""></span><span>Анализ конкурентов</span></div><div class="process-map__content"><img src="assets/cases/pinterest/images/process-map/content/competitor-analysis.jpg" alt="Иллюстрация анализа конкурентов"></div></div>
+          <div class="process-map__card"></div><div class="process-map__card"></div><div class="process-map__card"></div>
+          <div class="process-map__card process-map__card--filled"><div class="process-map__label"><span class="process-map__icons"><img class="process-map__document" src="assets/cases/pinterest/images/process-map/document.png" alt=""></span><span>Персона</span></div><div class="process-map__content"><img src="assets/cases/pinterest/images/process-map/content/persona.jpg" alt="Иллюстрация персоны"></div></div>
+          <div class="process-map__card"></div><div class="process-map__card"></div><div class="process-map__card"></div>
+          <div class="process-map__card"></div><div class="process-map__card"></div><div class="process-map__card"></div><div class="process-map__card"></div>
+          <div class="process-map__card process-map__card--filled"><div class="process-map__label"><span class="process-map__icons"><img class="process-map__document" src="assets/cases/pinterest/images/process-map/document.png" alt=""></span><span>Уточнение гипотез</span></div><div class="process-map__content"><img src="assets/cases/pinterest/images/process-map/content/refined-hypotheses.jpg" alt="Иллюстрация уточнения гипотез"></div></div>
+          <div class="process-map__card process-map__card--filled"><div class="process-map__label"><span class="process-map__icons"><img class="process-map__document" src="assets/cases/pinterest/images/process-map/document.png" alt=""><img class="process-map__brand" src="assets/cases/pinterest/images/process-map/figma.png" alt=""></span><span>Скриншот-прототип</span></div><div class="process-map__content"></div></div>
+          <div class="process-map__card process-map__card--filled"><div class="process-map__label"><span class="process-map__icons"><img class="process-map__document" src="assets/cases/pinterest/images/process-map/document.png" alt=""><img class="process-map__brand" src="assets/cases/pinterest/images/process-map/figma.png" alt=""></span><span>Usability-тест</span></div><div class="process-map__content"><img src="assets/cases/pinterest/images/process-map/content/usability-test.jpg" alt="Иллюстрация usability-теста"></div></div>
+          <div class="process-map__card process-map__card--filled"><div class="process-map__label"><span class="process-map__icons"><img class="process-map__document" src="assets/cases/pinterest/images/process-map/document.png" alt=""><img class="process-map__brand" src="assets/cases/pinterest/images/process-map/figma.png" alt=""></span><span>Hi-fi макеты</span></div><div class="process-map__content"><img src="assets/cases/pinterest/images/process-map/content/hi-fi-mockups.jpg" alt="Иллюстрация hi-fi макетов"></div></div>
+        </div>
+        </div>
+        <div class="process-map__mobile" aria-label="Этапы работы над проектом"></div>
+        <div class="process-map__screens" aria-label="Экраны Pinterest">
+          <img src="assets/cases/pinterest/images/screens/home.jpg" alt="Экран Home" loading="lazy">
+          <img src="assets/cases/pinterest/images/screens/pin.jpg" alt="Экран Pin" loading="lazy">
+          <img src="assets/cases/pinterest/images/screens/profile.jpg" alt="Экран Profile" loading="lazy">
+          <img src="assets/cases/pinterest/images/screens/board.jpg" alt="Экран Board" loading="lazy">
+        </div>
       </div>
     </section>
   </main>

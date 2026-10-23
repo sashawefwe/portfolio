@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Запись движения курсора</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+    body { font-family: Inter, Arial, sans-serif; color: #1c1c1e; background: #f2f2f7; }
+    button, textarea { font: inherit; }
+
+    .stage {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+      background-color: #f2f2f7;
+      background-image: radial-gradient(#d5d5db 1px, transparent 1px);
+      background-size: 24px 24px;
+      cursor: none;
+    }
+    .stage__hint {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: min(440px, calc(100% - 40px));
+      margin: 0;
+      color: #8e8e93;
+      font-size: clamp(18px, 2.5vw, 28px);
+      line-height: 1.35;
+      text-align: center;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      user-select: none;
+    }
+    .stage.is-recording { background-color: #f9f7f7; }
+    .stage.is-playing { cursor: auto; }
+
+    .toolbar, .json-panel {
+      position: fixed;
+      z-index: 2;
+      border: 1px solid #e1e1e6;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, .96);
+      box-shadow: 0 8px 32px rgba(28, 28, 30, .08);
+    }
+    .toolbar { top: 20px; left: 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; max-width: calc(100vw - 40px); padding: 10px; }
+    .toolbar button { min-height: 38px; padding: 8px 12px; border: 1px solid #dedee3; border-radius: 10px; background: #fff; color: #1c1c1e; cursor: pointer; }
+    .toolbar button:hover:not(:disabled) { background: #f2f2f7; }
+    .toolbar button:disabled { opacity: .42; cursor: default; }
+    .toolbar button:focus-visible, .json-panel textarea:focus-visible { outline: 2px solid #1c1c1e; outline-offset: 2px; }
+    .toolbar__record { background: #1c1c1e !important; border-color: #1c1c1e !important; color: #fff !important; }
+    .toolbar__record:hover:not(:disabled) { background: #3a3a3d !important; }
+    .toolbar__status { min-width: 116px; padding: 0 6px; color: #63636a; font-size: 13px; line-height: 1.3; }
+    .toolbar__time { font-variant-numeric: tabular-nums; }
+
+    .json-panel { right: 20px; bottom: 20px; display: flex; flex-direction: column; width: min(420px, calc(100vw - 40px)); height: min(300px, 38vh); min-height: 170px; padding: 14px; }
+    .json-panel label { margin-bottom: 8px; font-size: 14px; font-weight: 600; }
+    .json-panel__note { margin: 0 0 10px; color: #8e8e93; font-size: 12px; }
+    .json-panel textarea { flex: 1; width: 100%; min-height: 0; padding: 10px; resize: none; border: 1px solid #e1e1e6; border-radius: 10px; background: #fafafb; color: #1c1c1e; font-family: Consolas, Monaco, monospace; font-size: 12px; line-height: 1.4; white-space: pre; }
+
+    .fake-cursor { position: absolute; z-index: 1; width: clamp(120px, 13vw, 180px); aspect-ratio: 1086 / 1448; transform: translate(-9.2%, -3%); pointer-events: none; }
+    .fake-cursor[hidden] { display: none; }
+    .fake-cursor img { display: block; width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .18)); }
+    .fake-cursor.is-clicking::after { content: ""; position: absolute; top: 3%; left: 9.2%; width: 22px; height: 22px; border: 2px solid #e5484d; border-radius: 50%; transform: translate(-50%, -50%); }
+
+    .video-dock { position: fixed; z-index: 2; top: 20px; right: 20px; width: clamp(160px, 14vw, 220px); padding: 10px; border: 1px solid #e1e1e6; border-radius: 20px; background: rgba(255, 255, 255, .96); box-shadow: 0 8px 32px rgba(28, 28, 30, .08); }
+    .video-dock__video { display: block; width: 100%; aspect-ratio: 1; border-radius: 50%; background: #d9d9de; object-fit: cover; cursor: pointer; }
+    .video-dock__controls { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+    .video-dock__toggle { flex: 0 0 auto; padding: 5px 8px; border: 0; border-radius: 8px; background: #f2f2f7; color: #1c1c1e; font-size: 12px; cursor: pointer; }
+    .video-dock__toggle:disabled, .video-dock__seek:disabled { opacity: .45; cursor: default; }
+    .video-dock__seek { flex: 1; min-width: 0; accent-color: #1c1c1e; cursor: pointer; }
+    .video-dock__time { color: #63636a; font-size: 11px; font-variant-numeric: tabular-nums; }
+
+    @media (max-width: 640px) {
+      .toolbar { top: 12px; left: 12px; max-width: calc(100vw - 24px); }
+      .json-panel { right: 12px; bottom: 12px; width: calc(100vw - 24px); height: min(260px, 35vh); }
+      .video-dock { top: 136px; right: 12px; width: 150px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="stage" id="stage" aria-label="Область записи движения курсора">
+    <p class="stage__hint">Нажми Record и двигай мышью по этой области</p>
+    <div class="fake-cursor" id="fake-cursor" hidden aria-hidden="true">
+      <img src="assets/pointer.png" width="1086" height="1448" alt="">
+    </div>
+  </main>
+
+  <div class="toolbar" role="group" aria-label="Управление записью">
+    <button class="toolbar__record" id="record" type="button">Record</button>
+    <button id="stop" type="button" disabled>Stop</button>
+    <button id="play" type="button" disabled>Play</button>
+    <button id="export" type="button" disabled>Export JSON</button>
+    <span class="toolbar__status" id="status" role="status">Готово к записи<br><span class="toolbar__time">0.00 с</span></span>
+  </div>
+
+  <div class="video-dock" aria-label="Видео с рассказом">
+    <video class="video-dock__video" id="narration-video" src="assets/pointer.MP4" preload="metadata" playsinline aria-label="Видео с рассказом о процессе"></video>
+    <div class="video-dock__controls">
+      <button class="video-dock__toggle" id="video-toggle" type="button" aria-label="Воспроизвести видео">Play</button>
+      <input class="video-dock__seek" id="video-seek" type="range" min="0" max="1000" value="0" aria-label="Положение видео">
+      <span class="video-dock__time" id="video-time">0:00</span>
+    </div>
+  </div>
+
+  <section class="json-panel" aria-label="Записанный сценарий">
+    <label for="json-output">Сценарий JSON</label>
+    <p class="json-panel__note">Можно выделить и скопировать текст ниже.</p>
+    <textarea id="json-output" readonly spellcheck="false"></textarea>
+  </section>
+
+  <script>
+    const stage = document.getElementById('stage');
+    const fakeCursor = document.getElementById('fake-cursor');
+    const recordButton = document.getElementById('record');
+    const stopButton = document.getElementById('stop');
+    const playButton = document.getElementById('play');
+    const exportButton = document.getElementById('export');
+    const status = document.getElementById('status');
+    const jsonOutput = document.getElementById('json-output');
+    const narrationVideo = document.getElementById('narration-video');
+    const videoToggle = document.getElementById('video-toggle');
+    const videoSeek = document.getElementById('video-seek');
+    const videoTime = document.getElementById('video-time');
+
+    let events = [];
+    let durationMs = 0;
+    let recordingStart = 0;
+    let recordingFrame = 0;
+    let playbackFrame = 0;
+    let pendingMove = null;
+    let isRecording = false;
+    let isPlaying = false;
+    let pointerInStage = false;
+    let lastLivePosition = null;
+
+    function round(value, places) {
+      const factor = 10 ** places;
+      return Math.round(value * factor) / factor;
+    }
+
+    function normalizedPosition(event) {
+      const bounds = stage.getBoundingClientRect();
+      return {
+        x: round(Math.min(1, Math.max(0, (event.clientX - bounds.left) / bounds.width)), 6),
+        y: round(Math.min(1, Math.max(0, (event.clientY - bounds.top) / bounds.height)), 6)
+      };
+    }
+
+    function timestamp() {
+      return round(performance.now() - recordingStart, 2);
+    }
+
+    function flushPendingMove() {
+      if (!pendingMove) return;
+      events.push(pendingMove);
+      pendingMove = null;
+    }
+
+    function recordAction(type, event) {
+      if (!isRecording) return;
+      flushPendingMove();
+      events.push({ type, timestamp: timestamp(), ...normalizedPosition(event) });
+    }
+
+    function updateButtons() {
+      recordButton.disabled = isRecording;
+      stopButton.disabled = !isRecording && !isPlaying && narrationVideo.currentTime === 0;
+      playButton.disabled = isRecording || isPlaying || events.length === 0;
+      exportButton.disabled = isRecording || events.length === 0;
+      videoToggle.disabled = isRecording || events.length === 0;
+      videoSeek.disabled = isRecording || events.length === 0;
+    }
+
+    function updateStatus(label, elapsed) {
+      status.innerHTML = `${label}<br><span class="toolbar__time">${(elapsed / 1000).toFixed(2)} с · ${events.length} событий</span>`;
+    }
+
+    function updateJson() {
+      jsonOutput.value = JSON.stringify({
+        version: 1,
+        coordinateSystem: 'normalized',
+        durationMs: round(durationMs, 2),
+        events
+      }, null, 2);
+    }
+
+    function recordingTick() {
+      if (!isRecording) return;
+      flushPendingMove();
+      updateStatus('Запись', performance.now() - recordingStart);
+      recordingFrame = requestAnimationFrame(recordingTick);
+    }
+
+    function stopRecording() {
+      if (!isRecording) return;
+      flushPendingMove();
+      durationMs = round(performance.now() - recordingStart, 2);
+      isRecording = false;
+      cancelAnimationFrame(recordingFrame);
+      stage.classList.remove('is-recording');
+      updateJson();
+      updateStatus('Запись остановлена', durationMs);
+      updateButtons();
+    }
+
+    function stopPlayback() {
+      if (!isPlaying && narrationVideo.currentTime === 0) return;
+      const elapsed = narrationVideo.currentTime * 1000;
+      narrationVideo.pause();
+      narrationVideo.currentTime = 0;
+      isPlaying = false;
+      cancelAnimationFrame(playbackFrame);
+      stage.classList.remove('is-playing');
+      fakeCursor.classList.remove('is-clicking');
+      restoreLiveCursor();
+      updateVideoControls();
+      updateStatus('Воспроизведение остановлено', Math.min(elapsed, durationMs));
+      updateButtons();
+    }
+
+    function positionFakeCursor(point) {
+      fakeCursor.style.left = `${point.x * 100}%`;
+      fakeCursor.style.top = `${point.y * 100}%`;
+    }
+
+    function restoreLiveCursor() {
+      if (pointerInStage && lastLivePosition) {
+        positionFakeCursor(lastLivePosition);
+        fakeCursor.hidden = false;
+      } else {
+        fakeCursor.hidden = true;
+      }
+    }
+
+    function updateLiveCursor(event) {
+      if (event.pointerType !== 'mouse') return;
+      pointerInStage = true;
+      lastLivePosition = normalizedPosition(event);
+      if (!isPlaying) restoreLiveCursor();
+    }
+
+    function renderRecordedCursor(elapsed) {
+      if (!events.length) return;
+      let left = 0;
+      let right = events.length;
+      while (left < right) {
+        const middle = Math.floor((left + right) / 2);
+        if (events[middle].timestamp <= elapsed) left = middle + 1;
+        else right = middle;
+      }
+      const index = Math.max(0, left - 1);
+      positionFakeCursor(events[index]);
+      let clicked = false;
+      for (let item = index; item >= 0 && events[item].timestamp >= elapsed - 160; item--) {
+        if (events[item].type === 'click') {
+          clicked = true;
+          break;
+        }
+      }
+      fakeCursor.classList.toggle('is-clicking', clicked);
+    }
+
+    function updateVideoControls() {
+      const current = narrationVideo.currentTime;
+      const videoDuration = narrationVideo.duration;
+      videoSeek.value = Number.isFinite(videoDuration) && videoDuration > 0
+        ? String(Math.round(current / videoDuration * 1000)) : '0';
+      videoTime.textContent = `${Math.floor(current / 60)}:${String(Math.floor(current % 60)).padStart(2, '0')}`;
+      videoToggle.textContent = narrationVideo.paused ? 'Play' : 'Pause';
+      videoToggle.setAttribute('aria-label', narrationVideo.paused ? 'Воспроизвести видео' : 'Поставить видео на паузу');
+    }
+
+    function playbackTick() {
+      if (!isPlaying) return;
+      const elapsed = Math.min(narrationVideo.currentTime * 1000, durationMs);
+      renderRecordedCursor(elapsed);
+      updateVideoControls();
+      updateStatus('Воспроизведение', elapsed);
+      playbackFrame = requestAnimationFrame(playbackTick);
+    }
+
+    recordButton.addEventListener('click', () => {
+      stopPlayback();
+      events = [];
+      durationMs = 0;
+      pendingMove = null;
+      jsonOutput.value = '';
+      restoreLiveCursor();
+      recordingStart = performance.now();
+      isRecording = true;
+      stage.classList.add('is-recording');
+      updateStatus('Запись', 0);
+      updateButtons();
+      recordingFrame = requestAnimationFrame(recordingTick);
+    });
+
+    stopButton.addEventListener('click', () => {
+      stopRecording();
+      stopPlayback();
+    });
+
+    playButton.addEventListener('click', () => {
+      if (!events.length || isRecording) return;
+      stopPlayback();
+      narrationVideo.currentTime = 0;
+      narrationVideo.play().catch(() => updateStatus('Не удалось запустить видео', 0));
+    });
+
+    function finishVideoPlayback(label) {
+      if (!isPlaying) return;
+      isPlaying = false;
+      cancelAnimationFrame(playbackFrame);
+      stage.classList.remove('is-playing');
+      fakeCursor.classList.remove('is-clicking');
+      restoreLiveCursor();
+      updateVideoControls();
+      updateStatus(label, Math.min(narrationVideo.currentTime * 1000, durationMs));
+      updateButtons();
+    }
+
+    narrationVideo.addEventListener('play', () => {
+      if (isRecording || !events.length) {
+        narrationVideo.pause();
+        return;
+      }
+      isPlaying = true;
+      stage.classList.add('is-playing');
+      fakeCursor.hidden = false;
+      playbackTick();
+      updateButtons();
+    });
+    narrationVideo.addEventListener('pause', () => {
+      finishVideoPlayback(narrationVideo.ended ? 'Видео завершено' : 'Видео на паузе');
+    });
+    narrationVideo.addEventListener('ended', () => finishVideoPlayback('Видео завершено'));
+    narrationVideo.addEventListener('timeupdate', updateVideoControls);
+    narrationVideo.addEventListener('loadedmetadata', updateVideoControls);
+    narrationVideo.addEventListener('seeked', () => {
+      updateVideoControls();
+      if (isPlaying) renderRecordedCursor(narrationVideo.currentTime * 1000);
+    });
+
+    function toggleVideo() {
+      if (!events.length || isRecording) return;
+      if (narrationVideo.paused) {
+        if (narrationVideo.ended) narrationVideo.currentTime = 0;
+        narrationVideo.play().catch(() => updateStatus('Не удалось запустить видео', 0));
+      } else {
+        narrationVideo.pause();
+      }
+    }
+    narrationVideo.addEventListener('click', toggleVideo);
+    videoToggle.addEventListener('click', toggleVideo);
+    videoSeek.addEventListener('input', () => {
+      if (!Number.isFinite(narrationVideo.duration)) return;
+      narrationVideo.currentTime = Number(videoSeek.value) / 1000 * narrationVideo.duration;
+      updateVideoControls();
+    });
+
+    exportButton.addEventListener('click', () => {
+      if (!events.length) return;
+      updateJson();
+      const blob = new Blob([jsonOutput.value], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'cursor-recording.json';
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    });
+
+    stage.addEventListener('pointermove', (event) => {
+      updateLiveCursor(event);
+      if (!isRecording || event.pointerType !== 'mouse') return;
+      pendingMove = { type: 'move', timestamp: timestamp(), ...normalizedPosition(event) };
+    });
+    stage.addEventListener('pointerenter', (event) => {
+      updateLiveCursor(event);
+      if (!isRecording || event.pointerType !== 'mouse') return;
+      pendingMove = { type: 'move', timestamp: timestamp(), ...normalizedPosition(event) };
+    });
+    stage.addEventListener('pointerleave', (event) => {
+      if (event.pointerType !== 'mouse') return;
+      pointerInStage = false;
+      if (!isPlaying) fakeCursor.hidden = true;
+    });
+    stage.addEventListener('pointerdown', (event) => {
+      if (event.pointerType === 'mouse') recordAction('pointerdown', event);
+    });
+    stage.addEventListener('pointerup', (event) => {
+      if (event.pointerType === 'mouse') recordAction('pointerup', event);
+    });
+    stage.addEventListener('click', (event) => recordAction('click', event));
+
+    async function loadSavedScenario() {
+      try {
+        const response = await fetch('assets/cursor-recording.json');
+        if (!response.ok) throw new Error('Файл сценария недоступен');
+        const scenario = await response.json();
+        if (scenario.coordinateSystem !== 'normalized' || !Array.isArray(scenario.events)) {
+          throw new Error('Неверный формат сценария');
+        }
+        const loadedEvents = scenario.events.filter((event) =>
+          Number.isFinite(event.timestamp) && Number.isFinite(event.x) && Number.isFinite(event.y)
+          && event.x >= 0 && event.x <= 1 && event.y >= 0 && event.y <= 1
+        );
+        if (!loadedEvents.length) throw new Error('В сценарии нет точек');
+        events = loadedEvents;
+        durationMs = Math.max(Number(scenario.durationMs) || 0, events[events.length - 1].timestamp);
+        stage.querySelector('.stage__hint').textContent = 'Нажми Play, чтобы посмотреть видео вместе с движением указки';
+        updateJson();
+        updateButtons();
+        updateStatus('Сценарий загружен', durationMs);
+      } catch (error) {
+        updateStatus('Не удалось загрузить JSON — открой страницу через Live Server', 0);
+      }
+    }
+
+    updateJson();
+    loadSavedScenario();
+  </script>
+</body>
+</html>

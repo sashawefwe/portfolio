@@ -12,6 +12,50 @@ const caseSectionTitleReveals = caseSections.map((section) => section.querySelec
 const iphoneDemos = document.querySelectorAll('.iphone-demo');
 let manualExpanded = false;
 
+const processMap = document.querySelector('.process-map');
+if (processMap) {
+  const desktopMap = processMap.querySelector('.process-map__desktop');
+  const mobileMap = processMap.querySelector('.process-map__mobile');
+  const stages = [...desktopMap.querySelectorAll('.process-map__stages > div')];
+  const cards = [...desktopMap.querySelectorAll('.process-map__grid > .process-map__card')];
+
+  stages.forEach((stage, stageIndex) => {
+    const details = document.createElement('details');
+    const summary = document.createElement('summary');
+    const number = document.createElement('span');
+    const name = document.createElement('span');
+    const cardList = document.createElement('div');
+    details.className = 'process-map__stage';
+    details.open = stageIndex === 0;
+    number.className = 'process-map__stage-number';
+    number.textContent = stage.querySelector('span').textContent;
+    name.className = 'process-map__stage-name';
+    name.textContent = stage.textContent.slice(number.textContent.length).trim();
+    cardList.className = 'process-map__stage-cards';
+    cards.forEach((card, cardIndex) => {
+      if (cardIndex % stages.length === stageIndex && card.classList.contains('process-map__card--filled')) {
+        cardList.append(card.cloneNode(true));
+      }
+    });
+    summary.append(number, name);
+    details.append(summary, cardList);
+    mobileMap.append(details);
+  });
+
+  const resizeDesktopMap = () => {
+    if (mobileLayout.matches) {
+      desktopMap.style.zoom = '';
+      return;
+    }
+    const style = getComputedStyle(processMap);
+    const availableWidth = processMap.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+    desktopMap.style.zoom = String(Math.min(1, availableWidth / 1508));
+  };
+  resizeDesktopMap();
+  window.addEventListener('resize', resizeDesktopMap);
+  mobileLayout.addEventListener('change', resizeDesktopMap);
+}
+
 const desktopSmoothScroll = window.matchMedia('(min-width:901px)');
 const reducedScrollMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 if (desktopSmoothScroll.matches && !reducedScrollMotion.matches && window.luxy) {
@@ -40,15 +84,63 @@ if (!pinSaveVideoTest) return;
 const pinSaveVideoProgress = block.querySelector('.video-progress');
 const pinSaveVideoProgressArc = pinSaveVideoProgress.querySelector('.video-progress__arc');
 const pinSaveVideoProgressIcon = pinSaveVideoProgress.querySelector('.video-progress__icon');
+const videoFeedback = document.createElement('span');
+const videoFeedbackIcon = document.createElement('img');
+const mobileVideoControl = document.createElement('button');
+const mobileVideoControlIcon = document.createElement('img');
+videoFeedback.className = 'video-feedback';
+videoFeedback.setAttribute('aria-hidden', 'true');
+videoFeedbackIcon.alt = '';
+videoFeedback.append(videoFeedbackIcon);
+mobileVideoControl.className = 'mobile-video-control';
+mobileVideoControl.type = 'button';
+mobileVideoControl.tabIndex = -1;
+mobileVideoControlIcon.alt = '';
+mobileVideoControlIcon.setAttribute('aria-hidden', 'true');
+mobileVideoControl.append(mobileVideoControlIcon);
+block.querySelector('.pin-save-video-test__media').append(videoFeedback, mobileVideoControl);
 let pinSaveProgressFrame;
 let lastPinSaveProgressUpdate = 0;
+let mobileControlTimeout;
+
+function showVideoFeedback(action) {
+  if (mobileLayout.matches) return;
+  videoFeedbackIcon.src = `assets/icons/video/${action}.svg`;
+  videoFeedback.classList.remove('is-visible');
+  void videoFeedback.offsetWidth;
+  videoFeedback.classList.add('is-visible');
+}
+
+function hideMobileVideoControl() {
+  clearTimeout(mobileControlTimeout);
+  mobileVideoControl.classList.remove('is-visible');
+  mobileVideoControl.tabIndex = -1;
+  if (document.activeElement === mobileVideoControl) mobileVideoControl.blur();
+}
+
+function showMobileVideoControl() {
+  if (!mobileLayout.matches) return;
+  clearTimeout(mobileControlTimeout);
+  const paused = pinSaveVideoTest.paused;
+  mobileVideoControlIcon.src = `assets/icons/video/${paused ? 'play' : 'pause'}.svg`;
+  mobileVideoControl.setAttribute('aria-label', paused ? 'Продолжить видео' : 'Поставить видео на паузу');
+  mobileVideoControl.classList.add('is-visible');
+  mobileVideoControl.tabIndex = 0;
+  if (!paused) mobileControlTimeout = setTimeout(hideMobileVideoControl, 2000);
+}
 
 function togglePinSaveVideo() {
-  pinSaveVideoTest.dataset.userPaused = String(!pinSaveVideoTest.paused);
-  if (pinSaveVideoTest.paused) {
-    pinSaveVideoTest.play().catch(() => {});
+  const shouldPlay = pinSaveVideoTest.paused;
+  pinSaveVideoTest.dataset.userPaused = String(!shouldPlay);
+  if (shouldPlay) {
+    pinSaveVideoTest.play().then(() => {
+      showVideoFeedback('play');
+      showMobileVideoControl();
+    }).catch(() => {});
   } else {
     pinSaveVideoTest.pause();
+    showVideoFeedback('pause');
+    showMobileVideoControl();
   }
 }
 
@@ -70,10 +162,14 @@ function updatePinSaveVideoProgress(timestamp = performance.now()) {
 }
 
 pinSaveVideoTest.addEventListener('click', () => {
-  if (mobileLayout.matches) return;
+  if (mobileLayout.matches) {
+    showMobileVideoControl();
+    return;
+  }
   togglePinSaveVideo();
 });
 
+mobileVideoControl.addEventListener('click', togglePinSaveVideo);
 pinSaveVideoProgress.addEventListener('click', togglePinSaveVideo);
 block.querySelector('.video-replay').addEventListener('click', (event) => {
   const button = event.currentTarget;
@@ -91,18 +187,32 @@ block.querySelector('.video-replay').addEventListener('click', (event) => {
 });
 
 pinSaveVideoTest.addEventListener('play', () => {
+  if (mobileLayout.matches && mobileVideoControl.classList.contains('is-visible')) {
+    showMobileVideoControl();
+  } else {
+    hideMobileVideoControl();
+  }
   updatePinSaveVideoControl();
   cancelAnimationFrame(pinSaveProgressFrame);
   updatePinSaveVideoProgress();
 });
 
 pinSaveVideoTest.addEventListener('pause', () => {
+  if (pinSaveVideoTest.dataset.userPaused === 'true') showMobileVideoControl();
+  else hideMobileVideoControl();
   cancelAnimationFrame(pinSaveProgressFrame);
   updatePinSaveVideoControl();
   updatePinSaveVideoProgress();
 });
 
 pinSaveVideoTest.addEventListener('loadedmetadata', updatePinSaveVideoProgress);
+mobileLayout.addEventListener('change', () => {
+  if (mobileLayout.matches && pinSaveVideoTest.paused && pinSaveVideoTest.dataset.userPaused === 'true') {
+    showMobileVideoControl();
+  } else {
+    hideMobileVideoControl();
+  }
+});
 updatePinSaveVideoControl();
 if (!pinSaveVideoTest.paused) updatePinSaveVideoProgress();
 });
@@ -176,7 +286,9 @@ function setState(state, morph = false) {
 function onScroll() {
   // The slot keeps the original card bounds even while the card is fixed.
   const trigger = mobileLayout.matches ? summarySlot : cover;
-  const coverVisible = trigger.getBoundingClientRect().bottom > 0;
+  // Luxy can still be easing its transformed wrapper after native scrolling
+  // reaches zero, so the cover's viewport bounds may lag behind the scroll.
+  const coverVisible = window.scrollY <= 2 || trigger.getBoundingClientRect().bottom > 0;
 
   if (coverVisible) {
     manualExpanded = false;
