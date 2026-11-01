@@ -54,17 +54,20 @@ function initSwipeStack(briefDeck, briefGrid, briefCards) {
 
   async function finishBriefSwipe(card, fromX) {
     busy = true;
-    const distance = Math.max(-fromX, Math.min(card.clientWidth * .48, 180));
-    const duration = reducedBriefMotion.matches ? 1 : 310;
-    const exitTransform = briefDragTransform(-distance, card.clientWidth);
-    activeAnimation = card.animate([
-      { transform:briefDragTransform(fromX, card.clientWidth) },
-      { transform:exitTransform }
-    ], { duration, easing:'cubic-bezier(.4,0,.2,1)', fill:'forwards' });
-    await activeAnimation.finished.catch(() => {});
+    const distance = Math.min(card.clientWidth * .48, 180);
+    const remaining = distance + fromX;
+    const exitTransform = briefDragTransform(remaining > 4 ? -distance : fromX, card.clientWidth);
+    if (remaining > 4) {
+      const duration = reducedBriefMotion.matches ? 1 : Math.max(90, Math.min(310, 310 * remaining / distance));
+      activeAnimation = card.animate([
+        { transform:briefDragTransform(fromX, card.clientWidth) },
+        { transform:exitTransform }
+      ], { duration, easing:'cubic-bezier(.4,0,.2,1)', fill:'forwards' });
+      await activeAnimation.finished.catch(() => {});
+    }
     if (!briefMobile.matches) return;
     card.style.transform = exitTransform;
-    activeAnimation.cancel();
+    activeAnimation?.cancel();
     card.style.zIndex = '0';
     activeAnimation = card.animate([
       { transform:exitTransform },
