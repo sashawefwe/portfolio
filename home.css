@@ -49,7 +49,6 @@ body { margin: 0; }
   .home-page .desktop-navigation__menu { right: clamp(24px, 4.85vw, 94px); }
 }
 
-.home-page .desktop-navigation__link,
 .home-page .mobile-navigation,
 .home-page .site-navigation { font-family: "Manrope", Arial, sans-serif; }
 

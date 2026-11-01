@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Summary — UX/UI кейс</title>
   <meta name="description" content="Интерактивный summary-компонент UX/UI кейса">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="navigation.css">
 </head>
@@ -333,58 +332,34 @@
       </div>
       </div>
     </section>
-    <section class="case-section" aria-labelledby="process-map-title">
+    <section class="case-section case-section--process-map" aria-labelledby="process-map-title">
       <div class="case-section__title-reveal">
         <h2 class="case-section__title" id="process-map-title"><span>Карта процесса</span></h2>
       </div>
-      <div class="process-map" aria-label="Этапы работы над проектом">
-        <div class="process-map__desktop">
-        <div class="process-map__stages">
-          <div><span>01</span>Исследование</div>
-          <div><span>02</span>Синтез исследования</div>
-          <div><span>03</span>Концепция</div>
-          <div><span>04</span>Глубинное интервью</div>
-          <div><span>05</span>Синтез интервью</div>
-          <div><span>06</span>Прототипирование</div>
-          <div><span>07</span>Тестирование</div>
-          <div><span>08</span>Результат</div>
-        </div>
-        <div class="process-map__grid">
-          <div class="process-map__card process-map__card--filled"><div class="process-map__label"><span class="process-map__icons"><img class="process-map__document" src="assets/cases/pinterest/images/process-map/document.png" alt=""><img class="process-map__brand" src="assets/cases/pinterest/images/process-map/figma.png" alt=""></span><span>Открытый ресёрч</span></div><div class="process-map__content"><img src="assets/cases/pinterest/images/process-map/content/open-research.jpg" alt="Инструменты открытого ресёрча"></div></div>
-          <div class="process-map__card"></div><div class="process-map__card"></div><div class="process-map__card"></div>
-          <div class="process-map__card"></div><div class="process-map__card"></div><div class="process-map__card"></div><div class="process-map__card"></div>
-          <div class="process-map__card process-map__card--filled"><div class="process-map__label"><span class="process-map__icons"><img class="process-map__document" src="assets/cases/pinterest/images/process-map/document.png" alt=""><img class="process-map__brand" src="assets/cases/pinterest/images/process-map/figma.png" alt=""></span><span>Аудит as-is</span></div><div class="process-map__content"><img src="assets/cases/pinterest/images/process-map/content/audit-as-is.jpg" alt="Иллюстрация аудита as-is"></div></div>
-          <div class="process-map__card process-map__card--filled"><div class="process-map__label"><span class="process-map__icons"><img class="process-map__document" src="assets/cases/pinterest/images/process-map/document.png" alt=""></span><span>Первые JTBD</span></div><div class="process-map__content"><img src="assets/cases/pinterest/images/process-map/content/first-jtbd.png" alt="Иллюстрация первых JTBD"></div></div>
-          <div class="process-map__card process-map__card--filled"><div class="process-map__label"><span class="process-map__icons"><img class="process-map__document" src="assets/cases/pinterest/images/process-map/document.png" alt=""><img class="process-map__brand" src="assets/cases/pinterest/images/process-map/figma.png" alt=""></span><span>lo-fi и гипотезы</span></div><div class="process-map__content"><img src="assets/cases/pinterest/images/process-map/content/lo-fi-hypotheses.png" alt="Иллюстрация lo-fi и гипотез"></div></div>
-          <div class="process-map__card process-map__card--filled"><div class="process-map__label"><span class="process-map__icons"><img class="process-map__document" src="assets/cases/pinterest/images/process-map/document.png" alt=""><img class="process-map__brand" src="assets/cases/pinterest/images/process-map/notion.png" alt=""></span><span>Интервью x3</span></div><div class="process-map__content"><img src="assets/cases/pinterest/images/process-map/content/interviews.png" alt="Иллюстрация интервью"></div></div>
-          <div class="process-map__card process-map__card--filled"><div class="process-map__label"><span class="process-map__icons"><img class="process-map__document" src="assets/cases/pinterest/images/process-map/document.png" alt=""><img class="process-map__brand" src="assets/cases/pinterest/images/process-map/notion.png" alt=""></span><span>CJM</span></div><div class="process-map__content"><img src="assets/cases/pinterest/images/process-map/content/cjm.png" alt="Иллюстрация CJM"></div></div>
-          <div class="process-map__card"></div><div class="process-map__card"></div><div class="process-map__card"></div>
-          <div class="process-map__card process-map__card--filled"><div class="process-map__label"><span class="process-map__icons"><img class="process-map__document" src="assets/cases/pinterest/images/process-map/document.png" alt=""><img class="process-map__brand" src="assets/cases/pinterest/images/process-map/notion.png" alt=""></span><span>Анализ конкурентов</span></div><div class="process-map__content"><img src="assets/cases/pinterest/images/process-map/content/competitor-analysis.png" alt="Иллюстрация анализа конкурентов"></div></div>
-          <div class="process-map__card"></div><div class="process-map__card"></div><div class="process-map__card"></div>
-          <div class="process-map__card process-map__card--filled"><div class="process-map__label"><span class="process-map__icons"><img class="process-map__document" src="assets/cases/pinterest/images/process-map/document.png" alt=""></span><span>Персона</span></div><div class="process-map__content"><img src="assets/cases/pinterest/images/process-map/content/persona.png" alt="Иллюстрация персоны"></div></div>
-          <div class="process-map__card"></div><div class="process-map__card"></div><div class="process-map__card"></div>
-          <div class="process-map__card"></div><div class="process-map__card"></div><div class="process-map__card"></div><div class="process-map__card"></div>
-          <div class="process-map__card process-map__card--filled"><div class="process-map__label"><span class="process-map__icons"><img class="process-map__document" src="assets/cases/pinterest/images/process-map/document.png" alt=""></span><span>Уточнение гипотез</span></div><div class="process-map__content"><img src="assets/cases/pinterest/images/process-map/content/refined-hypotheses.jpg" alt="Иллюстрация уточнения гипотез"></div></div>
-          <div class="process-map__card process-map__card--filled"><div class="process-map__label"><span class="process-map__icons"><img class="process-map__document" src="assets/cases/pinterest/images/process-map/document.png" alt=""><img class="process-map__brand" src="assets/cases/pinterest/images/process-map/figma.png" alt=""></span><span>Скриншот-прототип</span></div><div class="process-map__content"></div></div>
-          <div class="process-map__card process-map__card--filled"><div class="process-map__label"><span class="process-map__icons"><img class="process-map__document" src="assets/cases/pinterest/images/process-map/document.png" alt=""><img class="process-map__brand" src="assets/cases/pinterest/images/process-map/figma.png" alt=""></span><span>Usability-тест</span></div><div class="process-map__content"><img src="assets/cases/pinterest/images/process-map/content/usability-test.jpg" alt="Иллюстрация usability-теста"></div></div>
-          <div class="process-map__card process-map__card--filled"><div class="process-map__label"><span class="process-map__icons"><img class="process-map__document" src="assets/cases/pinterest/images/process-map/document.png" alt=""><img class="process-map__brand" src="assets/cases/pinterest/images/process-map/figma.png" alt=""></span><span>Hi-fi макеты</span></div><div class="process-map__content"><img src="assets/cases/pinterest/images/process-map/content/hi-fi-mockups.jpg" alt="Иллюстрация hi-fi макетов"></div></div>
-        </div>
-        </div>
-        <div class="process-map__mobile" aria-label="Этапы работы над проектом"></div>
-        <div class="process-map__screens" aria-label="Экраны Pinterest">
-          <img src="assets/cases/pinterest/images/screens/home.jpg" alt="Экран Home" loading="lazy">
-          <img src="assets/cases/pinterest/images/screens/pin.jpg" alt="Экран Pin" loading="lazy">
-          <img src="assets/cases/pinterest/images/screens/profile.jpg" alt="Экран Profile" loading="lazy">
-          <img src="assets/cases/pinterest/images/screens/board.jpg" alt="Экран Board" loading="lazy">
-        </div>
-        <p class="process-map__thanks">Спасибо, что досмотрели до конца</p>
+      <div class="process-tiles" aria-label="Восемь этапов работы над проектом">
+        <div class="process-tiles__tile process-tiles__tile--research"><span class="process-tiles__name">Исследование</span><span class="process-tiles__number">1</span></div>
+        <div class="process-tiles__tile process-tiles__tile--synthesis-research"><span class="process-tiles__name">Синтез<br>исследования</span><span class="process-tiles__number">2</span></div>
+        <div class="process-tiles__tile process-tiles__tile--concept"><span class="process-tiles__name">Концепция</span><span class="process-tiles__number">3</span></div>
+        <div class="process-tiles__tile process-tiles__tile--interviews"><span class="process-tiles__name">Глубинное<br>интервью</span><span class="process-tiles__number">4</span></div>
+        <div class="process-tiles__tile process-tiles__tile--synthesis-interviews"><span class="process-tiles__name">Синтез интервью</span><span class="process-tiles__number">5</span></div>
+        <div class="process-tiles__tile process-tiles__tile--prototype"><span class="process-tiles__name">Прототипирование</span><span class="process-tiles__number">6</span></div>
+        <div class="process-tiles__tile process-tiles__tile--testing"><span class="process-tiles__name">Тестирование</span><span class="process-tiles__number">7</span></div>
+        <div class="process-tiles__result-wrap"><div class="process-tiles__tile process-tiles__tile--result"><span class="process-tiles__name">Результат</span><span class="process-tiles__number">8</span></div></div>
       </div>
+    </section>
+    <section class="case-screens-section" aria-label="Экраны Pinterest и завершение кейса">
+      <div class="case-screens" aria-label="Экраны Pinterest">
+        <img src="assets/cases/pinterest/images/screens/home.jpg" alt="Экран Home" loading="lazy">
+        <img src="assets/cases/pinterest/images/screens/pin.jpg" alt="Экран Pin" loading="lazy">
+        <img src="assets/cases/pinterest/images/screens/profile.jpg" alt="Экран Profile" loading="lazy">
+        <img src="assets/cases/pinterest/images/screens/board.jpg" alt="Экран Board" loading="lazy">
+      </div>
+      <p class="case-screens__thanks">Спасибо, что досмотрели до конца</p>
     </section>
   </main>
   </div>
   <div class="summary-backdrop" aria-hidden="true"></div>
   <script src="https://min30327.github.io/luxy.js/dist/js/luxy.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
   <script src="script.js"></script>
   <script src="navigation.js"></script>
 </body>
