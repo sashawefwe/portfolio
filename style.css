@@ -1,0 +1,898 @@
+/* =====================
+   RESET & BASE
+   ===================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg-card: #F1F0F5;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Manrope', sans-serif;
+  background: #ffffff;
+  color: #111111;
+}
+
+/* =====================
+   TABBAR
+   ===================== */
+.tabbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  padding: 16px 0 0 16px;
+
+  background: transparent;
+
+  z-index: 1;
+}
+
+.tabbar-right {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #3F3F3F;
+  margin-left: auto;
+}
+
+.tabbar-right.hidden {
+  display: none;
+}
+
+.tabbar-right-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tabs {
+  display: flex;
+  align-items: center;
+  -webkit-font-smoothing: antialiased;
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  font-family: 'Manrope', sans-serif;
+  font-size: 14.5px;
+  font-weight: 500;
+  color: #3F3F3F;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 19px;
+  border-radius: 12px;
+  outline: 1px solid transparent;
+  transition: color 0.15s, box-shadow 0.15s;
+  white-space: nowrap;
+}
+
+.tab-divider {
+  display: inline-block;
+  width: 0;
+  height: 12px;
+  outline: 1px solid #E5E5E5;
+  flex-shrink: 0;
+  transform: translateZ(0);
+}
+
+.tab-divider.hidden {
+  visibility: hidden;
+}
+
+.tab:hover {
+  color: #3B82F6;
+}
+
+.tab.active {
+  color: #3F3F3F;
+  background: #EBF4FF;
+  outline: none;
+  border-radius: 14px;
+  box-shadow: 
+    0 0 0 1px rgba(44, 110, 180, 0.10),
+    0 2px 6px rgba(44, 110, 180, 0.12),
+    0 8px 24px rgba(44, 110, 180, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+/* =====================
+   СЛАЙД-0 ЗНАКОМСТВО
+   ===================== */
+
+.slide0-status-badge {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Onest', sans-serif;
+  font-size: 15px;
+  z-index: 10;
+}
+
+#pulsing-dot {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  vertical-align: 0px;
+}
+
+.slide0-layout {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  height: clamp(400px, 71vh, 655px);
+
+  display: flex;
+  align-items: stretch;
+}
+
+.slide0-content {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: left;
+  font-family: 'Onest', sans-serif;
+
+  border: 1px solid #E2E2E2;
+  border-radius: 24px;
+  padding-top: 0px;
+  font-size: 4.7vw;
+
+  text-align: center;
+  white-space: nowrap;
+  position: relative;
+}
+
+.slide0-line2 {
+  font-size: 3.7vw;
+  margin-top: -6px;
+  white-space: nowrap;
+}
+
+.slide0-tagline {
+  position: absolute;
+  left: 20px;
+  right: 30px;
+  bottom: 20px;
+
+  text-align: left;
+  font-size: 18px;
+  line-height: 1.3;
+
+  min-height: auto;
+}
+
+.slide0-light {
+  color: #C8C8C8;
+}
+
+.slide0-dark {
+  color: #3F3F3F;
+}
+
+.slide0-photo {
+  flex: 0 0 clamp(400px, 35.9vw, 690px);
+  width: clamp(400px, 35.9vw, 690px);
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 15%;
+  display: block;
+
+  transform: scaleX(-1);
+  border-radius: 24px;
+}
+
+.slide0-photo2 {
+  width: 150px;
+  height: auto;
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+}
+
+:root {
+  --slide0-photo-width: clamp(400px, 36vw, 690px);
+}
+
+/* =====================
+   CARDS
+   ===================== */
+
+.cards-column {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.todo-cover {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: none;
+    align-self: flex-end;
+}
+
+.test-card {
+    position: relative;
+    z-index: 2;
+    background: #d9d9d9;
+}
+
+.test-card.half {
+    width: 50vw;
+    aspect-ratio: 1 / 1;
+}
+
+.test-card.full {
+    width: 100vw;
+    height: 100vh;
+}
+
+/* =====================
+   ПЕРЕКЛЮЧЕНИЕ СЛАЙДОВ
+   ===================== */
+
+.slide {
+  display: none;
+}
+
+.slide.active {
+  display: block;
+}
+
+/* =====================
+   СЛАЙД 2 Pinterest
+   ===================== */
+
+#slide-2 {
+  overflow: hidden;
+}
+
+.slide2-text {
+  position: fixed;
+  top: 70px;
+  left: 36px;
+  width: calc(45vw - 36px - 36px);
+  z-index: 2;
+  
+}
+
+.slide2-heading {
+  font-family: 'Onest', sans-serif;
+  font-size: 36px;
+  font-weight: 500;
+  color: #3F3F3F;
+  margin: 0;
+  line-height: 1.2;
+  margin-top: 36px;
+}
+
+.slide2-subheading {
+  margin-top: 24px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 16.5px;
+  color: #3F3F3F;
+  line-height: 1.5;
+  max-width: 400px;
+}
+
+.slide2-description {
+  margin-top: 20px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 16px;
+  color: #3F3F3F;
+  line-height: 1.5;
+  max-width: 450px;
+}
+
+.Pinterest-cover {
+  width: 925px;
+  height: auto;
+  margin-top: 16px;
+  margin-right: 16px;
+  border-radius: 24px;
+  display: block;
+}
+
+.pin-card-title {
+  color: #B0AFBF;
+  font-size: 23px;
+  font-weight: 500;
+}
+
+.pin-card-text {
+  color: #3F3F3F;
+  font-size: 22px;
+  line-height: 1.35;
+  margin: 48px 0 0 0;
+}
+
+.pin-card-list {
+  list-style: none;
+  margin: 0 0 16px 0;
+  padding-left: 30px;
+
+  color: #3F3F3F;
+  font-size: 22px;
+  line-height: 1.35;
+}
+
+.pin-card-list li {
+  margin-bottom: 0px;
+  position: relative;
+}
+
+.pin-card-list li::before {
+  content: "•";
+  position: absolute;
+  left: -20px;
+  font-size: 20px;
+}
+
+.pin-card-research {
+  margin-top: 28px;
+}
+
+/* заголовок */ 
+.test-title-card {
+  width: 925px;
+
+  background: #F2F2F7;
+  border-radius: 24px;
+
+  margin-top: 16px;
+  margin-right: 16px;
+  margin-bottom: 8px;
+
+
+  padding: 40px;
+}
+
+.test-title-wrapper {
+  width: 100%;
+  background: #FFFFFF;
+
+  display: flex;
+  justify-content: flex-end;
+
+  z-index: 10;
+
+  /*outline: 3px solid green;*/
+}
+
+/* =================================
+  ДО/ПОСЛЕ СОХРАНЕНИЕ ИЗ ОБЩЕЙ ЛЕНТЫ
+  ==================================  */
+/* большая карточка */  
+.before-after-1-card {
+  width: 100%;
+  height: auto;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: #F2F2F7;
+  border-radius: 24px;
+
+  padding-left: 80px;
+
+  z-index: 10;
+}
+
+/* настройка карточки */
+.before-1, .after-1 {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 40px;
+  
+  /*outline: 3px solid green; */
+}
+
+/* общий контейнер айфона */  
+.test-iphone-wrapper {
+  position: relative;
+
+  width: 449px;
+  height: 749px;
+  /*outline: 3px solid green;*/
+}
+
+/* контейнер рамка айфона + видео + маски */  
+.test-iphone {
+  position: absolute;
+
+  top: 22px;
+  left: 22px;
+
+  width: 279.04px;
+  height: 578.56px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* png тень */  
+.test-iphone-shadow {
+  position: absolute;
+
+  width: 449px;
+  height: 749px;
+
+  z-index: 0;
+
+  pointer-events: none;
+}
+
+/* рамка айфона */
+.test-iphone-frame {
+  position: absolute;
+
+  width: 279.04px;
+  height: 578.56px;
+
+  object-fit: contain;
+
+  z-index: 2;
+}
+
+/* маска поверх видео */  
+.test-iphone-mask {
+  position: absolute;
+
+  width: 257.8px;
+  height: 559.36px;
+
+  overflow: hidden;
+
+  border-radius: 34px;
+
+  z-index: 1;
+}
+
+/* видео внутри экрана*/
+.test-iphone-video {
+  position: absolute;
+
+  width: 257.8px;
+  height: auto;
+
+  top: 0;
+  left: 0;
+
+  border-radius: 34px;
+
+  object-fit: cover;
+
+  z-index: 1;
+}
+
+/* текстовый блок */
+.before-after-1-text {
+  text-align: left;
+  margin-top: 22px; /* это отступ заголовка сверху, 22 потому что и у афйона 22 отступ сверху */
+  
+  z-index: 1000;
+  /*outline: 3px solid green;*/
+}
+
+/* заголовок */
+.test-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 32px;
+  font-weight: 200;
+  color: #3F3F3F;
+}
+
+
+/* описание */
+.test-description {
+  max-width: 340px;
+
+  margin-top: 24px;
+
+  font-family: 'Inter', sans-serif;
+  font-size: 17px;
+  font-weight: 300;
+  color: #3F3F3F;
+
+  text-align: left;
+}
+
+/* кнопки */
+.test-controls {
+  position: relative;
+  z-index: 1000;
+
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+
+  margin-top: 18px;
+}
+
+.test-controls button {
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #F7F9FC;
+  border: 1px solid rgba(44, 110, 180, 0.08);
+  border-radius: 12px;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 1px 3px rgba(44, 110, 180, 0.05),
+    inset 0 1px 0 rgba(255,255,255,.75);
+
+  transition:
+    background .18s ease,
+    border-color .18s ease,
+    box-shadow .18s ease,
+    transform .18s ease;
+}
+
+.test-controls button:hover {
+  background: #EEF5FF;
+  border-color: rgba(44,110,180,.12);
+
+  box-shadow:
+    0 2px 8px rgba(44,110,180,.08),
+    inset 0 1px 0 rgba(255,255,255,.85);
+}
+
+.test-controls button:active {
+  transform: scale(.96);
+  background: #E8F2FF;
+}
+
+.test-controls button img {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+
+
+/* =====================
+  СЛАЙД 3 TO-DO
+  ===================== */
+
+#slide-3 {
+  overflow: hidden;
+}
+
+.slide3-text {
+  position: fixed;
+  top: 70px;
+  left: 36px;
+  width: calc(45vw - 36px - 36px);
+  z-index: 2;
+  
+}
+
+.slide3-heading {
+  font-family: 'Onest', sans-serif;
+  font-size: 36px;
+  font-weight: 500;
+  color: #3F3F3F;
+  margin: 0;
+  line-height: 1.2;
+  margin-top: 36px;
+}
+
+.slide3-heading-accent {
+  color: #6C63D9;
+}
+
+.slide3-subheading {
+  margin-top: 24px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 16.5px;
+  color: #3F3F3F;
+  line-height: 1.5;
+  max-width: 400px;
+}
+
+.slide3-description {
+  margin-top: 20px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 16px;
+  color: #3F3F3F;
+  line-height: 1.5;
+  max-width: 450px;
+}
+
+.todo-cover {
+  width: 925px;
+  height: auto;
+  margin-top: 16px;
+  margin-right: 16px;
+  border-radius: 24px;
+  display: block;
+}
+
+.todo-card-problem,
+.todo-card-pain,
+.todo-card-solution,
+.todo-card-result {
+  width: 925px;
+  margin-right: 16px;
+  margin-left: auto;
+  margin-top: 16px; 
+
+  background: #F2F2F7;
+  border-radius: 24px;
+  text-align: left;
+}
+
+.todo-card-problem {
+  padding: 64px 18px 18px 18px;
+}
+
+.todo-card-pain {
+  padding: 17px 18px 18px 18px;
+}
+
+.todo-card-solution {
+  padding: 64px 18px 18px 18px;
+}
+
+.todo-card-result {
+  padding: 64px 18px 18px 18px;
+}
+
+.todo-card-pain .todo-card-title {
+  margin-bottom: 64px;
+}
+
+.todo-card-title {
+  color: #B0AFBF;
+  font-size: 23px;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+
+.todo-card-text {
+  color: #3F3F3F;
+  font-size: 22px;
+  line-height: 1.35;
+  margin: 0;
+}
+
+.todo-img-solution {
+  width: 100vw;
+  height: auto;
+  display: block;
+  margin-top: 16px;
+  z-index: 999;
+  border-radius: 24px;
+  align-self: center;
+}
+
+.todo-an-extra-feature {
+  width: 925px;
+  height: auto;
+  margin-top: 16px;
+  margin-right: 16px;
+  border-radius: 24px;
+  display: block;
+}
+
+.todo-card-list {
+  margin: 16px 0 0 24px;
+  padding: 0;
+  font-size: 22px;
+  line-height: 1.35;
+  color: #3F3F3F;
+}
+
+.todo-card-list li {
+  margin-bottom: 20px;
+}
+
+.todo-card-list li:last-child {
+  margin-bottom: 0;
+}
+
+/* =====================
+   КАРУСЕЛЬ 2 слайд
+   ===================== */
+
+.carousel {
+  position: relative;
+  width: 925px;
+  margin-left: auto;
+
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+.carousel-wrapper {
+  width: 925px;
+  margin: 16px 16px 0 auto;
+
+}
+
+.carousel-track {
+  display: flex;
+  transition: transform 0.4s ease;
+}
+
+.carousel-card {
+  min-width: 925px;
+  height: auto;
+  background: #F2F2F7;
+  border-radius: 0px;
+
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+/* ===== стрелки ===== */
+
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+
+  background: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 10;
+}
+
+.carousel-btn img {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+.carousel-btn-prev {
+  left: 12px;
+}
+
+.carousel-btn-next {
+  right: 12px;
+}
+
+/* ===== точки ===== */
+
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  align-items: center;
+  margin-top: 16px;
+
+  height: 16px;
+}
+
+.carousel-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+
+  background: #D9D9D9;
+  transition: 0.2s;
+}
+
+.carousel-dot.active {
+  width: 12px;
+  height: 12px;
+  background: #D9D9D9; /* тот же цвет, просто больше */
+}
+
+.pin-research-trigger {
+  display: inline;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  padding: 3px 5px;
+  border-radius: 5px;
+}
+
+.pin-research-trigger:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+.pin-research-trigger img {
+width: 24px;
+height: 24px;
+vertical-align: text-bottom;
+margin-right: 0px;
+}
+
+.pin-research-word {
+  border-bottom: 1px solid rgba(63, 63, 63, 0.25);
+}
+
+/* Overlay PINTEREST ОТКРЫТЫЙ РЕСЁРЧ */
+
+.research-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  opacity: 0;
+  visibility: hidden;
+  transition: .25s ease;
+
+  z-index: 9999;
+}
+
+
+.research-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+
+.research-modal {
+  background: white;
+  width: min(600px, 90%);
+  padding: 32px;
+  border-radius: 16px;
+  position: relative;
+
+  transform: translateY(20px);
+  transition: .25s ease;
+}
+
+
+.research-overlay.active .research-modal {
+  transform: translateY(0);
+}
+
+
+.research-close {
+  position: absolute;
+  right: 16px;
+  top: 12px;
+
+  border: none;
+  background: none;
+
+  font-size: 28px;
+  cursor: pointer;
+}

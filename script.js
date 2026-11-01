@@ -1,607 +1,191 @@
-const summary = document.querySelector('.summary');
-const cover = document.querySelector('.case-cover');
-const summarySlot = document.querySelector('.summary-slot');
-const mobileLayout = window.matchMedia('(max-width:900px)');
-const collapseButton = document.querySelector('.summary__collapse');
-const widgetButton = document.querySelector('.summary__widget');
-const resultTooltip = document.querySelector('.summary__tooltip');
-const resultTooltipButton = document.querySelector('.summary__tooltip-button');
-const summaryBackdrop = document.querySelector('.summary-backdrop');
-const caseSections = [...document.querySelectorAll('.case-section')];
-const caseSectionTitleReveals = caseSections.map((section) => section.querySelector('.case-section__title-reveal'));
-const iphoneDemos = document.querySelectorAll('.iphone-demo');
-let manualExpanded = false;
+const slides = document.querySelectorAll('.slide');
+const tabs = document.querySelectorAll('.tab');
 
-const processMap = document.querySelector('.process-map');
-if (processMap) {
-  const desktopMap = processMap.querySelector('.process-map__desktop');
-  const mobileMap = processMap.querySelector('.process-map__mobile');
-  const stages = [...desktopMap.querySelectorAll('.process-map__stages > div')];
-  const cards = [...desktopMap.querySelectorAll('.process-map__grid > .process-map__card')];
+function goToSlide(index) {
 
-  stages.forEach((stage, stageIndex) => {
-    const details = document.createElement('details');
-    const summary = document.createElement('summary');
-    const number = document.createElement('span');
-    const name = document.createElement('span');
-    const cardList = document.createElement('div');
-    details.className = 'process-map__stage';
-    details.open = stageIndex === 0;
-    number.className = 'process-map__stage-number';
-    number.textContent = stage.querySelector('span').textContent;
-    name.className = 'process-map__stage-name';
-    name.textContent = stage.textContent.slice(number.textContent.length).trim();
-    cardList.className = 'process-map__stage-cards';
-    cards.forEach((card, cardIndex) => {
-      if (cardIndex % stages.length === stageIndex && card.classList.contains('process-map__card--filled')) {
-        cardList.append(card.cloneNode(true));
-      }
-    });
-    summary.append(number, name);
-    details.append(summary, cardList);
-    mobileMap.append(details);
+  // 1. Переключаем слайды
+  slides.forEach((slide, i) => {
+    slide.classList.toggle('active', i === index);
   });
 
-  const resizeDesktopMap = () => {
-    if (mobileLayout.matches) {
-      desktopMap.style.zoom = '';
-      return;
-    }
-    const style = getComputedStyle(processMap);
-    const availableWidth = processMap.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
-    desktopMap.style.zoom = String(Math.min(1, availableWidth / 1508));
-  };
-  resizeDesktopMap();
-  window.addEventListener('resize', resizeDesktopMap);
-  mobileLayout.addEventListener('change', resizeDesktopMap);
-}
-
-const briefDeck = document.querySelector('.project-brief__deck');
-if (briefDeck) {
-  const briefGrid = briefDeck.querySelector('.project-brief__grid');
-  const briefCards = [...briefGrid.querySelectorAll('.project-brief__card')];
-  const briefMobile = window.matchMedia('(max-width:640px)');
-  let briefSwiper;
-
-  function clearBriefTextPosition() {
-    briefCards.forEach((card) => {
-      card.classList.remove('is-text-crisp');
-      card.style.left = '';
-    });
-  }
-
-  function settleBriefText(swiper) {
-    if (swiper.destroyed || swiper.animating) return;
-    clearBriefTextPosition();
-    const activeCard = swiper.slides[swiper.activeIndex];
-    if (!activeCard) return;
-    activeCard.style.left = `${-Math.round(activeCard.swiperSlideOffset || 0)}px`;
-    activeCard.classList.add('is-text-crisp');
-  }
-
-  function syncBriefLayout() {
-    if (briefMobile.matches) {
-      if (briefSwiper || !window.Swiper) return;
-      briefDeck.classList.add('swiper');
-      briefGrid.classList.add('swiper-wrapper');
-      briefCards.forEach((card) => card.classList.add('swiper-slide'));
-      briefSwiper = new Swiper(briefDeck, {
-        effect: 'cards',
-        grabCursor: true,
-        roundLengths: true,
-        cardsEffect: { rotate: true, perSlideRotate: 1, perSlideOffset: 3, slideShadows: false },
-        on: {
-          init: settleBriefText,
-          touchStart: clearBriefTextPosition,
-          slideChangeTransitionStart: clearBriefTextPosition,
-          transitionEnd: settleBriefText,
-          touchEnd(swiper) {
-            window.setTimeout(() => settleBriefText(swiper), swiper.params.speed + 30);
-          },
-          resize: settleBriefText
-        }
-      });
-      return;
-    }
-    if (!briefSwiper) return;
-    briefSwiper.destroy(true, true);
-    briefSwiper = null;
-    clearBriefTextPosition();
-    briefDeck.classList.remove('swiper', 'swiper-cards', 'swiper-initialized');
-    briefGrid.classList.remove('swiper-wrapper');
-    briefCards.forEach((card) => card.classList.remove('swiper-slide', 'swiper-slide-active', 'swiper-slide-next', 'swiper-slide-prev'));
-  }
-
-  briefMobile.addEventListener('change', syncBriefLayout);
-  syncBriefLayout();
-}
-
-const desktopSmoothScroll = window.matchMedia('(min-width:901px)');
-const reducedScrollMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-if (desktopSmoothScroll.matches && !reducedScrollMotion.matches && window.luxy) {
-  window.luxy.init({
-    wrapper:'#luxy',
-    wrapperSpeed:0.055
+  // 2. Обновляем активные табы во ВСЕХ таббарах
+  tabs.forEach(tab => {
+    const tabIndex = Number(tab.dataset.slide);
+    tab.classList.toggle('active', tabIndex === index);
   });
-}
 
-function updateIphoneScale(iphoneDemo) {
-  iphoneDemo.style.setProperty('--iphone-scale', String(iphoneDemo.clientWidth / 449));
-}
+  // 3. Скрываем разделители вокруг активного таба (в каждом таббаре отдельно)
+  document.querySelectorAll('.tabs').forEach(tabsContainer => {
 
-const iphoneResizeObserver = new ResizeObserver((entries) => {
-  entries.forEach(({ target }) => updateIphoneScale(target));
-});
+    const dividers = tabsContainer.querySelectorAll('.tab-divider');
 
-iphoneDemos.forEach((iphoneDemo) => {
-  updateIphoneScale(iphoneDemo);
-  iphoneResizeObserver.observe(iphoneDemo);
-});
+    dividers.forEach(d => d.classList.remove('hidden'));
 
-document.querySelectorAll('.pin-save-video-test').forEach((block) => {
-const pinSaveVideoTest = block.querySelector('video');
-if (!pinSaveVideoTest) return;
-const pinSaveVideoProgress = block.querySelector('.video-progress');
-const pinSaveVideoProgressArc = pinSaveVideoProgress.querySelector('.video-progress__arc');
-const pinSaveVideoProgressIcon = pinSaveVideoProgress.querySelector('.video-progress__icon');
-const videoFeedback = document.createElement('span');
-const videoFeedbackIcon = document.createElement('img');
-const mobileVideoControl = document.createElement('button');
-const mobileVideoControlIcon = document.createElement('img');
-videoFeedback.className = 'video-feedback';
-videoFeedback.setAttribute('aria-hidden', 'true');
-videoFeedbackIcon.alt = '';
-videoFeedback.append(videoFeedbackIcon);
-mobileVideoControl.className = 'mobile-video-control';
-mobileVideoControl.type = 'button';
-mobileVideoControl.tabIndex = -1;
-mobileVideoControlIcon.alt = '';
-mobileVideoControlIcon.setAttribute('aria-hidden', 'true');
-mobileVideoControl.append(mobileVideoControlIcon);
-block.querySelector('.pin-save-video-test__media').append(videoFeedback, mobileVideoControl);
-let pinSaveProgressFrame;
-let lastPinSaveProgressUpdate = 0;
-let mobileControlTimeout;
+    if (index > 0) {
+      dividers[index - 1]?.classList.add('hidden');
+    }
 
-function showVideoFeedback(action) {
-  if (mobileLayout.matches) return;
-  videoFeedbackIcon.src = `assets/icons/video/${action}.svg`;
-  videoFeedback.classList.remove('is-visible');
-  void videoFeedback.offsetWidth;
-  videoFeedback.classList.add('is-visible');
-}
+    if (index < dividers.length) {
+      dividers[index]?.classList.add('hidden');
+    }
 
-function hideMobileVideoControl() {
-  clearTimeout(mobileControlTimeout);
-  mobileVideoControl.classList.remove('is-visible');
-  mobileVideoControl.tabIndex = -1;
-  if (document.activeElement === mobileVideoControl) mobileVideoControl.blur();
-}
-
-function showMobileVideoControl() {
-  if (!mobileLayout.matches) return;
-  clearTimeout(mobileControlTimeout);
-  const paused = pinSaveVideoTest.paused;
-  mobileVideoControlIcon.src = `assets/icons/video/${paused ? 'play' : 'pause'}.svg`;
-  mobileVideoControl.setAttribute('aria-label', paused ? 'Продолжить видео' : 'Поставить видео на паузу');
-  mobileVideoControl.classList.add('is-visible');
-  mobileVideoControl.tabIndex = 0;
-  if (!paused) mobileControlTimeout = setTimeout(hideMobileVideoControl, 2000);
-}
-
-function togglePinSaveVideo() {
-  const shouldPlay = pinSaveVideoTest.paused;
-  pinSaveVideoTest.dataset.userPaused = String(!shouldPlay);
-  if (shouldPlay) {
-    pinSaveVideoTest.play().then(() => {
-      showVideoFeedback('play');
-      showMobileVideoControl();
-    }).catch(() => {});
-  } else {
-    pinSaveVideoTest.pause();
-    showVideoFeedback('pause');
-    showMobileVideoControl();
-  }
-}
-
-function updatePinSaveVideoControl() {
-  const paused = pinSaveVideoTest.paused;
-  pinSaveVideoProgress.dataset.state = paused ? 'paused' : 'playing';
-  pinSaveVideoProgressIcon.src = paused ? 'assets/icons/video/play.svg' : 'assets/icons/video/pause.svg';
-  pinSaveVideoProgress.setAttribute('aria-label', paused ? 'Продолжить видео' : 'Поставить видео на паузу');
-}
-
-function updatePinSaveVideoProgress(timestamp = performance.now()) {
-  const duration = pinSaveVideoTest.duration;
-  if (timestamp - lastPinSaveProgressUpdate >= 50 || pinSaveVideoTest.paused) {
-    const progress = Number.isFinite(duration) && duration > 0 ? pinSaveVideoTest.currentTime / duration : 0;
-    pinSaveVideoProgressArc.setAttribute('stroke-dashoffset', String(1 - Math.min(1, Math.max(0, progress))));
-    lastPinSaveProgressUpdate = timestamp;
-  }
-  if (!pinSaveVideoTest.paused) pinSaveProgressFrame = requestAnimationFrame(updatePinSaveVideoProgress);
-}
-
-pinSaveVideoTest.addEventListener('click', () => {
-  if (mobileLayout.matches) {
-    showMobileVideoControl();
-    return;
-  }
-  togglePinSaveVideo();
-});
-
-mobileVideoControl.addEventListener('click', togglePinSaveVideo);
-pinSaveVideoProgress.addEventListener('click', togglePinSaveVideo);
-block.querySelector('.video-replay').addEventListener('click', (event) => {
-  const button = event.currentTarget;
-  button.getAnimations().forEach((animation) => animation.cancel());
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const originalColor = getComputedStyle(button).color;
-  button.animate([
-    { transform:reducedMotion ? 'none' : 'scale(.94)', color:'#1C1C1E' },
-    { transform:'none', color:originalColor }
-  ], { duration:320, easing:'ease-out' });
-  pinSaveVideoTest.currentTime = 0;
-  pinSaveVideoTest.dataset.userPaused = 'false';
-  pinSaveVideoTest.play().catch(() => {});
-  updatePinSaveVideoProgress();
-});
-
-pinSaveVideoTest.addEventListener('play', () => {
-  if (mobileLayout.matches && mobileVideoControl.classList.contains('is-visible')) {
-    showMobileVideoControl();
-  } else {
-    hideMobileVideoControl();
-  }
-  updatePinSaveVideoControl();
-  cancelAnimationFrame(pinSaveProgressFrame);
-  updatePinSaveVideoProgress();
-});
-
-pinSaveVideoTest.addEventListener('pause', () => {
-  if (pinSaveVideoTest.dataset.userPaused === 'true') showMobileVideoControl();
-  else hideMobileVideoControl();
-  cancelAnimationFrame(pinSaveProgressFrame);
-  updatePinSaveVideoControl();
-  updatePinSaveVideoProgress();
-});
-
-pinSaveVideoTest.addEventListener('loadedmetadata', updatePinSaveVideoProgress);
-mobileLayout.addEventListener('change', () => {
-  if (mobileLayout.matches && pinSaveVideoTest.paused && pinSaveVideoTest.dataset.userPaused === 'true') {
-    showMobileVideoControl();
-  } else {
-    hideMobileVideoControl();
-  }
-});
-updatePinSaveVideoControl();
-if (!pinSaveVideoTest.paused) updatePinSaveVideoProgress();
-});
-
-function syncSummarySlotHeight() {
-  if (!mobileLayout.matches) {
-    summarySlot.style.minHeight = '';
-    return;
-  }
-  if (summary.dataset.state === 'expanded') {
-    // offsetHeight measures layout height, unaffected by the morph animation.
-    summarySlot.style.minHeight = `${summary.offsetHeight}px`;
-  }
-}
-
-const summaryResizeObserver = new ResizeObserver(syncSummarySlotHeight);
-summaryResizeObserver.observe(summary);
-
-function applyState(state) {
-  // Preserve the placeholder before the card leaves the document flow.
-  syncSummarySlotHeight();
-
-  // A fixed element inside Luxy's transformed wrapper is fixed to that
-  // wrapper. Move the floating card outside it, then restore it in flow.
-  const target = state === 'expanded' ? summarySlot : document.body;
-  if (summary.parentElement !== target) target.append(summary);
-
-  summary.dataset.state = state;
-  const overlay = state === 'overlay';
-  const compact = state === 'compact';
-  document.body.classList.toggle('summary-overlay-open', overlay);
-  collapseButton.tabIndex = overlay ? 0 : -1;
-  collapseButton.setAttribute('aria-hidden', String(!overlay));
-  widgetButton.tabIndex = compact ? 0 : -1;
-  widgetButton.setAttribute('aria-hidden', String(!compact));
-  if (state === 'expanded') {
-    syncSummarySlotHeight();
-    requestAnimationFrame(syncSummarySlotHeight);
-  }
-}
-
-function setState(state, morph = false) {
-  if (!morph || summary.dataset.state === state || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    applyState(state);
-    return;
-  }
-
-  const first = summary.getBoundingClientRect();
-  summary.getAnimations().forEach((animation) => animation.cancel());
-  applyState(state);
-  const last = summary.getBoundingClientRect();
-
-  const deltaX = first.left - last.left;
-  const deltaY = first.top - last.top;
-  const scaleX = first.width / last.width;
-  const scaleY = first.height / last.height;
-
-  summary.animate([
-    {
-      transformOrigin:'top left',
-      transform:`translate(${deltaX}px, ${deltaY}px) scale(${scaleX}, ${scaleY})`
-    },
-    { transformOrigin:'top left', transform:'none' }
-  ], {
-    duration:720,
-    easing:'cubic-bezier(.16,1,.3,1)'
   });
+
+  // 4. сохраняем состояние
+  localStorage.setItem('activeSlide', index);
 }
 
-function onScroll() {
-  // The slot keeps the original card bounds even while the card is fixed.
-  const trigger = mobileLayout.matches ? summarySlot : cover;
-  // Luxy can still be easing its transformed wrapper after native scrolling
-  // reaches zero, so the cover's viewport bounds may lag behind the scroll.
-  const coverVisible = window.scrollY <= 2 || trigger.getBoundingClientRect().bottom > 0;
+// 5. обработка кликов по табам
+tabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    const index = Number(tab.dataset.slide);
+    goToSlide(index);
+  });
+});
 
-  if (coverVisible) {
-    manualExpanded = false;
-    if (summary.dataset.state !== 'expanded') setState('expanded', true);
-    return;
+// 6. стартовое состояние
+const saved = localStorage.getItem('activeSlide');
+goToSlide(saved ? Number(saved) : 0);
+
+lottie.loadAnimation({
+    container: document.getElementById('pulsing-dot'),
+    renderer: 'svg',
+    loop: true,
+    autoplay: true,
+    path: 'animations/pulsingDot.json'
+});
+
+document.addEventListener('keydown', (e) => {
+  const current = Number(localStorage.getItem('activeSlide') || '0');
+
+  if (e.key === 'ArrowRight') {
+    const next = Math.min(current + 1, slides.length - 1);
+    goToSlide(next);
   }
 
-  if (!manualExpanded && summary.dataset.state === 'expanded') {
-    setState('compact', true);
+  if (e.key === 'ArrowLeft') {
+    const prev = Math.max(current - 1, 0);
+    goToSlide(prev);
   }
+});
+
+// =====================
+// КАРУСЕЛЬ
+// =====================
+
+const track = document.querySelector(".carousel-track");
+const cards = document.querySelectorAll(".carousel-card");
+const dots = document.querySelectorAll(".carousel-dot");
+
+const prevBtn = document.querySelector(".carousel-btn-prev");
+const nextBtn = document.querySelector(".carousel-btn-next");
+
+let currentCard = 0;
+
+function updateCarousel() {
+    track.style.transform = `translateX(-${currentCard * 925}px)`;
+
+    // точки
+    dots.forEach((dot, index) => {
+        dot.classList.toggle("active", index === currentCard);
+    });
+
+    // скрываем стрелку "назад" на первой карточке
+    prevBtn.style.visibility = currentCard === 0 ? "hidden" : "visible";
 }
 
-collapseButton.addEventListener('click', () => {
-  manualExpanded = false;
-  setState('compact', true);
-});
+nextBtn.addEventListener("click", () => {
+    currentCard++;
 
-summaryBackdrop.addEventListener('click', () => {
-  manualExpanded = false;
-  setState('compact', true);
-});
-
-widgetButton.addEventListener('click', () => {
-  manualExpanded = true;
-  setState('overlay', true);
-});
-
-resultTooltipButton.addEventListener('click', (event) => {
-  event.stopPropagation();
-  const open = resultTooltip.dataset.open !== 'true';
-  resultTooltip.dataset.open = String(open);
-  resultTooltipButton.setAttribute('aria-expanded', String(open));
-  if (!open) resultTooltipButton.blur();
-});
-
-document.addEventListener('click', () => {
-  resultTooltip.dataset.open = 'false';
-  resultTooltipButton.setAttribute('aria-expanded', 'false');
-  resultTooltipButton.blur();
-});
-
-document.addEventListener('keydown', (event) => {
-  if (event.key !== 'Escape') return;
-  resultTooltip.dataset.open = 'false';
-  resultTooltipButton.setAttribute('aria-expanded', 'false');
-  resultTooltipButton.blur();
-});
-
-function setupVideoSlider(videoSlider) {
-  const section = videoSlider.closest('.case-section');
-  const videoSlides = [...videoSlider.querySelectorAll('.pin-save-video-test')];
-  const videoSegment = section.querySelector('.video-segment');
-  const videoSegmentButtons = [...videoSegment.querySelectorAll('button')];
-  const videoDescriptions = videoSlides.map((slide) => slide.querySelector('.pin-save-video-test__text'));
-  const videoDescriptionArea = document.createElement('div');
-  videoDescriptionArea.className = 'video-description-area';
-  videoSegment.after(videoDescriptionArea);
-  const mobileVideoCard = document.createElement('div');
-  mobileVideoCard.className = 'mobile-video-card';
-  videoSlider.before(mobileVideoCard);
-  const sharedVideoControls = document.createElement('div');
-  sharedVideoControls.className = 'shared-video-controls';
-  const slideControls = videoSlides.map((slide) => slide.querySelector('.video-controls'));
-  const slideVideos = videoSlides.map((slide) => slide.querySelector('video'));
-  let activeVideoSlide = 0;
-  let previousMobileVideo = null;
-  let descriptionSwipeStart = null;
-
-  function updateVideoSegment() {
-    videoDescriptions.forEach((description, index) => {
-      if (mobileLayout.matches) {
-        if (description.parentElement !== videoDescriptionArea) videoDescriptionArea.append(description);
-      } else if (description.parentElement !== videoSlides[index]) {
-        videoSlides[index].prepend(description);
-      }
-    });
-    if (mobileLayout.matches && videoSlider.clientWidth > 0) {
-      activeVideoSlide = Math.max(0, Math.min(videoSlides.length - 1,
-        Math.round(videoSlider.scrollLeft / videoSlider.clientWidth)));
+    if (currentCard >= cards.length) {
+        currentCard = 0;
     }
-    videoSegmentButtons.forEach((button, index) => {
-      button.setAttribute('aria-pressed', String(index === activeVideoSlide));
-    });
-    videoSlides.forEach((slide, index) => {
-      slide.inert = mobileLayout.matches && index !== activeVideoSlide;
-      videoDescriptions[index].dataset.active = String(index === activeVideoSlide);
-      videoDescriptions[index].inert = mobileLayout.matches && index !== activeVideoSlide;
-      if (mobileLayout.matches) videoDescriptions[index].setAttribute('aria-hidden', String(index !== activeVideoSlide));
-      else videoDescriptions[index].removeAttribute('aria-hidden');
-    });
-    if (mobileLayout.matches) {
-      slideControls.forEach((controls, index) => {
-        if (!controls) return;
-        const target = index === activeVideoSlide ? sharedVideoControls : videoSlides[index];
-        if (controls.parentElement !== target) target.append(controls);
-      });
-      if (previousMobileVideo !== activeVideoSlide) {
-        slideVideos.forEach((video, index) => {
-          if (!video) return;
-          if (index !== activeVideoSlide) video.pause();
-          else if (video.dataset.userPaused !== 'true') video.play().catch(() => {});
-        });
-        previousMobileVideo = activeVideoSlide;
-      }
-    }
-  }
 
-  function syncVideoCardLayout() {
-    if (mobileLayout.matches) {
-      mobileVideoCard.append(videoSlider, sharedVideoControls, videoDescriptionArea, videoSegment);
+    updateCarousel();
+});
+
+prevBtn.addEventListener("click", () => {
+    currentCard--;
+
+    if (currentCard < 0) {
+        currentCard = cards.length - 1;
+    }
+
+    updateCarousel();
+});
+
+// первая отрисовка
+updateCarousel();
+
+// оверлэй пинтерест ресёрч
+const researchTrigger = document.querySelector('.pin-research-trigger');
+const researchOverlay = document.querySelector('#researchOverlay');
+const researchClose = document.querySelector('.research-close');
+
+console.log(researchTrigger);
+
+researchTrigger.addEventListener('click', () => {
+    researchOverlay.classList.add('active');
+});
+
+
+researchClose.addEventListener('click', () => {
+    researchOverlay.classList.remove('active');
+});
+
+
+researchOverlay.addEventListener('click', (e) => {
+    if (e.target === researchOverlay) {
+        researchOverlay.classList.remove('active');
+    }
+});
+
+// =====================
+// ПЛЭЙ И РЕПЛЭЙ ДЛЯ TEST IPHONE
+// =====================
+
+const testBlocks = document.querySelectorAll('.before-1, .after-1, .before-2, .after-2');
+
+testBlocks.forEach((block) => {
+
+  const video = block.querySelector('.test-iphone-video');
+  const toggleButton = block.querySelector('.video-toggle');
+  const toggleIcon = toggleButton.querySelector('img');
+
+  
+  // плэй / пауза
+  toggleButton.addEventListener('click', () => {
+
+    if (video.paused) {
+
+      video.play();
+
+      toggleIcon.src = 'images/pause.svg';
+      toggleIcon.alt = 'Pause';
+
     } else {
-      mobileVideoCard.before(videoSlider, videoSegment, videoDescriptionArea);
-      slideControls.forEach((controls, index) => {
-        if (controls) videoSlides[index].append(controls);
-      });
-      previousMobileVideo = null;
-      slideVideos.forEach((video) => {
-        if (video && video.dataset.userPaused !== 'true') video.play().catch(() => {});
-      });
+
+      video.pause();
+
+      toggleIcon.src = 'images/play.svg';
+      toggleIcon.alt = 'Play';
+
     }
-    updateVideoSegment();
-  }
 
-  function selectVideoSlide(index) {
-    if (!mobileLayout.matches) return;
-    videoSlider.scrollTo({
-      left:index * videoSlider.clientWidth,
-      behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth'
-    });
-  }
-
-  videoSegmentButtons.forEach((button, index) => {
-    button.addEventListener('click', () => selectVideoSlide(index));
-    button.addEventListener('keydown', (event) => {
-      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
-      event.preventDefault();
-      const next = event.key === 'ArrowRight' ? 1 : 0;
-      videoSegmentButtons[next].focus();
-      selectVideoSlide(next);
-    });
   });
-  videoSlider.addEventListener('scroll', updateVideoSegment, { passive:true });
-  videoDescriptionArea.addEventListener('touchstart', (event) => {
-    if (!mobileLayout.matches || event.touches.length !== 1) {
-      descriptionSwipeStart = null;
-      return;
-    }
-    const touch = event.touches[0];
-    descriptionSwipeStart = { x:touch.clientX, y:touch.clientY };
-  }, { passive:true });
-  videoDescriptionArea.addEventListener('touchmove', (event) => {
-    if (!descriptionSwipeStart) return;
-    const touch = event.touches[0];
-    if (event.touches.length !== 1 || Math.abs(touch.clientY - descriptionSwipeStart.y) > 24) {
-      descriptionSwipeStart = null;
-    }
-  }, { passive:true });
-  videoDescriptionArea.addEventListener('touchend', (event) => {
-    const start = descriptionSwipeStart;
-    descriptionSwipeStart = null;
-    if (!start || !mobileLayout.matches) return;
-    const touch = event.changedTouches[0];
-    const dx = touch.clientX - start.x;
-    const dy = touch.clientY - start.y;
-    if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
-    selectVideoSlide(Math.max(0, Math.min(videoSlides.length - 1,
-      activeVideoSlide + (dx < 0 ? 1 : -1))));
-  }, { passive:true });
-  videoDescriptionArea.addEventListener('touchcancel', () => {
-    descriptionSwipeStart = null;
-  }, { passive:true });
-  new ResizeObserver(() => {
-    videoSlider.scrollTo({ left:mobileLayout.matches ? activeVideoSlide * videoSlider.clientWidth : 0, behavior:'instant' });
-    updateVideoSegment();
-  }).observe(videoSlider);
-  mobileLayout.addEventListener('change', syncVideoCardLayout);
-  syncVideoCardLayout();
-}
 
-document.querySelectorAll('.pin-save-videos').forEach(setupVideoSlider);
 
-const caseSectionObserver = new IntersectionObserver(([entry]) => {
-  const section = entry.target.closest('.case-section');
-  if (entry.isIntersecting) {
-    section.classList.add('is-visible');
-    return;
-  }
+  // реплэй
+  const replayButton = block.querySelector('.video-replay');
 
-  // Reset only after returning above the section. When the title leaves
-  // through the top while scrolling down, it remains revealed.
-  if (entry.rootBounds && entry.boundingClientRect.top >= entry.rootBounds.bottom) {
-    section.classList.remove('is-visible');
-  }
-}, { threshold:0.15 });
+  replayButton.addEventListener('click', () => {
 
-caseSectionTitleReveals.forEach((titleReveal) => caseSectionObserver.observe(titleReveal));
+    video.currentTime = 0;
+    video.play();
 
-// Luxy moves the page with a transform, which can make IntersectionObserver
-// unreliable in some desktop browsers. Keep the reveal in sync with the
-// element's actual on-screen position as a fallback.
-let caseTitleRevealFrame = 0;
-function syncCaseTitleReveal() {
-  caseTitleRevealFrame = 0;
-  caseSectionTitleReveals.forEach((titleReveal) => {
-    const section = titleReveal.closest('.case-section');
-    const bounds = titleReveal.getBoundingClientRect();
-    if (bounds.top <= window.innerHeight * .85) {
-      section.classList.add('is-visible');
-    } else if (bounds.top >= window.innerHeight) {
-      section.classList.remove('is-visible');
-    }
+    toggleIcon.src = 'images/pause.svg';
+    toggleIcon.alt = 'Pause';
+
   });
-}
-window.addEventListener('scroll', () => {
-  if (!caseTitleRevealFrame) caseTitleRevealFrame = requestAnimationFrame(syncCaseTitleReveal);
-}, { passive:true });
-window.addEventListener('resize', syncCaseTitleReveal);
-syncCaseTitleReveal();
 
-const caseSectionTitles = [...document.querySelectorAll('.case-section__title')];
-function fitMobileTitles() {
-  caseSectionTitles.forEach((title) => {
-    title.style.removeProperty('--mobile-title-size');
-    if (!mobileLayout.matches) return;
-    const fontSize = parseFloat(getComputedStyle(title).fontSize);
-    const widestLine = Math.max(...[...title.querySelectorAll('span')]
-      .map((line) => line.getBoundingClientRect().width));
-    const availableWidth = title.clientWidth - 2;
-    if (widestLine > availableWidth) {
-      title.style.setProperty('--mobile-title-size', `${fontSize * availableWidth / widestLine}px`);
-    }
-  });
-}
-const caseTitleResizeObserver = new ResizeObserver(fitMobileTitles);
-caseSectionTitleReveals.forEach((titleReveal) => caseTitleResizeObserver.observe(titleReveal));
-document.fonts.ready.then(fitMobileTitles);
-mobileLayout.addEventListener('change', fitMobileTitles);
-fitMobileTitles();
-
-let scrollUpdateFrame = 0;
-window.addEventListener('scroll', () => {
-  if (scrollUpdateFrame) return;
-  scrollUpdateFrame = requestAnimationFrame(() => {
-    scrollUpdateFrame = 0;
-    onScroll();
-  });
-}, { passive:true });
-window.addEventListener('resize', () => {
-  syncSummarySlotHeight();
-  onScroll();
 });
-mobileLayout.addEventListener('change', () => {
-  syncSummarySlotHeight();
-  onScroll();
-});
-applyState('expanded');
-onScroll();

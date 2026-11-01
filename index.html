@@ -1,66 +1,675 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Саша Пронченко — продуктовый дизайнер</title>
-  <meta name="description" content="В поиске своей команды! Тут кейсы и немного обо мне">
-  <meta property="og:type" content="website">
-  <meta property="og:locale" content="ru_RU">
-  <meta property="og:title" content="Пронченко Саша — продуктовый дизайнер">
-  <meta property="og:description" content="В поиске своей команды! Тут кейсы и немного обо мне">
-  <meta property="og:url" content="https://sashawefwe.github.io/portfolio/">
-  <meta property="og:image" content="https://sashawefwe.github.io/portfolio/assets/social/previw.jpg">
-  <meta property="og:image:type" content="image/jpeg">
-  <meta property="og:image:width" content="1600">
-  <meta property="og:image:height" content="900">
-  <meta property="og:image:alt" content="Портфолио Саши Пронченко — продуктового дизайнера">
-  <link rel="canonical" href="https://sashawefwe.github.io/portfolio/">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="home.css">
-  <link rel="stylesheet" href="navigation.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"> 
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&family=Unbounded:wght@200;300;400&display=swap" rel="stylesheet"> 
+    <link rel="stylesheet" href="style.css" /> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script> 
+    <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@800&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
-<body class="home-page">
-  <nav class="site-navigation" aria-label="Основная навигация">
-    <a href="index.html" aria-current="page">
-      <span class="site-navigation__icon site-navigation__icon--portrait"><img src="assets/home/images/portrait.jpg" alt=""></span>
-      <span>Пронченко Саша</span>
-    </a>
-    <div class="site-navigation__cases">
-      <a href="pinterest.html">
-        <span>Pinterest</span>
-      </a>
-      <span class="site-navigation__item" aria-disabled="true">
-        <span>Орбита</span>
-      </span>
-    </div>
-    <div class="site-navigation__utilities">
-      <span class="site-navigation__item" aria-disabled="true">Telegram</span>
-      <span class="site-navigation__item" aria-disabled="true">CV</span>
-    </div>
-  </nav>
-  <header class="home-header" aria-label="Местоположение и статус">
-    <div class="home-header__location">Москва <span aria-hidden="true">·</span> <time class="home-header__time"></time></div>
-    <div class="home-header__status"><span class="home-hero__status-indicator" aria-hidden="true"></span>В поиске</div>
-  </header>
-  <main>
-    <section class="home-hero" aria-label="Знакомство">
-      <div class="home-hero__layout">
-        <div class="home-hero__composition">
-          <figure class="home-hero__portrait">
-            <img src="assets/home/images/portrait.jpg" alt="Саша Пронченко" fetchpriority="high">
-          </figure>
-          <h1 class="home-hero__title">Саша Пронченко</h1>
-          <p class="home-hero__role">Продуктовый дизайнер (ux/ui)</p>
+
+<div id="loader"> 
+    <div id="loader-animation"></div> 
+</div>
+
+<body>
+    <!-- SLIDE-0 - ЗНАКОМСТВО -->
+    <section class="slide active" id="slide-0">
+    
+    <!-- TABBAR -->
+    <nav class="tabbar">
+        <div class="tabs">
+            <button class="tab active" data-slide="0">Знакомство</button>
+            <span class="tab-divider"></span>
+
+            <button class="tab" data-slide="1">Обзор</button>
+            <span class="tab-divider"></span>
+
+            <button class="tab" data-slide="2">Pinterest</button>
+            <span class="tab-divider"></span>
+
+            <button class="tab" data-slide="3">To-do</button>
+            <span class="tab-divider"></span>
+
+            <button class="tab" data-slide="4">Кейс 3</button>
+            <span class="tab-divider"></span>
+
+            <button class="tab" data-slide="5">Обо мне</button>
         </div>
-        <p class="home-hero__aside">Сейчас я в поиске своей команды. Хочу растить продукт, а не просто закрывать таски. Ищу решения, полезные и пользователю, и бизнесу.</p>
-      </div>
+    </nav>
+
+    <div class="slide0-status-badge">
+    <span id="pulsing-dot"></span>
+    <span class="slide0-dark">в поиске</span>
+</div>
+
+<div class="slide0-layout">
+    <div class="slide0-content">
+        <div><span class="slide0-light">Привет! Я</span> <span class="slide0-dark">Пронченко Саша</span></div>
+
+        <div class="slide0-line2">
+            <span class="slide0-dark">продуктовый дизайнер</span>
+            <span class="slide0-light">из Москвы</span>
+        </div>
+
+        <div class="slide0-tagline">
+            <div><span class="slide0-light">Смотрю на продукт</span></div>
+            <div><span class="slide0-dark">глазами бизнеса и пользователя</span></div>
+
+            <img class="slide0-photo2" src="images/case studies.jpg" alt="">
+        </div>
+    </div>
+
+    <img class="slide0-photo" src="images/myphoto.png" alt="">
+</div>
+    
     </section>
-  </main>
-  <script src="home.js"></script>
-  <script src="home-previews.js"></script>
-  <script src="navigation.js"></script>
+
+    <!-- SLIDE-1 - ОБЗОР -->
+    <section class="slide" id="slide-1">
+    
+    <!-- TABBAR -->
+    <nav class="tabbar">
+        <div class="tabs">
+            <button class="tab" data-slide="0">Знакомство</button>
+            <span class="tab-divider"></span>
+
+            <button class="tab active" data-slide="1">Обзор</button>
+            <span class="tab-divider"></span>
+
+            <button class="tab" data-slide="2">Pinterest</button>
+            <span class="tab-divider"></span>
+
+            <button class="tab" data-slide="3">To-do</button>
+            <span class="tab-divider"></span>
+
+            <button class="tab" data-slide="4">Кейс 3</button>
+            <span class="tab-divider"></span>
+
+            <button class="tab" data-slide="5">Обо мне</button>
+        </div>
+    </nav>
+
+    </section>
+
+ 
+    
+<!-- SLIDE-2 - PINTEREST -->
+<section class="slide" id="slide-2">
+
+    <!-- TABBAR -->
+    <nav class="tabbar">
+        <div class="tabs">
+            <button class="tab" data-slide="0">Знакомство</button>
+            <span class="tab-divider"></span>
+
+            <button class="tab" data-slide="1">Обзор</button>
+            <span class="tab-divider"></span>
+
+            <button class="tab active" data-slide="2">Pinterest</button>
+            <span class="tab-divider"></span>
+
+            <button class="tab" data-slide="3">To-do</button>
+            <span class="tab-divider"></span>
+
+            <button class="tab" data-slide="4">Кейс 3</button>
+            <span class="tab-divider"></span>
+
+            <button class="tab" data-slide="5">Обо мне</button>
+        </div>
+    </nav>
+
+    <div class="slide2-text">
+            <h1 class="slide2-heading"> 
+                Навела подрядок в Pinterest<br>
+                <span class="slide3-heading-accent"></span>
+            </h1>
+            <p class="slide2-subheading">Pinterest предлагает сортировать пины в момент сохранения. Я проверила другую гипотезу: сначала сохранить, а разобрать позже. Из этого выросли новая модель сохранения и обновлённое управление коллекциями.</p>
+            <p class="slide2-description">В этом кейсе: сохранение и удаление пинов  · перенос · мультиселект</p>
+        </div>
+
+    <div class="cards-column">
+
+    <img class="Pinterest-cover" src="images/to-do cover.png" alt="Pinterest cover">
+    
+    <!-- =====================
+       КАРУСЕЛЬ
+    ===================== -->
+
+<div class="carousel-wrapper">
+
+<div class="carousel">
+
+    <button class="carousel-btn carousel-btn-prev">
+        <img src="images/back.svg" alt="Назад">
+    </button>
+
+    <div class="carousel-track">
+
+        <!-- Карточка 1 -->
+        <div class="carousel-card">
+
+            <div class="pin-card-introductory">
+
+                <div class="pin-card-title">
+                    Вводные (контекст+боль)
+                </div>
+
+                <p class="pin-card-text">
+                    Pinterest годами игнорирует базовую гигиену управления контентом:
+                </p>
+                <ul class="pin-card-list">
+                  <li>Удалить пин — квест</li>
+                  <li>Мультиселект есть, но догадаться как войти — сложно</li>
+                  <li>Путь до переноса пинов такой длинный, что проще забить</li>    
+                </ul>
+
+                <p class="pin-card-text pin-card-research">
+                   <span class="pin-research-trigger">
+                       <img src="images/page-icon.svg" alt="">
+                       <span class="pin-research-word">Открытый ресёрч</span>
+                    </span> 
+                        подтвердил — это массовые запросы с 2012 года
+                </p>
+
+            </div>
+
+        </div>
+
+            <!-- Карточка 2 -->
+<div class="carousel-card">
+
+    <div class="pin-card-mission">
+
+        <div class="pin-card-title">
+            Миссия
+        </div>
+
+        <p class="pin-card-text">
+            Превратить Pinterest из «кладбища сохранений» в живой рабочий инструмент. Пользователь должен вдохновляться, а не заниматься «раскопками» нужных кнопок.
+        </p>
+
+    </div>
+
+</div>
+
+            <!-- Карточка 3 -->
+<div class="carousel-card">
+
+    <div class="pin-card-goal">
+
+        <div class="pin-card-title">
+            Цель
+        </div>
+
+        <p class="pin-card-text">
+            Убрать трение в сценариях управления — чтобы пользователь возвращался к доскам, а не избегал их.
+        </p>
+
+    </div>
+
+</div>
+
+            <!-- Карточка 4 -->
+<div class="carousel-card">
+
+    <div class="pin-card-audience">
+
+        <div class="pin-card-title">
+            Аудитория
+        </div>
+
+        <p class="pin-card-text">
+            Активные кураторы с библиотекой 800–1000 пинов. Для них неудобное управление — не мелочь, а реальный барьер.
+        </p>
+
+    </div>
+
+</div>
+
+            <!-- Карточка 5 -->
+<div class="carousel-card">
+
+    <div class="pin-card-success">
+
+        <div class="pin-card-title">
+            Критерии успеха
+        </div>
+
+        <p class="pin-card-text">
+            Снижение времени поиска: 
+пользователь находит удаление/перенос мгновенно.
+Adoption rate: рост использования мультиселекта.
+Чистота сценария: снижение паттерна «удалить + пересохранить».
+        </p>
+
+    </div>
+
+</div>
+
+        </div>
+
+        <button class="carousel-btn carousel-btn-next">
+            <img src="images/next.svg" alt="Вперед">
+        </button>
+
+    </div>
+
+    <div class="carousel-dots">
+        <span class="carousel-dot active"></span>
+        <span class="carousel-dot"></span>
+        <span class="carousel-dot"></span>
+        <span class="carousel-dot"></span>
+        <span class="carousel-dot"></span>
+    </div>
+</div>
+
+<!-- заголовок до/после 1 -->
+<div class="test-title-card">
+
+    <h2>
+        Первым делом я пересмотрела сценарий сохранения пина из общей ленты
+    </h2>
+
+</div>
+
+<!-- =====================================
+    ДО/ПОСЛЕ СОХРАНЕНИЕ ИЗ ОБЩЕЙ ЛЕНТЫ
+====================================== -->
+
+<div class="before-after-1-card">
+    
+    <!-- ДО -->
+    <div class="before-1">
+
+        <div class="before-after-1-text">
+
+            <div class="test-label">До</div>
+
+            <div class="test-description">
+                Чтобы не потерять интересный пин, приходится отвлекаться от поиска и решать, куда его сохранить. Хотя этот выбор можно было бы отложить
+            </div>
+
+            <div class="test-controls">
+
+                <button class="video-toggle">
+                    <img src="images/pause.svg" alt="Pause">
+                </button>
+
+                <button class="video-replay">
+                    <img src="images/replay.svg" alt="Replay">
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="test-iphone-wrapper">
+
+            <img class="test-iphone-shadow" src="images/Shadow Frame.png">
+
+            <div class="test-iphone">
+
+                <div class="test-iphone-mask">
+                    <video class="test-iphone-video" autoplay muted loop playsinline>
+                        <source src="video/before-p1.webm" type="video/webm">
+                    </video>
+                </div>
+
+                <img class="test-iphone-frame" src="images/Device Frame.png" alt="iPhone frame">
+
+            </div>
+
+        </div>
+
+    </div>
+    
+    <!-- ПОСЛЕ -->
+    <div class="after-1">
+
+        <div class="before-after-1-text">
+
+            <div class="test-label">После</div>
+
+            <div class="test-description">
+                Теперь пин можно сохранить одним нажатием, даже не открывая его. Находка не потеряется, а поиск не прерывается
+            </div>
+
+            <div class="test-controls">
+
+                <button class="video-toggle">
+                    <img src="images/pause.svg" alt="Pause">
+                </button>
+
+                <button class="video-replay">
+                    <img src="images/replay.svg" alt="Replay">
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="test-iphone-wrapper">
+
+            <img class="test-iphone-shadow" src="images/Shadow Frame.png">
+
+            <div class="test-iphone">
+
+                <div class="test-iphone-mask">
+                    <video class="test-iphone-video" autoplay muted loop playsinline>
+                        <source src="video/after-p1.webm" type="video/webm">
+                    </video>
+                </div>
+
+                <img class="test-iphone-frame" src="images/Device Frame.png" alt="iPhone frame">
+
+            </div>
+
+        </div>
+
+    </div> 
+</div>
+
+<!-- заголовок до/после 2 -->
+<div class="test-title-wrapper">
+
+    <div class="test-title-card">
+        <h2>Следом пересобрала сценарий удаления пина</h2>
+    </div>
+
+</div>
+
+
+<!-- =====================================
+    ДО/ПОСЛЕ УДАЛЕНИЯ ПИНА С ДОСКИ
+====================================== -->
+
+<div class="before-after-1-card">
+    
+    <!-- ДО -->
+    <div class="before-1">
+
+        <div class="before-after-1-text">
+
+            <div class="test-label">До</div>
+
+            <div class="test-description">
+                Удаление спрятано внутри «Редактирования». Во время проверки три участника находили нужное действие только с 3–5 попытки
+            </div>
+
+            <div class="test-controls">
+
+                <button class="video-toggle">
+                    <img src="images/pause.svg" alt="Pause">
+                </button>
+
+                <button class="video-replay">
+                    <img src="images/replay.svg" alt="Replay">
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="test-iphone-wrapper">
+
+            <img class="test-iphone-shadow" src="images/Shadow Frame.png">
+
+            <div class="test-iphone">
+
+                <div class="test-iphone-mask">
+                    <video class="test-iphone-video" autoplay muted loop playsinline>
+                        <source src="video/after-p2.webm" type="video/webm">
+                    </video>
+                </div>
+
+                <img class="test-iphone-frame" src="images/Device Frame.png" alt="iPhone frame">
+
+            </div>
+
+        </div>
+
+    </div>
+    
+    <!-- ПОСЛЕ -->
+    <div class="after-1">
+
+        <div class="before-after-1-text">
+
+            <div class="test-label">После</div>
+
+            <div class="test-description">
+               Теперь удалить пин можно через ту же закладку, с помощью которой он был сохранён. Действие стало очевидным и не требует поиска
+            </div>
+
+            <div class="test-controls">
+
+                <button class="video-toggle">
+                    <img src="images/pause.svg" alt="Pause">
+                </button>
+
+                <button class="video-replay">
+                    <img src="images/replay.svg" alt="Replay">
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="test-iphone-wrapper">
+
+            <img class="test-iphone-shadow" src="images/Shadow Frame.png">
+
+            <div class="test-iphone">
+
+                <div class="test-iphone-mask">
+                    <video class="test-iphone-video" autoplay muted loop playsinline>
+                        <source src="video/before-p2.webm" type="video/webm">
+                    </video>
+                </div>
+
+                <img class="test-iphone-frame" src="images/Device Frame.png" alt="iPhone frame">
+
+            </div>
+
+        </div>
+
+    </div> 
+</div>
+
+
+
+</section> 
+
+    <!-- SLIDE-3 - TO-DO -->
+    <section class="slide" id="slide-3">
+    
+    <!-- TABBAR -->
+    <nav class="tabbar">
+        <div class="tabs">
+            <button class="tab" data-slide="0">Знакомство</button>
+            <span class="tab-divider"></span>
+
+            <button class="tab" data-slide="1">Обзор</button>
+            <span class="tab-divider"></span>
+
+            <button class="tab" data-slide="2">Pinterest</button>
+            <span class="tab-divider"></span>
+
+            <button class="tab active" data-slide="3">To-do</button>
+            <span class="tab-divider"></span>
+
+            <button class="tab" data-slide="4">Кейс 3</button>
+            <span class="tab-divider"></span>
+
+            <button class="tab" data-slide="5">Обо мне</button>
+        </div>
+    </nav>
+
+    <div class="slide3-text">
+            <h1 class="slide3-heading"> 
+                To-do планнер<br>
+                <span class="slide3-heading-accent">с дневным лимитом дел</span>
+            </h1>
+            <p class="slide3-subheading">Приложение помогает сфоримровать привычку планировать меньше, фокусироваться на главном и действительно завершать дела</p>
+            <p class="slide3-description">В кейсе — сценарий планирования дня с гибким лимитом дел, приоритизацией и прогрессом выполнения</p>
+        </div>
+
+    <div class="cards-column">
+
+    <img class="todo-cover" src="images/to-do cover.png" alt="To-do cover">
+
+    <div class="todo-card-problem">
+        <div class="todo-card-title">Проблема</div>
+        <p class="todo-card-text">
+            Пользователи планируют дела на ходу — и список на день превращается в перегруженную простыню.
+        </p>
+    </div>
+
+    <div class="todo-card-pain">
+        <div class="todo-card-title">Боль</div>
+        <p class="todo-card-text">
+            Сложно сфокусироваться и доводить задачи до конца — непонятно, за что хвататься.
+        </p>
+    </div>
+
+    <div class="todo-card-solution">
+        <div class="todo-card-title">Решение</div>
+        <p class="todo-card-text">
+            Спроектировать сценарий планирования дня, который помогает не перегружать список и держать фокус на важном.
+        </p>
+    </div>
+
+    <img class="todo-img-solution" src="images/Solution.png" alt="solution image">
+
+    <img class="todo-an-extra-feature" src="images/an_extra_feature.png" alt="solution2 image">
+
+    <div class="todo-card-result">
+    <div class="todo-card-title">Результат</div>
+
+    <div class="todo-card-text">
+        <p>Вот что я измеряла бы:</p>
+
+        <ol class="todo-card-list">
+            <li>
+                <strong>Среднее число задач на день</strong> — ожидала бы снижение.
+                Показывает, что лимит работает.
+            </li>
+
+            <li>
+                <strong>Процент выполненных задач (completion rate)</strong> — ожидала бы рост.
+                Показывает, что пользователь берёт реалистичный объём.
+            </li>
+
+            <li>
+                <strong>Retention</strong> — возвращается ли пользователь на следующий день.
+                Показывает, что привычка планирования формируется.
+            </li>
+        </ol>
+    </div>
+</div>
+
+</div>
+
+    </section>
+
+
+    <!-- SLIDE-4 - Кейс 3 -->
+    <section class="slide" id="slide-4">
+    
+    <!-- TABBAR -->
+    <nav class="tabbar">
+        <div class="tabs">
+            <button class="tab" data-slide="0">Знакомство</button>
+            <span class="tab-divider"></span>
+
+            <button class="tab" data-slide="1">Обзор</button>
+            <span class="tab-divider"></span>
+
+            <button class="tab" data-slide="2">Pinterest</button>
+            <span class="tab-divider"></span>
+
+            <button class="tab" data-slide="3">To-do</button>
+            <span class="tab-divider"></span>
+
+            <button class="tab active" data-slide="4">Кейс 3</button>
+            <span class="tab-divider"></span>
+
+            <button class="tab" data-slide="5">Обо мне</button>
+        </div>
+    </nav>
+
+    <div class="slide2-text">
+            <h1 class="slide2-heading"> 
+                Как я пересобрала подключение новых клиентов к сервису, чтобы администратор справился с ростом компании
+                <span class="slide3-heading-accent"></span>
+            </h1>
+            <p class="slide2-subheading">Компания, в которой я работала администратором, планировала масштабироваться, но я заметила, что текущий процесс подключения новых партнеров может не выдержать рост нагрузки. Так как я сама ежедневно проходила этот путь, я исследовала весь сценарий подключения, нашла его самые проблемные места и пересобрала ключевые этапы процесса, чтобы администратор мог быстрее и проще подключать новых партнеров даже при увеличении потока</p>
+            <p class="slide2-description"></p>
+        </div>
+
+    <div class="cards-column">
+
+    <img class="Pinterest-cover" src="images/to-do cover.png" alt="Pinterest cover">
+
+    </section>
+
+
+    <!-- SLIDE-5 - ОБО МНЕ -->
+    <section class="slide" id="slide-5">
+    
+    <!-- TABBAR -->
+    <nav class="tabbar">
+        <div class="tabs">
+            <button class="tab" data-slide="0">Знакомство</button>
+            <span class="tab-divider"></span>
+
+            <button class="tab" data-slide="1">Обзор</button>
+            <span class="tab-divider"></span>
+
+            <button class="tab" data-slide="2">Pinterest</button>
+            <span class="tab-divider"></span>
+
+            <button class="tab" data-slide="3">To-do</button>
+            <span class="tab-divider"></span>
+
+            <button class="tab" data-slide="4">Кейс 3</button>
+            <span class="tab-divider"></span>
+
+            <button class="tab active" data-slide="5">Обо мне</button>
+        </div>
+    </nav>
+
+    </section>
+
+<div class="research-overlay" id="researchOverlay">
+    <div class="research-modal">
+        <button class="research-close" aria-label="Закрыть">×</button>
+
+        <h2>Открытый ресёрч</h2>
+        <p>
+            Инструменты: ChatGPT, Google Gemini, Perplexity AI
+Источники: Reddit (r/Pinterest), App Store (iOS), Pinterest Business Community, Twitter/X, тематические блоги
+Подтверждённые боли:
+Проблема 1 — удаление пина: боль существует с 2012 года и не изменилась. Удаление спрятано внутри «Изменить пин». Пользователи с большими коллекциями (50–500+ пинов) страдают сильнее всего.
+Проблема 2 — перенос пина: жалобы делятся на два типа — функции нет совсем, либо она есть но не работает / пропала после обновления. Единственный рабочий способ — «пересохранить и удалить», что пользователи воспринимают как абсурд.
+Дополнительный инсайт: люди перестают открывать старые доски, потому что чистить их слишком трудозатратно — «кураторская усталость». Это влияет на ценность Pinterest как инструмента.
+Фокус: мобильное приложение.
+        </p>
+    </div>
+</div>
+
+<script src="script.js"></script>
+
 </body>
 </html>
