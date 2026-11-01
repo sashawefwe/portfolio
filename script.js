@@ -56,6 +56,66 @@ if (processMap) {
   mobileLayout.addEventListener('change', resizeDesktopMap);
 }
 
+const briefDeck = document.querySelector('.project-brief__deck');
+if (briefDeck) {
+  const briefGrid = briefDeck.querySelector('.project-brief__grid');
+  const briefCards = [...briefGrid.querySelectorAll('.project-brief__card')];
+  const briefMobile = window.matchMedia('(max-width:640px)');
+  let briefSwiper;
+
+  function clearBriefTextPosition() {
+    briefCards.forEach((card) => {
+      card.classList.remove('is-text-crisp');
+      card.style.left = '';
+    });
+  }
+
+  function settleBriefText(swiper) {
+    if (swiper.destroyed || swiper.animating) return;
+    clearBriefTextPosition();
+    const activeCard = swiper.slides[swiper.activeIndex];
+    if (!activeCard) return;
+    activeCard.style.left = `${-Math.round(activeCard.swiperSlideOffset || 0)}px`;
+    activeCard.classList.add('is-text-crisp');
+  }
+
+  function syncBriefLayout() {
+    if (briefMobile.matches) {
+      if (briefSwiper || !window.Swiper) return;
+      briefDeck.classList.add('swiper');
+      briefGrid.classList.add('swiper-wrapper');
+      briefCards.forEach((card) => card.classList.add('swiper-slide'));
+      briefSwiper = new Swiper(briefDeck, {
+        effect: 'cards',
+        grabCursor: true,
+        roundLengths: true,
+        cardsEffect: { rotate: true, perSlideRotate: 1, perSlideOffset: 3, slideShadows: false },
+        on: {
+          init: settleBriefText,
+          touchStart: clearBriefTextPosition,
+          slideChangeTransitionStart: clearBriefTextPosition,
+          transitionEnd: settleBriefText,
+          touchEnd(swiper) {
+            window.setTimeout(() => settleBriefText(swiper), swiper.params.speed + 30);
+          },
+          resize: settleBriefText
+        }
+      });
+      return;
+    }
+    if (!briefSwiper) return;
+    briefSwiper.destroy(true, true);
+    briefSwiper = null;
+    clearBriefTextPosition();
+    briefDeck.classList.remove('swiper', 'swiper-cards', 'swiper-initialized');
+    briefGrid.classList.remove('swiper-wrapper');
+    briefCards.forEach((card) => card.classList.remove('swiper-slide', 'swiper-slide-active', 'swiper-slide-next', 'swiper-slide-prev'));
+  }
+
+  briefMobile.addEventListener('change', syncBriefLayout);
+  syncBriefLayout();
+}
+
 const desktopSmoothScroll = window.matchMedia('(min-width:901px)');
 const reducedScrollMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 if (desktopSmoothScroll.matches && !reducedScrollMotion.matches && window.luxy) {
@@ -237,8 +297,7 @@ function applyState(state) {
 
   // A fixed element inside Luxy's transformed wrapper is fixed to that
   // wrapper. Move the floating card outside it, then restore it in flow.
-  const target = state === 'expanded' ? summarySlot :
-    (!mobileLayout.matches ? document.body : summary.parentElement);
+  const target = state === 'expanded' ? summarySlot : document.body;
   if (summary.parentElement !== target) target.append(summary);
 
   summary.dataset.state = state;

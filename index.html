@@ -18,14 +18,14 @@
   <link rel="canonical" href="https://sashawefwe.github.io/portfolio/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&family=Onest:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="home.css">
   <link rel="stylesheet" href="navigation.css">
 </head>
-<body>
+<body class="home-page">
   <nav class="site-navigation" aria-label="Основная навигация">
     <a href="index.html" aria-current="page">
-      <span class="site-navigation__icon site-navigation__icon--portrait"><img src="assets/home/images/portrait.png" alt=""></span>
+      <span class="site-navigation__icon site-navigation__icon--portrait"><img src="assets/home/images/portrait.jpg" alt=""></span>
       <span>Пронченко Саша</span>
     </a>
     <div class="site-navigation__cases">
@@ -41,23 +41,24 @@
       <span class="site-navigation__item" aria-disabled="true">CV</span>
     </div>
   </nav>
+  <header class="home-header" aria-label="Местоположение и статус">
+    <div class="home-header__location">Москва <span aria-hidden="true">·</span> <time class="home-header__time"></time></div>
+    <div class="home-header__status"><span class="home-hero__status-indicator" aria-hidden="true"></span>В поиске</div>
+  </header>
   <main>
     <section class="home-hero" aria-label="Знакомство">
-      <h1 class="home-hero__title">
-        <span class="home-hero__line">Привет, я Саша Пронченко — продуктовый дизайнер.</span>
-        <span class="home-hero__line">Сейчас я в поиске своей команды, с которой смогу</span>
-        <span class="home-hero__line">растить продукт, а не просто закрывать таски.</span>
-        <span class="home-hero__line">Тут мои кейсы и немного обо мне, приятного просмотра!<img class="home-hero__inline-image" src="assets/home/images/angry%20cat.jpeg" alt=""></span>
-      </h1>
-      <div class="home-hero__composition">
-        <div class="home-hero__intro" aria-hidden="true"></div>
-        <figure class="home-hero__portrait">
-          <img src="assets/home/images/portrait.png" alt="Саша Пронченко" fetchpriority="high">
-        </figure>
+      <div class="home-hero__layout">
+        <div class="home-hero__composition">
+          <figure class="home-hero__portrait">
+            <img src="assets/home/images/portrait.jpg" alt="Саша Пронченко" fetchpriority="high">
+          </figure>
+          <h1 class="home-hero__title">Саша Пронченко</h1>
+          <p class="home-hero__role">Продуктовый дизайнер (ux/ui)</p>
+        </div>
+        <p class="home-hero__aside">Сейчас я в поиске своей команды. Хочу растить продукт, а не просто закрывать таски. Ищу решения, полезные и пользователю, и бизнесу.</p>
       </div>
     </section>
   </main>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js" defer></script>
   <script src="home.js"></script>
   <script src="home-previews.js"></script>
   <script src="navigation.js"></script>

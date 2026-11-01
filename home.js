@@ -1,20 +1,26 @@
-const statusDot = document.querySelector('.home-hero__status-dot');
-const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-document.addEventListener('DOMContentLoaded', () => {
-  if (!window.lottie) return;
-  const dotAnimation = window.lottie.loadAnimation({
-    container: statusDot,
-    renderer: 'svg',
-    loop: true,
-    autoplay: !reducedMotion.matches,
-    path: 'assets/home/animations/pulsing-dot.json'
+const moscowTime = document.querySelector('.home-header__time');
+
+if (moscowTime) {
+  const formatTime = new Intl.DateTimeFormat('ru-RU', {
+    timeZone: 'Europe/Moscow',
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23'
   });
-  dotAnimation.addEventListener('DOMLoaded', () => {
-    statusDot.classList.add('is-loaded');
-    if (reducedMotion.matches) dotAnimation.goToAndStop(0, true);
+
+  function updateMoscowTime() {
+    const now = new Date();
+    moscowTime.textContent = formatTime.format(now);
+    moscowTime.dateTime = moscowTime.textContent;
+  }
+
+  function scheduleNextMinute() {
+    updateMoscowTime();
+    window.setTimeout(scheduleNextMinute, 60000 - Date.now() % 60000 + 50);
+  }
+
+  scheduleNextMinute();
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) updateMoscowTime();
   });
-  reducedMotion.addEventListener('change', () => {
-    if (reducedMotion.matches) dotAnimation.goToAndStop(0, true);
-    else dotAnimation.play();
-  });
-});
+}

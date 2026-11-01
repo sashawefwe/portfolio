@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Summary — UX/UI кейс</title>
   <meta name="description" content="Интерактивный summary-компонент UX/UI кейса">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="navigation.css">
 </head>
@@ -12,7 +13,7 @@
   <div id="luxy">
   <nav class="site-navigation" aria-label="Основная навигация">
     <a href="index.html">
-      <span class="site-navigation__icon site-navigation__icon--portrait"><img src="assets/home/images/portrait.png" alt=""></span>
+      <span class="site-navigation__icon site-navigation__icon--portrait"><img src="assets/home/images/portrait.jpg" alt=""></span>
       <span>Пронченко Саша</span>
     </a>
     <div class="site-navigation__cases">
@@ -203,6 +204,40 @@
         <p class="case-section__eyebrow">#3 Перенос пинов через мультиселект</p>
         <h2 class="case-section__title" id="moving-pins-title"><span>Когда нужно быстро навести порядок в коллекции</span></h2>
       </div>
+      <div class="pin-save-videos">
+        <div class="pin-save-video-test pin-save-video-test--before">
+          <div class="pin-save-comparison__text pin-save-video-test__text">
+            <h3>До</h3>
+            <p>Вход в мультиселект спрятан за неочевидной иконкой, поэтому сам сценарий переноса нескольких пинов сложно обнаружить.</p>
+          </div>
+          <div class="pin-save-video-test__media pin-save-video-test__media--empty" aria-hidden="true"></div>
+        </div>
+        <div class="pin-save-video-test pin-save-video-test--after">
+          <div class="pin-save-comparison__text pin-save-video-test__text">
+            <h3>После</h3>
+            <p>Теперь вход в мультиселект в привычном меню «Ещё». Панель управления я адаптировала для переноса нескольких пинов на одну доску.</p>
+          </div>
+          <div class="pin-save-video-test__media">
+            <video muted loop playsinline preload="metadata">
+              <source src="assets/cases/pinterest/videos/12.webm" type="video/webm">
+            </video>
+          </div>
+          <div class="video-controls">
+            <button class="video-progress" type="button" aria-label="Поставить видео на паузу" data-state="playing">
+              <svg class="video-progress__ring" width="44" height="44" viewBox="0 0 44 44" fill="none" aria-hidden="true">
+                <circle cx="22" cy="22" r="21" stroke="#DDDDDD" stroke-width="2"/>
+                <circle class="video-progress__arc" cx="22" cy="22" r="21" stroke="#969696" stroke-width="2" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" transform="rotate(-90 22 22)"/>
+              </svg>
+              <img class="video-progress__icon" src="assets/icons/video/pause.svg" width="20" height="20" alt="" aria-hidden="true">
+            </button>
+            <button class="video-replay" type="button" aria-label="Воспроизвести видео заново">Replay</button>
+          </div>
+        </div>
+      </div>
+      <div class="video-segment" role="group" aria-label="Сравнение до и после">
+        <button type="button" data-slide="0" aria-pressed="true">До</button>
+        <button type="button" data-slide="1" aria-pressed="false">После</button>
+      </div>
     </section>
     <section class="case-section" aria-labelledby="result-title">
       <div class="case-section__title-reveal">
@@ -251,7 +286,8 @@
         <p class="case-section__eyebrow">Как работала над проектом</p>
         <h2 class="case-section__title" id="project-brief-title"><span>Постановка задачи</span></h2>
       </div>
-      <div class="project-brief__grid">
+      <div class="project-brief__deck">
+      <div class="project-brief__grid" aria-label="Постановка задачи: пять карточек">
         <article class="project-brief__card project-brief__card--context">
           <div>
             <h3>Контекст и боль</h3>
@@ -295,6 +331,7 @@
           </div>
         </article>
       </div>
+      </div>
     </section>
     <section class="case-section" aria-labelledby="process-map-title">
       <div class="case-section__title-reveal">
@@ -317,14 +354,14 @@
           <div class="process-map__card"></div><div class="process-map__card"></div><div class="process-map__card"></div>
           <div class="process-map__card"></div><div class="process-map__card"></div><div class="process-map__card"></div><div class="process-map__card"></div>
           <div class="process-map__card process-map__card--filled"><div class="process-map__label"><span class="process-map__icons"><img class="process-map__document" src="assets/cases/pinterest/images/process-map/document.png" alt=""><img class="process-map__brand" src="assets/cases/pinterest/images/process-map/figma.png" alt=""></span><span>Аудит as-is</span></div><div class="process-map__content"><img src="assets/cases/pinterest/images/process-map/content/audit-as-is.jpg" alt="Иллюстрация аудита as-is"></div></div>
-          <div class="process-map__card process-map__card--filled"><div class="process-map__label"><span class="process-map__icons"><img class="process-map__document" src="assets/cases/pinterest/images/process-map/document.png" alt=""></span><span>Первые JTBD</span></div><div class="process-map__content"><img src="assets/cases/pinterest/images/process-map/content/first-jtbd.jpg" alt="Иллюстрация первых JTBD"></div></div>
-          <div class="process-map__card process-map__card--filled"><div class="process-map__label"><span class="process-map__icons"><img class="process-map__document" src="assets/cases/pinterest/images/process-map/document.png" alt=""><img class="process-map__brand" src="assets/cases/pinterest/images/process-map/figma.png" alt=""></span><span>lo-fi и гипотезы</span></div><div class="process-map__content"><img src="assets/cases/pinterest/images/process-map/content/lo-fi-hypotheses.jpg" alt="Иллюстрация lo-fi и гипотез"></div></div>
-          <div class="process-map__card process-map__card--filled"><div class="process-map__label"><span class="process-map__icons"><img class="process-map__document" src="assets/cases/pinterest/images/process-map/document.png" alt=""><img class="process-map__brand" src="assets/cases/pinterest/images/process-map/notion.png" alt=""></span><span>Интервью x3</span></div><div class="process-map__content"><img src="assets/cases/pinterest/images/process-map/content/interviews.jpg" alt="Иллюстрация интервью"></div></div>
-          <div class="process-map__card process-map__card--filled"><div class="process-map__label"><span class="process-map__icons"><img class="process-map__document" src="assets/cases/pinterest/images/process-map/document.png" alt=""><img class="process-map__brand" src="assets/cases/pinterest/images/process-map/notion.png" alt=""></span><span>CJM</span></div><div class="process-map__content"><img src="assets/cases/pinterest/images/process-map/content/cjm.jpg" alt="Иллюстрация CJM"></div></div>
+          <div class="process-map__card process-map__card--filled"><div class="process-map__label"><span class="process-map__icons"><img class="process-map__document" src="assets/cases/pinterest/images/process-map/document.png" alt=""></span><span>Первые JTBD</span></div><div class="process-map__content"><img src="assets/cases/pinterest/images/process-map/content/first-jtbd.png" alt="Иллюстрация первых JTBD"></div></div>
+          <div class="process-map__card process-map__card--filled"><div class="process-map__label"><span class="process-map__icons"><img class="process-map__document" src="assets/cases/pinterest/images/process-map/document.png" alt=""><img class="process-map__brand" src="assets/cases/pinterest/images/process-map/figma.png" alt=""></span><span>lo-fi и гипотезы</span></div><div class="process-map__content"><img src="assets/cases/pinterest/images/process-map/content/lo-fi-hypotheses.png" alt="Иллюстрация lo-fi и гипотез"></div></div>
+          <div class="process-map__card process-map__card--filled"><div class="process-map__label"><span class="process-map__icons"><img class="process-map__document" src="assets/cases/pinterest/images/process-map/document.png" alt=""><img class="process-map__brand" src="assets/cases/pinterest/images/process-map/notion.png" alt=""></span><span>Интервью x3</span></div><div class="process-map__content"><img src="assets/cases/pinterest/images/process-map/content/interviews.png" alt="Иллюстрация интервью"></div></div>
+          <div class="process-map__card process-map__card--filled"><div class="process-map__label"><span class="process-map__icons"><img class="process-map__document" src="assets/cases/pinterest/images/process-map/document.png" alt=""><img class="process-map__brand" src="assets/cases/pinterest/images/process-map/notion.png" alt=""></span><span>CJM</span></div><div class="process-map__content"><img src="assets/cases/pinterest/images/process-map/content/cjm.png" alt="Иллюстрация CJM"></div></div>
           <div class="process-map__card"></div><div class="process-map__card"></div><div class="process-map__card"></div>
-          <div class="process-map__card process-map__card--filled"><div class="process-map__label"><span class="process-map__icons"><img class="process-map__document" src="assets/cases/pinterest/images/process-map/document.png" alt=""><img class="process-map__brand" src="assets/cases/pinterest/images/process-map/notion.png" alt=""></span><span>Анализ конкурентов</span></div><div class="process-map__content"><img src="assets/cases/pinterest/images/process-map/content/competitor-analysis.jpg" alt="Иллюстрация анализа конкурентов"></div></div>
+          <div class="process-map__card process-map__card--filled"><div class="process-map__label"><span class="process-map__icons"><img class="process-map__document" src="assets/cases/pinterest/images/process-map/document.png" alt=""><img class="process-map__brand" src="assets/cases/pinterest/images/process-map/notion.png" alt=""></span><span>Анализ конкурентов</span></div><div class="process-map__content"><img src="assets/cases/pinterest/images/process-map/content/competitor-analysis.png" alt="Иллюстрация анализа конкурентов"></div></div>
           <div class="process-map__card"></div><div class="process-map__card"></div><div class="process-map__card"></div>
-          <div class="process-map__card process-map__card--filled"><div class="process-map__label"><span class="process-map__icons"><img class="process-map__document" src="assets/cases/pinterest/images/process-map/document.png" alt=""></span><span>Персона</span></div><div class="process-map__content"><img src="assets/cases/pinterest/images/process-map/content/persona.jpg" alt="Иллюстрация персоны"></div></div>
+          <div class="process-map__card process-map__card--filled"><div class="process-map__label"><span class="process-map__icons"><img class="process-map__document" src="assets/cases/pinterest/images/process-map/document.png" alt=""></span><span>Персона</span></div><div class="process-map__content"><img src="assets/cases/pinterest/images/process-map/content/persona.png" alt="Иллюстрация персоны"></div></div>
           <div class="process-map__card"></div><div class="process-map__card"></div><div class="process-map__card"></div>
           <div class="process-map__card"></div><div class="process-map__card"></div><div class="process-map__card"></div><div class="process-map__card"></div>
           <div class="process-map__card process-map__card--filled"><div class="process-map__label"><span class="process-map__icons"><img class="process-map__document" src="assets/cases/pinterest/images/process-map/document.png" alt=""></span><span>Уточнение гипотез</span></div><div class="process-map__content"><img src="assets/cases/pinterest/images/process-map/content/refined-hypotheses.jpg" alt="Иллюстрация уточнения гипотез"></div></div>
@@ -340,12 +377,14 @@
           <img src="assets/cases/pinterest/images/screens/profile.jpg" alt="Экран Profile" loading="lazy">
           <img src="assets/cases/pinterest/images/screens/board.jpg" alt="Экран Board" loading="lazy">
         </div>
+        <p class="process-map__thanks">Спасибо, что досмотрели до конца</p>
       </div>
     </section>
   </main>
   </div>
   <div class="summary-backdrop" aria-hidden="true"></div>
   <script src="https://min30327.github.io/luxy.js/dist/js/luxy.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
   <script src="script.js"></script>
   <script src="navigation.js"></script>
 </body>
