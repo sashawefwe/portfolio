@@ -145,6 +145,31 @@ function initSwipeStack(briefDeck, briefGrid, briefCards) {
 
 const briefDeck = document.querySelector('.project-brief__deck');
 if (briefDeck) initSwipeStack(briefDeck, briefDeck.querySelector('.project-brief__grid'), [...briefDeck.querySelectorAll('.project-brief__card')]);
+if (briefDeck) {
+  const expandableCards = [...briefDeck.querySelectorAll('.project-brief__card--mission,.project-brief__card--goal,.project-brief__card--audience')];
+  expandableCards.forEach((card) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'project-brief__expand';
+    button.setAttribute('aria-label', `Развернуть: ${card.querySelector('h3').textContent}`);
+    button.setAttribute('aria-expanded', 'false');
+    button.addEventListener('click', () => {
+      const willExpand = !card.classList.contains('is-expanded');
+      expandableCards.forEach((otherCard) => {
+        otherCard.classList.remove('is-expanded');
+        const otherButton = otherCard.querySelector('.project-brief__expand');
+        otherButton.setAttribute('aria-expanded', 'false');
+        otherButton.setAttribute('aria-label', `Развернуть: ${otherCard.querySelector('h3').textContent}`);
+      });
+      if (willExpand) {
+        card.classList.add('is-expanded');
+        button.setAttribute('aria-expanded', 'true');
+        button.setAttribute('aria-label', `Свернуть: ${card.querySelector('h3').textContent}`);
+      }
+    });
+    card.append(button);
+  });
+}
 const processDeck = document.querySelector('.process-tiles');
 if (processDeck) initSwipeStack(processDeck, processDeck, [...processDeck.children]);
 
