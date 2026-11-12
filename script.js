@@ -24,129 +24,9 @@ initDesktopSmoothScroll();
 window.addEventListener('load', initDesktopSmoothScroll);
 desktopSmoothScroll.addEventListener('change', initDesktopSmoothScroll);
 
-function initSwipeStack(briefDeck, briefGrid, briefCards) {
-  if (!briefDeck || !briefGrid || !briefCards.length) return;
-  const briefMobile = window.matchMedia('(max-width:640px)');
-  const reducedBriefMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  let pointerId = null;
-  let startX = 0;
-  let startY = 0;
-  let dragX = 0;
-  let horizontalDrag = false;
-  let busy = false;
-  let activeAnimation = null;
-
-  function updateBriefStack() {
-    [...briefGrid.children].forEach((card, index) => {
-      card.style.zIndex = String(briefCards.length - index);
-    });
-  }
-
-  function resetBriefCard(card) {
-    card.style.transform = '';
-    card.style.zIndex = '';
-  }
-
-  function briefDragTransform(x, width) {
-    const progress = Math.min(1, Math.abs(x) / (width * .48));
-    return `translate3d(${x}px,0,0) rotate(${-8 * progress}deg) scale(${1 - .1 * progress})`;
-  }
-
-  async function finishBriefSwipe(card, fromX) {
-    busy = true;
-    const distance = Math.min(card.clientWidth * .48, 180);
-    const remaining = distance + fromX;
-    const exitTransform = briefDragTransform(remaining > 4 ? -distance : fromX, card.clientWidth);
-    if (remaining > 4) {
-      const duration = reducedBriefMotion.matches ? 1 : Math.max(90, Math.min(310, 310 * remaining / distance));
-      activeAnimation = card.animate([
-        { transform:briefDragTransform(fromX, card.clientWidth) },
-        { transform:exitTransform }
-      ], { duration, easing:'cubic-bezier(.4,0,.2,1)', fill:'forwards' });
-      await activeAnimation.finished.catch(() => {});
-    }
-    if (!briefMobile.matches) return;
-    card.style.transform = exitTransform;
-    activeAnimation?.cancel();
-    card.style.zIndex = '0';
-    activeAnimation = card.animate([
-      { transform:exitTransform },
-      { transform:briefDragTransform(0, card.clientWidth) }
-    ], { duration:reducedBriefMotion.matches ? 1 : 360, easing:'cubic-bezier(.22,1,.36,1)', fill:'forwards' });
-    await activeAnimation.finished.catch(() => {});
-    if (!briefMobile.matches) return;
-    activeAnimation.cancel();
-    briefGrid.append(card);
-    resetBriefCard(card);
-    updateBriefStack();
-    busy = false;
-  }
-
-  function syncBriefLayout() {
-    if (briefMobile.matches) {
-      briefDeck.classList.add('is-stack');
-      updateBriefStack();
-      return;
-    }
-    activeAnimation?.cancel();
-    activeAnimation = null;
-    pointerId = null;
-    busy = false;
-    briefDeck.classList.remove('is-stack');
-    briefGrid.replaceChildren(...briefCards);
-    briefCards.forEach(resetBriefCard);
-  }
-
-  briefGrid.addEventListener('pointerdown', (event) => {
-    if (!briefMobile.matches || busy || pointerId !== null || !briefGrid.firstElementChild.contains(event.target)) return;
-    pointerId = event.pointerId;
-    startX = event.clientX;
-    startY = event.clientY;
-    dragX = 0;
-    horizontalDrag = false;
-    briefGrid.setPointerCapture(pointerId);
-  });
-
-  briefGrid.addEventListener('pointermove', (event) => {
-    if (event.pointerId !== pointerId || busy) return;
-    const dx = event.clientX - startX;
-    const dy = event.clientY - startY;
-    if (!horizontalDrag) {
-      if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
-      if (Math.abs(dy) > Math.abs(dx)) return;
-      horizontalDrag = true;
-    }
-    dragX = Math.min(0, dx);
-    const card = briefGrid.firstElementChild;
-    card.style.transform = briefDragTransform(dragX, card.clientWidth);
-  });
-
-  function releaseBriefPointer(event, cancelled = false) {
-    if (event.pointerId !== pointerId || busy) return;
-    pointerId = null;
-    const card = briefGrid.firstElementChild;
-    const shouldAdvance = !cancelled && horizontalDrag && dragX < -Math.min(60, card.clientWidth * .2);
-    if (shouldAdvance) {
-      finishBriefSwipe(card, dragX);
-    } else {
-      activeAnimation = card.animate([
-        { transform:briefDragTransform(dragX, card.clientWidth) },
-        { transform:briefDragTransform(0, card.clientWidth) }
-      ], { duration:reducedBriefMotion.matches ? 1 : 220, easing:'ease-out' });
-      card.style.transform = '';
-    }
-  }
-  briefGrid.addEventListener('pointerup', releaseBriefPointer);
-  briefGrid.addEventListener('pointercancel', (event) => releaseBriefPointer(event, true));
-
-  briefMobile.addEventListener('change', syncBriefLayout);
-  syncBriefLayout();
-}
-
 const briefDeck = document.querySelector('.project-brief__deck');
-if (briefDeck) initSwipeStack(briefDeck, briefDeck.querySelector('.project-brief__grid'), [...briefDeck.querySelectorAll('.project-brief__card')]);
 if (briefDeck) {
-  const expandableCards = [...briefDeck.querySelectorAll('.project-brief__card--mission,.project-brief__card--goal,.project-brief__card--audience')];
+  const expandableCards = [...briefDeck.querySelectorAll('.project-brief__card')];
   expandableCards.forEach((card) => {
     const button = document.createElement('button');
     button.type = 'button';
@@ -167,12 +47,27 @@ if (briefDeck) {
         button.setAttribute('aria-label', `Свернуть: ${card.querySelector('h3').textContent}`);
       }
     });
+    card.addEventListener('click', (event) => {
+      if (window.matchMedia('(max-width:640px)').matches && !event.target.closest('.project-brief__expand')) button.click();
+    });
     card.append(button);
   });
 }
-const processDeck = document.querySelector('.process-tiles');
-if (processDeck) initSwipeStack(processDeck, processDeck, [...processDeck.children]);
-
+document.querySelectorAll('.process-tiles__illustration').forEach((image) => {
+  image.addEventListener('error', () => image.classList.add('is-missing'));
+  image.addEventListener('load', () => image.classList.remove('is-missing'));
+  if (image.complete && image.naturalWidth === 0) image.classList.add('is-missing');
+});
+const processTiles = document.querySelector('.process-tiles');
+const processMoreButton = processTiles?.querySelector('.process-tiles__more');
+if (processMoreButton) {
+  processTiles.classList.add('has-mobile-collapse');
+  processMoreButton.addEventListener('click', () => {
+    const expanded = processTiles.classList.toggle('is-expanded');
+    processMoreButton.setAttribute('aria-expanded', String(expanded));
+    processMoreButton.querySelector('.process-tiles__more-label').textContent = expanded ? 'Свернуть' : 'Развернуть';
+  });
+}
 function updateIphoneScale(iphoneDemo) {
   iphoneDemo.style.setProperty('--iphone-scale', String(iphoneDemo.clientWidth / 449));
 }
