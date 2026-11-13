@@ -27,6 +27,22 @@ desktopSmoothScroll.addEventListener('change', initDesktopSmoothScroll);
 const briefDeck = document.querySelector('.project-brief__deck');
 if (briefDeck) {
   const expandableCards = [...briefDeck.querySelectorAll('.project-brief__card')];
+  const briefGrid = briefDeck.querySelector('.project-brief__grid');
+  function updateBriefOverflow() {
+    if (!window.matchMedia('(max-width:640px)').matches) {
+      briefGrid.style.removeProperty('--brief-expanded-overflow');
+      return;
+    }
+    const expandedCard = briefGrid.querySelector('.project-brief__card.is-expanded');
+    if (!expandedCard) {
+      briefGrid.style.removeProperty('--brief-expanded-overflow');
+      return;
+    }
+    const currentPadding = parseFloat(getComputedStyle(briefGrid).paddingBottom) || 0;
+    const gridBottom = briefGrid.getBoundingClientRect().bottom - currentPadding;
+    const cardBottom = expandedCard.getBoundingClientRect().bottom;
+    briefGrid.style.setProperty('--brief-expanded-overflow', `${Math.max(0, Math.ceil(cardBottom - gridBottom + 12))}px`);
+  }
   expandableCards.forEach((card) => {
     const button = document.createElement('button');
     button.type = 'button';
@@ -46,12 +62,52 @@ if (briefDeck) {
         button.setAttribute('aria-expanded', 'true');
         button.setAttribute('aria-label', `Свернуть: ${card.querySelector('h3').textContent}`);
       }
+      updateBriefOverflow();
     });
     card.addEventListener('click', (event) => {
       if (window.matchMedia('(max-width:640px)').matches && !event.target.closest('.project-brief__expand')) button.click();
     });
     card.append(button);
   });
+  window.addEventListener('resize', updateBriefOverflow);
+}
+const resultMetrics = document.querySelector('.result-metrics');
+if (resultMetrics) {
+  const metricCards = [...resultMetrics.querySelectorAll('.result-metrics__card')];
+  function updateMetricOverflow() {
+    const expandedCard = resultMetrics.querySelector('.result-metrics__card.is-expanded');
+    if (!window.matchMedia('(max-width:640px)').matches || !expandedCard) {
+      resultMetrics.style.removeProperty('--metric-expanded-overflow');
+      return;
+    }
+    const currentOverflow = parseFloat(resultMetrics.style.getPropertyValue('--metric-expanded-overflow')) || 0;
+    const baseBottom = resultMetrics.getBoundingClientRect().bottom - currentOverflow;
+    const cardBottom = expandedCard.getBoundingClientRect().bottom;
+    resultMetrics.style.setProperty('--metric-expanded-overflow', `${Math.max(0, Math.ceil(cardBottom - baseBottom + 12))}px`);
+  }
+  function setMetricExpanded(card, expanded) {
+    const button = card.querySelector('.result-metrics__more');
+    const label = card.querySelector('.result-metrics__label').textContent;
+    card.classList.toggle('is-expanded', expanded);
+    button.setAttribute('aria-expanded', String(expanded));
+    button.setAttribute('aria-label', `${expanded ? 'Свернуть' : 'Подробнее'}: ${label}`);
+    button.textContent = expanded ? 'Свернуть' : 'Подробнее';
+  }
+  metricCards.forEach((card) => {
+    const button = card.querySelector('.result-metrics__more');
+    setMetricExpanded(card, false);
+    button.addEventListener('click', () => {
+      if (!window.matchMedia('(max-width:640px)').matches) return;
+      const willExpand = !card.classList.contains('is-expanded');
+      metricCards.forEach((otherCard) => setMetricExpanded(otherCard, false));
+      if (willExpand) setMetricExpanded(card, true);
+      updateMetricOverflow();
+    });
+    card.addEventListener('click', (event) => {
+      if (window.matchMedia('(max-width:640px)').matches && !card.classList.contains('is-expanded') && !event.target.closest('button')) button.click();
+    });
+  });
+  window.addEventListener('resize', updateMetricOverflow);
 }
 document.querySelectorAll('.process-tiles__illustration').forEach((image) => {
   image.addEventListener('error', () => image.classList.add('is-missing'));
