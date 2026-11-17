@@ -375,7 +375,7 @@
             <img class="process-tiles-v2__composite" src="assets/cases/pinterest/images/process-v2/research-v2.png" alt="" loading="lazy">
           </div>
         </div>
-        <div class="process-tiles-v2__card">
+        <div class="process-tiles-v2__card process-tiles-v2__card--jtbd" role="button" tabindex="0" aria-label="Открыть документ «Первые JTBD»" aria-haspopup="dialog" aria-controls="jtbd-document-overlay">
           <div class="process-tiles-v2__heading"><span class="process-tiles-v2__name">Первые JTBD</span><span class="process-tiles-v2__number">2</span></div>
           <div class="process-tiles-v2__art" aria-hidden="true">
             <img class="process-tiles-v2__asset process-tiles-v2__asset--jtbd" src="assets/cases/pinterest/images/process-v2/first-jtbd-document.png" alt="" loading="lazy">
@@ -396,6 +396,35 @@
   </main>
   </div>
   <div class="summary-backdrop" aria-hidden="true"></div>
+  <div class="jtbd-document-overlay" id="jtbd-document-overlay" role="dialog" aria-modal="true" aria-labelledby="jtbd-document-title" hidden>
+    <div class="jtbd-document-overlay__backdrop" data-jtbd-close></div>
+    <button class="jtbd-document-overlay__close" type="button" aria-label="Закрыть документ" data-jtbd-close>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>
+    </button>
+    <div class="jtbd-document-overlay__scroll" tabindex="-1">
+      <article class="jtbd-document-page">
+        <header class="jtbd-document-page__header">
+          <h2 id="jtbd-document-title">JTBD (Jobs To Be Done)</h2>
+          <p>Описываю ключевые задачи пользователей в их контексте — что они хотят сделать, в какой ситуации и для чего.</p>
+        </header>
+        <section class="jtbd-document-page__job" aria-labelledby="jtbd-job-1">
+          <span class="jtbd-document-page__eyebrow" id="jtbd-job-1">JOB 1</span>
+          <p class="jtbd-document-page__statement">Когда я вижу пины, которые для меня уже неактуальны, я хочу их убрать, чтобы доска оставалась полезным инструментом, а не свалкой.</p>
+          <p class="jtbd-document-page__context">Контекст: плановая чистка, удаление отдельных пинов.</p>
+        </section>
+        <section class="jtbd-document-page__job" aria-labelledby="jtbd-job-2">
+          <span class="jtbd-document-page__eyebrow" id="jtbd-job-2">JOB 2</span>
+          <p class="jtbd-document-page__statement">Когда я случайно сохранила пин не на ту доску, я хочу быстро это изменить, чтобы найти его, когда понадобится.</p>
+          <p class="jtbd-document-page__context">Контекст: исправление ошибки. Пользователь хочет быстро поправить то, что пошло не так.</p>
+        </section>
+        <section class="jtbd-document-page__job" aria-labelledby="jtbd-job-3">
+          <span class="jtbd-document-page__eyebrow" id="jtbd-job-3">JOB 3</span>
+          <p class="jtbd-document-page__statement">Когда я вижу, что вся доска превратилась в свалку, я хочу быстро её реорганизовать целиком, чтобы она снова стала полезной.</p>
+          <p class="jtbd-document-page__context">Контекст: реорганизация всей доски сразу.</p>
+        </section>
+      </article>
+    </div>
+  </div>
   <script src="https://min30327.github.io/luxy.js/dist/js/luxy.js"></script>
   <script src="script.js"></script>
   <script src="navigation.js"></script>

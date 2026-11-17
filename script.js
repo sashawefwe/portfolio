@@ -131,6 +131,94 @@ document.querySelectorAll('.process-tiles-v2__composite').forEach((image) => {
   image.addEventListener('error', showUploadedImage);
   if (image.complete) showUploadedImage();
 });
+const jtbdTrigger = document.querySelector('.process-tiles-v2__card--jtbd');
+const jtbdOverlay = document.querySelector('.jtbd-document-overlay');
+if (jtbdTrigger && jtbdOverlay) {
+  const mobileDocument = window.matchMedia('(max-width:640px)');
+  const page = jtbdOverlay.querySelector('.jtbd-document-page');
+  const backdrop = jtbdOverlay.querySelector('.jtbd-document-overlay__backdrop');
+  const scroller = jtbdOverlay.querySelector('.jtbd-document-overlay__scroll');
+  const closeButton = jtbdOverlay.querySelector('.jtbd-document-overlay__close');
+  let previousBodyOverflow = '';
+  let previousRootOverflow = '';
+  let closing = false;
+
+  function thumbnailRect() {
+    const art = jtbdTrigger.querySelector('.process-tiles-v2__art');
+    const image = art.querySelector('.process-tiles-v2__asset--jtbd');
+    if (!art.classList.contains('has-composite')) return image.getBoundingClientRect();
+    const artRect = art.getBoundingClientRect();
+    const width = artRect.width * .5895;
+    return {
+      left: artRect.left + artRect.width * .2053,
+      top: artRect.top + artRect.height * .1071,
+      width,
+      height: width * 112 / 84
+    };
+  }
+
+  function paperKeyframes() {
+    const from = thumbnailRect();
+    const to = page.getBoundingClientRect();
+    return [
+      { transform:`translate(${from.left - to.left}px, ${from.top - to.top}px) scale(${from.width / to.width}, ${from.height / to.height})`, borderRadius:'2px' },
+      { transform:'translate(0, 0) scale(1)', borderRadius:'0px' }
+    ];
+  }
+
+  function finishClose() {
+    jtbdOverlay.hidden = true;
+    document.body.style.overflow = previousBodyOverflow;
+    document.documentElement.style.overflow = previousRootOverflow;
+    closing = false;
+    jtbdTrigger.focus({ preventScroll:true });
+  }
+
+  function openJtbdDocument() {
+    if (!mobileDocument.matches || !jtbdOverlay.hidden) return;
+    previousBodyOverflow = document.body.style.overflow;
+    previousRootOverflow = document.documentElement.style.overflow;
+    jtbdOverlay.hidden = false;
+    scroller.scrollTop = 0;
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+    closeButton.focus({ preventScroll:true });
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      page.animate(paperKeyframes(), { duration:360, easing:'cubic-bezier(.2,.75,.25,1)' });
+      backdrop.animate([{ opacity:0 }, { opacity:1 }], { duration:260, easing:'ease-out' });
+    }
+  }
+
+  function closeJtbdDocument(immediate = false) {
+    if (jtbdOverlay.hidden || closing) return;
+    if (immediate || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      finishClose();
+      return;
+    }
+    closing = true;
+    backdrop.animate([{ opacity:1 }, { opacity:0 }], { duration:220, easing:'ease-in' });
+    const animation = page.animate(paperKeyframes().reverse(), { duration:260, easing:'ease-in' });
+    animation.finished.then(finishClose, finishClose);
+  }
+
+  jtbdTrigger.addEventListener('click', openJtbdDocument);
+  jtbdTrigger.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      openJtbdDocument();
+    }
+  });
+  jtbdOverlay.querySelectorAll('[data-jtbd-close]').forEach((element) => {
+    element.addEventListener('click', () => closeJtbdDocument());
+  });
+  scroller.addEventListener('click', (event) => {
+    if (event.target === scroller) closeJtbdDocument();
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !jtbdOverlay.hidden) closeJtbdDocument();
+  });
+  mobileDocument.addEventListener('change', () => closeJtbdDocument(true));
+}
 const processTiles = document.querySelector('.process-tiles');
 const processMoreButton = processTiles?.querySelector('.process-tiles__more');
 if (processMoreButton) {
