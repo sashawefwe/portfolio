@@ -203,7 +203,7 @@ button { font:inherit; }
   .process-tiles-v2__card--jtbd { cursor:pointer; touch-action:manipulation; }
   .process-tiles-v2__card--jtbd:focus-visible { outline:2px solid #5478c9; outline-offset:3px; }
 }
-.jtbd-document-overlay { position:fixed; inset:0; z-index:200; overflow:hidden; border-radius:24px; transform-origin:top left; background:#f7f7f8; font-family:"SF Pro Display","SF Pro",-apple-system,BlinkMacSystemFont,sans-serif; }
+.jtbd-document-overlay { position:fixed; inset:0; z-index:200; width:100vw; height:100dvh; overflow:hidden; border-radius:0; transform-origin:top left; background:#f7f7f8; font-family:"SF Pro Display","SF Pro",-apple-system,BlinkMacSystemFont,sans-serif; }
 .jtbd-document-overlay__toolbar { position:absolute; z-index:2; top:0; left:0; right:0; display:flex; align-items:center; gap:14px; height:calc(76px + env(safe-area-inset-top)); padding:env(safe-area-inset-top) 20px 0; background:transparent; }
 .jtbd-document-overlay__toolbar::before { content:""; position:absolute; z-index:0; top:0; right:0; bottom:-30px; left:0; background:linear-gradient(to bottom,rgba(247,247,248,.76) 0%,rgba(247,247,248,.46) 58%,transparent 100%); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px); -webkit-mask-image:linear-gradient(#000 0%,#000 65%,transparent 100%); mask-image:linear-gradient(#000 0%,#000 65%,transparent 100%); pointer-events:none; }
 .jtbd-document-overlay__toolbar > * { position:relative; z-index:1; }

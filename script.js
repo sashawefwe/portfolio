@@ -161,7 +161,7 @@ if (jtbdTrigger && jtbdOverlay) {
     const screen = jtbdOverlay.getBoundingClientRect();
     return [
       { transform:`translate(${from.left}px, ${from.top}px) scale(${from.width / screen.width}, ${from.height / screen.height})`, borderRadius:'10px' },
-      { transform:'translate(0, 0) scale(1)', borderRadius:'24px' }
+      { transform:'translate(0, 0) scale(1)', borderRadius:'0px' }
     ];
   }
 
