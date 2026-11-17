@@ -397,10 +397,12 @@
   </div>
   <div class="summary-backdrop" aria-hidden="true"></div>
   <div class="jtbd-document-overlay" id="jtbd-document-overlay" role="dialog" aria-modal="true" aria-labelledby="jtbd-document-title" hidden>
-    <div class="jtbd-document-overlay__backdrop" data-jtbd-close></div>
-    <button class="jtbd-document-overlay__close" type="button" aria-label="Закрыть документ" data-jtbd-close>
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>
-    </button>
+    <header class="jtbd-document-overlay__toolbar">
+      <button class="jtbd-document-overlay__back" type="button" aria-label="Назад к карте процесса">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 4-8 8 8 8"/></svg>
+      </button>
+      <span class="jtbd-document-overlay__filename">Первые JTBD</span>
+    </header>
     <div class="jtbd-document-overlay__scroll" tabindex="-1">
       <article class="jtbd-document-page">
         <header class="jtbd-document-page__header">
@@ -412,6 +414,8 @@
           <p class="jtbd-document-page__statement">Когда я вижу пины, которые для меня уже неактуальны, я хочу их убрать, чтобы доска оставалась полезным инструментом, а не свалкой.</p>
           <p class="jtbd-document-page__context">Контекст: плановая чистка, удаление отдельных пинов.</p>
         </section>
+      </article>
+      <article class="jtbd-document-page" aria-label="Продолжение документа «Первые JTBD»">
         <section class="jtbd-document-page__job" aria-labelledby="jtbd-job-2">
           <span class="jtbd-document-page__eyebrow" id="jtbd-job-2">JOB 2</span>
           <p class="jtbd-document-page__statement">Когда я случайно сохранила пин не на ту доску, я хочу быстро это изменить, чтобы найти его, когда понадобится.</p>

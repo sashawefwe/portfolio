@@ -135,13 +135,12 @@ const jtbdTrigger = document.querySelector('.process-tiles-v2__card--jtbd');
 const jtbdOverlay = document.querySelector('.jtbd-document-overlay');
 if (jtbdTrigger && jtbdOverlay) {
   const mobileDocument = window.matchMedia('(max-width:640px)');
-  const page = jtbdOverlay.querySelector('.jtbd-document-page');
-  const backdrop = jtbdOverlay.querySelector('.jtbd-document-overlay__backdrop');
   const scroller = jtbdOverlay.querySelector('.jtbd-document-overlay__scroll');
-  const closeButton = jtbdOverlay.querySelector('.jtbd-document-overlay__close');
+  const backButton = jtbdOverlay.querySelector('.jtbd-document-overlay__back');
   let previousBodyOverflow = '';
   let previousRootOverflow = '';
   let closing = false;
+  let screenAnimation;
 
   function thumbnailRect() {
     const art = jtbdTrigger.querySelector('.process-tiles-v2__art');
@@ -150,19 +149,19 @@ if (jtbdTrigger && jtbdOverlay) {
     const artRect = art.getBoundingClientRect();
     const width = artRect.width * .5895;
     return {
-      left: artRect.left + artRect.width * .2053,
-      top: artRect.top + artRect.height * .1071,
+      left:artRect.left + artRect.width * .2053,
+      top:artRect.top + artRect.height * .1071,
       width,
-      height: width * 112 / 84
+      height:width * 112 / 84
     };
   }
 
-  function paperKeyframes() {
+  function zoomKeyframes() {
     const from = thumbnailRect();
-    const to = page.getBoundingClientRect();
+    const screen = jtbdOverlay.getBoundingClientRect();
     return [
-      { transform:`translate(${from.left - to.left}px, ${from.top - to.top}px) scale(${from.width / to.width}, ${from.height / to.height})`, borderRadius:'2px' },
-      { transform:'translate(0, 0) scale(1)', borderRadius:'0px' }
+      { transform:`translate(${from.left}px, ${from.top}px) scale(${from.width / screen.width}, ${from.height / screen.height})`, borderRadius:'10px' },
+      { transform:'translate(0, 0) scale(1)', borderRadius:'24px' }
     ];
   }
 
@@ -182,10 +181,12 @@ if (jtbdTrigger && jtbdOverlay) {
     scroller.scrollTop = 0;
     document.body.style.overflow = 'hidden';
     document.documentElement.style.overflow = 'hidden';
-    closeButton.focus({ preventScroll:true });
+    backButton.focus({ preventScroll:true });
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      page.animate(paperKeyframes(), { duration:360, easing:'cubic-bezier(.2,.75,.25,1)' });
-      backdrop.animate([{ opacity:0 }, { opacity:1 }], { duration:260, easing:'ease-out' });
+      screenAnimation = jtbdOverlay.animate(
+        zoomKeyframes(),
+        { duration:420, easing:'cubic-bezier(.22,1,.36,1)' }
+      );
     }
   }
 
@@ -196,9 +197,12 @@ if (jtbdTrigger && jtbdOverlay) {
       return;
     }
     closing = true;
-    backdrop.animate([{ opacity:1 }, { opacity:0 }], { duration:220, easing:'ease-in' });
-    const animation = page.animate(paperKeyframes().reverse(), { duration:260, easing:'ease-in' });
-    animation.finished.then(finishClose, finishClose);
+    if (screenAnimation?.playState === 'running') screenAnimation.finish();
+    screenAnimation = jtbdOverlay.animate(
+      zoomKeyframes().reverse(),
+      { duration:300, easing:'cubic-bezier(.4,0,1,1)' }
+    );
+    screenAnimation.finished.then(finishClose, finishClose);
   }
 
   jtbdTrigger.addEventListener('click', openJtbdDocument);
@@ -208,12 +212,7 @@ if (jtbdTrigger && jtbdOverlay) {
       openJtbdDocument();
     }
   });
-  jtbdOverlay.querySelectorAll('[data-jtbd-close]').forEach((element) => {
-    element.addEventListener('click', () => closeJtbdDocument());
-  });
-  scroller.addEventListener('click', (event) => {
-    if (event.target === scroller) closeJtbdDocument();
-  });
+  backButton.addEventListener('click', () => closeJtbdDocument());
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && !jtbdOverlay.hidden) closeJtbdDocument();
   });
