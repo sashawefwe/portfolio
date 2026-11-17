@@ -137,10 +137,16 @@ if (jtbdTrigger && jtbdOverlay) {
   const mobileDocument = window.matchMedia('(max-width:640px)');
   const scroller = jtbdOverlay.querySelector('.jtbd-document-overlay__scroll');
   const backButton = jtbdOverlay.querySelector('.jtbd-document-overlay__back');
+  const toolbar = jtbdOverlay.querySelector('.jtbd-document-overlay__toolbar');
+  const firstPage = jtbdOverlay.querySelector('.jtbd-document-page');
+  const thumbnail = jtbdTrigger.querySelector('.process-tiles-v2__asset--jtbd');
   let previousBodyOverflow = '';
   let previousRootOverflow = '';
   let closing = false;
   let screenAnimation;
+  let transitionAnimations = [];
+  let transitionPreview;
+  let transitionId = 0;
 
   function thumbnailRect() {
     const art = jtbdTrigger.querySelector('.process-tiles-v2__art');
@@ -165,7 +171,50 @@ if (jtbdTrigger && jtbdOverlay) {
     ];
   }
 
+  function previewKeyframes(from, to, opening) {
+    const position = (rect, opacity) => ({
+      left:`${rect.left}px`, top:`${rect.top}px`,
+      width:`${rect.width}px`, height:`${rect.height}px`, opacity
+    });
+    return opening ? [
+      { ...position(from, 1), offset:0 },
+      { ...position(to, 1), offset:.48 },
+      { ...position(to, 0), offset:.76 },
+      { ...position(to, 0), offset:1 }
+    ] : [
+      { ...position(to, 0), offset:0 },
+      { ...position(to, 1), offset:.48 },
+      { ...position(from, 1), offset:1 }
+    ];
+  }
+
+  function makeTransitionPreview(rect) {
+    const preview = document.createElement('img');
+    preview.src = thumbnail.currentSrc || thumbnail.src;
+    preview.alt = '';
+    Object.assign(preview.style, {
+      position:'fixed', zIndex:'201', pointerEvents:'none',
+      left:`${rect.left}px`, top:`${rect.top}px`,
+      width:`${rect.width}px`, height:`${rect.height}px`,
+      objectFit:'fill', background:'#fff',
+      boxShadow:'0 8px 24px rgba(25,25,35,.1)'
+    });
+    document.body.append(preview);
+    transitionPreview = preview;
+    return preview;
+  }
+
+  function clearTransition() {
+    transitionAnimations.forEach((animation) => animation.cancel());
+    transitionAnimations = [];
+    transitionPreview?.remove();
+    transitionPreview = null;
+    scroller.style.opacity = '';
+    toolbar.style.opacity = '';
+  }
+
   function finishClose() {
+    clearTransition();
     jtbdOverlay.hidden = true;
     document.body.style.overflow = previousBodyOverflow;
     document.documentElement.style.overflow = previousRootOverflow;
@@ -183,25 +232,59 @@ if (jtbdTrigger && jtbdOverlay) {
     document.documentElement.style.overflow = 'hidden';
     backButton.focus({ preventScroll:true });
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const id = ++transitionId;
+      const from = thumbnailRect();
+      const to = firstPage.getBoundingClientRect();
+      const preview = makeTransitionPreview(from);
+      scroller.style.opacity = '0';
+      toolbar.style.opacity = '0';
       screenAnimation = jtbdOverlay.animate(
         zoomKeyframes(),
         { duration:420, easing:'cubic-bezier(.22,1,.36,1)' }
       );
+      const previewAnimation = preview.animate(previewKeyframes(from, to, true),
+        { duration:420, easing:'cubic-bezier(.22,1,.36,1)' });
+      const contentAnimation = scroller.animate([
+        { opacity:0, offset:0 }, { opacity:0, offset:.48 },
+        { opacity:1, offset:.76 }, { opacity:1, offset:1 }
+      ], { duration:420, easing:'linear' });
+      const toolbarAnimation = toolbar.animate([
+        { opacity:0, offset:0 }, { opacity:0, offset:.4 },
+        { opacity:1, offset:.7 }, { opacity:1, offset:1 }
+      ], { duration:420, easing:'linear' });
+      transitionAnimations = [screenAnimation, previewAnimation, contentAnimation, toolbarAnimation];
+      screenAnimation.finished.then(() => {
+        if (id === transitionId && !closing) clearTransition();
+      }).catch(() => {});
     }
   }
 
   function closeJtbdDocument(immediate = false) {
     if (jtbdOverlay.hidden || closing) return;
     if (immediate || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      ++transitionId;
       finishClose();
       return;
     }
     closing = true;
-    if (screenAnimation?.playState === 'running') screenAnimation.finish();
+    ++transitionId;
+    clearTransition();
+    const from = thumbnailRect();
+    const to = firstPage.getBoundingClientRect();
+    const preview = makeTransitionPreview(to);
     screenAnimation = jtbdOverlay.animate(
       zoomKeyframes().reverse(),
       { duration:300, easing:'cubic-bezier(.4,0,1,1)' }
     );
+    transitionAnimations = [
+      screenAnimation,
+      preview.animate(previewKeyframes(from, to, false),
+        { duration:300, easing:'cubic-bezier(.4,0,1,1)' }),
+      scroller.animate([{ opacity:1, offset:0 }, { opacity:0, offset:.48 }, { opacity:0, offset:1 }],
+        { duration:300, easing:'linear' }),
+      toolbar.animate([{ opacity:1, offset:0 }, { opacity:0, offset:.55 }, { opacity:0, offset:1 }],
+        { duration:300, easing:'linear' })
+    ];
     screenAnimation.finished.then(finishClose, finishClose);
   }
 
