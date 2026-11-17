@@ -8,6 +8,67 @@
     { label:'Pinterest', href:'pinterest.html' },
     { label:'Орбита' }
   ];
+  const morphIcon = '<span class="navigation-morph-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><rect x="3" y="3" width="6" height="6" rx="3"/><rect x="15" y="3" width="6" height="6" rx="3"/><rect x="3" y="15" width="6" height="6" rx="3"/><rect x="15" y="15" width="6" height="6" rx="3"/></svg></span>';
+  // Each outer cap travels to the next corner counterclockwise; its inner cap grows toward the center.
+  const morphPaths = [
+    { direction:1, points:[{ x:6, y:6, angle:0 }, { x:4.3, y:11.6, angle:-25 }, { x:5.56, y:18.44, angle:-45 }] },
+    { direction:-1, points:[{ x:18, y:6, angle:0 }, { x:12.3, y:4.3, angle:-70 }, { x:5.56, y:5.56, angle:-135 }] },
+    { direction:1, points:[{ x:6, y:18, angle:0 }, { x:11.7, y:19.7, angle:-110 }, { x:18.44, y:18.44, angle:-135 }] },
+    { direction:-1, points:[{ x:18, y:18, angle:0 }, { x:19.7, y:12.3, angle:-20 }, { x:18.44, y:5.56, angle:-45 }] }
+  ];
+  function createMorphAnimation(button) {
+    const rects = [...button.querySelectorAll('.navigation-morph-icon rect')];
+    let progress = 0;
+    let frame = 0;
+    function render(value) {
+      const midpoint = .52;
+      const segment = value < midpoint ? 0 : 1;
+      const amount = segment === 0 ? value / midpoint : (value - midpoint) / (1 - midpoint);
+      const interpolate = (a, b) => a + (b - a) * amount;
+      const widths = [6, 9.5, 12.5];
+      const heights = [6, 4.8, 4.2];
+      const width = interpolate(widths[segment], widths[segment + 1]);
+      const height = interpolate(heights[segment], heights[segment + 1]);
+      rects.forEach((rect, index) => {
+        const path = morphPaths[index];
+        const from = path.points[segment];
+        const to = path.points[segment + 1];
+        const outerX = interpolate(from.x, to.x);
+        const outerY = interpolate(from.y, to.y);
+        const angle = interpolate(from.angle, to.angle);
+        const capHalfDistance = (width - height) / 2;
+        const radians = angle * Math.PI / 180;
+        const x = outerX + Math.cos(radians) * capHalfDistance * path.direction;
+        const y = outerY + Math.sin(radians) * capHalfDistance * path.direction;
+        rect.setAttribute('x', String(x - width / 2));
+        rect.setAttribute('y', String(y - height / 2));
+        rect.setAttribute('width', String(width));
+        rect.setAttribute('height', String(height));
+        rect.setAttribute('rx', String(height / 2));
+        rect.setAttribute('transform', `rotate(${angle} ${x} ${y})`);
+      });
+    }
+    return (open) => {
+      cancelAnimationFrame(frame);
+      const target = open ? 1 : 0;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        progress = target;
+        render(target);
+        return;
+      }
+      const from = progress;
+      const duration = Math.abs(target - from) * 320;
+      const start = performance.now();
+      function step(now) {
+        const elapsed = Math.min(1, (now - start) / duration);
+        const eased = elapsed < .5 ? 2 * elapsed * elapsed : 1 - Math.pow(-2 * elapsed + 2, 2) / 2;
+        progress = from + (target - from) * eased;
+        render(progress);
+        if (elapsed < 1) frame = requestAnimationFrame(step);
+      }
+      frame = requestAnimationFrame(step);
+    };
+  }
 
   const navigation = document.createElement('div');
   navigation.className = 'mobile-navigation';
@@ -19,7 +80,8 @@
   trigger.setAttribute('aria-expanded', 'false');
   trigger.setAttribute('aria-controls', 'mobile-navigation-menu');
   trigger.setAttribute('aria-label', 'Открыть меню');
-  trigger.innerHTML = '<img src="assets/icons/navigation/menu.svg" alt="">';
+  trigger.innerHTML = morphIcon;
+  const animateMobileMorph = createMorphAnimation(trigger);
 
   const menu = document.createElement('nav');
   menu.className = 'mobile-navigation__menu';
@@ -58,14 +120,16 @@
     const changed = (navigation.dataset.open === 'true') !== open;
     navigation.dataset.open = String(open);
     trigger.setAttribute('aria-expanded', String(open));
+    trigger.setAttribute('aria-label', open ? 'Закрыть меню' : 'Открыть меню');
     if (changed) {
+      animateMobileMorph(open);
       mobileBackdrop.hidden = !open;
       if (open) {
         previousMobileHtmlOverflow = document.documentElement.style.overflow;
         previousMobileBodyOverflow = document.body.style.overflow;
         document.documentElement.style.overflow = 'hidden';
         document.body.style.overflow = 'hidden';
-        mobileClose.focus();
+        trigger.focus();
       } else {
         document.documentElement.style.overflow = previousMobileHtmlOverflow;
         document.body.style.overflow = previousMobileBodyOverflow;
@@ -86,7 +150,7 @@
 
   document.addEventListener('keydown', (event) => {
     if (navigation.dataset.open === 'true' && event.key === 'Tab') {
-      const focusable = [mobileClose, ...menu.querySelectorAll('a')];
+      const focusable = [trigger, ...menu.querySelectorAll('a')];
       const first = focusable[0];
       const last = focusable[focusable.length - 1];
       if (event.shiftKey && document.activeElement === first) {
@@ -111,7 +175,8 @@
   desktopTrigger.setAttribute('aria-label', 'Открыть меню');
   desktopTrigger.setAttribute('aria-expanded', 'false');
   desktopTrigger.setAttribute('aria-controls', 'desktop-navigation-menu');
-  desktopTrigger.innerHTML = '<img src="assets/icons/navigation/menu.svg" alt="">';
+  desktopTrigger.innerHTML = morphIcon;
+  const animateDesktopMorph = createMorphAnimation(desktopTrigger);
 
   const desktopOverlay = document.createElement('div');
   desktopOverlay.className = 'desktop-navigation__overlay';
@@ -161,12 +226,14 @@
     desktopOpen = open;
     desktopOverlay.hidden = !open;
     desktopTrigger.setAttribute('aria-expanded', String(open));
+    desktopTrigger.setAttribute('aria-label', open ? 'Закрыть меню' : 'Открыть меню');
+    animateDesktopMorph(open);
     if (open) {
       previousHtmlOverflow = document.documentElement.style.overflow;
       previousBodyOverflow = document.body.style.overflow;
       document.documentElement.style.overflow = 'hidden';
       document.body.style.overflow = 'hidden';
-      closeButton.focus();
+      desktopTrigger.focus();
     } else {
       document.documentElement.style.overflow = previousHtmlOverflow;
       document.body.style.overflow = previousBodyOverflow;
@@ -174,7 +241,7 @@
     }
   }
 
-  desktopTrigger.addEventListener('click', () => setDesktopOpen(true));
+  desktopTrigger.addEventListener('click', () => setDesktopOpen(!desktopOpen));
   closeButton.addEventListener('click', () => setDesktopOpen(false));
   desktopOverlay.addEventListener('pointerdown', (event) => {
     if (event.target === desktopOverlay) setDesktopOpen(false);
@@ -183,10 +250,11 @@
     if (!desktopOpen) return;
     if (event.key === 'Escape') {
       setDesktopOpen(false);
+      desktopTrigger.focus();
       return;
     }
     if (event.key !== 'Tab') return;
-    const focusable = [closeButton, ...desktopLinks.querySelectorAll('a')];
+    const focusable = [desktopTrigger, ...desktopLinks.querySelectorAll('a')];
     const first = focusable[0];
     const last = focusable[focusable.length - 1];
     if (event.shiftKey && document.activeElement === first) {

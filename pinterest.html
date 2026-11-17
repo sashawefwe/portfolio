@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Summary — UX/UI кейс</title>
+  <title>Pinterest case study</title>
   <meta name="description" content="Интерактивный summary-компонент UX/UI кейса">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="navigation.css">
@@ -301,18 +301,19 @@
         <h2 class="case-section__title" id="project-brief-title"><span>Постановка задачи</span></h2>
       </div>
       <div class="project-brief__deck">
-      <div class="project-brief__grid" aria-label="Постановка задачи: пять карточек">
-        <article class="project-brief__card project-brief__card--context">
+      <div class="project-brief__grid" aria-label="Постановка задачи: пять пунктов">
+        <article class="project-brief__card project-brief__card--context is-expanded">
           <div>
             <h3>Контекст и боль</h3>
-            <p>Pinterest годами игнорирует базовую гигиену управления контентом:</p>
+            <p class="project-brief__context-desktop">Pinterest годами игнорирует базовую гигиену управления контентом:</p>
+            <p class="project-brief__context-mobile">Pinterest — место для вдохновения, но сохранённые идеи быстро теряются, превращаясь в хаотичную коллекцию. Пользователям сложно возвращаться к нужному и использовать сохранённое в реальной жизни.</p>
             <ul>
               <li>удалить пин — квест</li>
               <li>мультиселект есть, но найти сложно</li>
               <li>путь переноса пинов настолько длинный, что проще забыть</li>
             </ul>
           </div>
-          <p><span class="project-brief__link-look">Открытый ресёрч</span> подтвердил — это массовые запросы с 2012 года</p>
+          <p><span class="project-brief__link-look">Открытый ресёрч</span> подтвердил — массовые запросы с 2012 года</p>
         </article>
         <article class="project-brief__card project-brief__card--mission">
           <h3>Миссия</h3>
@@ -361,6 +362,26 @@
         <div class="process-tiles__tile process-tiles__tile--prototype" id="process-step-6"><span class="process-tiles__name">Прототипирование</span><span class="process-tiles__number">6</span><img class="process-tiles__illustration" src="assets/cases/pinterest/images/process/prototyping.png" alt="" loading="lazy"></div>
         <div class="process-tiles__tile process-tiles__tile--testing" id="process-step-7"><span class="process-tiles__name">Тестирование</span><span class="process-tiles__number">7</span><img class="process-tiles__illustration" src="assets/cases/pinterest/images/process/testing.png" alt="" loading="lazy"></div>
         <div class="process-tiles__result-wrap" id="process-step-8"><div class="process-tiles__tile process-tiles__tile--result"><span class="process-tiles__name">hi-fi макеты</span><span class="process-tiles__number">8</span><img class="process-tiles__illustration" src="assets/cases/pinterest/images/process/hifi-mockups.png" alt="" loading="lazy"></div></div>
+      </div>
+      <div class="process-tiles-v2" aria-label="Первые два этапа работы над проектом">
+        <div class="process-tiles-v2__card">
+          <div class="process-tiles-v2__heading"><span class="process-tiles-v2__name">Исследование</span><span class="process-tiles-v2__number">1</span></div>
+          <div class="process-tiles-v2__art" aria-hidden="true">
+            <img class="process-tiles-v2__asset process-tiles-v2__asset--analysis" src="assets/cases/pinterest/images/process-v2/research-analysis.png" alt="" loading="lazy">
+            <img class="process-tiles-v2__asset process-tiles-v2__asset--document" src="assets/cases/pinterest/images/process-v2/research-document.png" alt="" loading="lazy">
+            <img class="process-tiles-v2__asset process-tiles-v2__asset--delete" src="assets/cases/pinterest/images/process-v2/research-mobile-delete.png" alt="" loading="lazy">
+            <img class="process-tiles-v2__asset process-tiles-v2__asset--instagram" src="assets/cases/pinterest/images/process-v2/research-instagram.png" alt="" loading="lazy">
+            <img class="process-tiles-v2__asset process-tiles-v2__asset--pinterest" src="assets/cases/pinterest/images/process-v2/research-pinterest.png" alt="" loading="lazy">
+            <img class="process-tiles-v2__composite" src="assets/cases/pinterest/images/process-v2/research-v2.png" alt="" loading="lazy">
+          </div>
+        </div>
+        <div class="process-tiles-v2__card">
+          <div class="process-tiles-v2__heading"><span class="process-tiles-v2__name">Первые JTBD</span><span class="process-tiles-v2__number">2</span></div>
+          <div class="process-tiles-v2__art" aria-hidden="true">
+            <img class="process-tiles-v2__asset process-tiles-v2__asset--jtbd" src="assets/cases/pinterest/images/process-v2/first-jtbd-document.png" alt="" loading="lazy">
+            <img class="process-tiles-v2__composite" src="assets/cases/pinterest/images/process-v2/first-jtbd-v2.png" alt="" loading="lazy">
+          </div>
+        </div>
       </div>
     </section>
     <section class="case-screens-section" aria-label="Экраны Pinterest и завершение кейса">

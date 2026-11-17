@@ -27,49 +27,32 @@ desktopSmoothScroll.addEventListener('change', initDesktopSmoothScroll);
 const briefDeck = document.querySelector('.project-brief__deck');
 if (briefDeck) {
   const expandableCards = [...briefDeck.querySelectorAll('.project-brief__card')];
-  const briefGrid = briefDeck.querySelector('.project-brief__grid');
-  function updateBriefOverflow() {
-    if (!window.matchMedia('(max-width:640px)').matches) {
-      briefGrid.style.removeProperty('--brief-expanded-overflow');
-      return;
-    }
-    const expandedCard = briefGrid.querySelector('.project-brief__card.is-expanded');
-    if (!expandedCard) {
-      briefGrid.style.removeProperty('--brief-expanded-overflow');
-      return;
-    }
-    const currentPadding = parseFloat(getComputedStyle(briefGrid).paddingBottom) || 0;
-    const gridBottom = briefGrid.getBoundingClientRect().bottom - currentPadding;
-    const cardBottom = expandedCard.getBoundingClientRect().bottom;
-    briefGrid.style.setProperty('--brief-expanded-overflow', `${Math.max(0, Math.ceil(cardBottom - gridBottom + 12))}px`);
+  const briefMobileLayout = window.matchMedia('(max-width:640px)');
+  function setBriefExpanded(card, expanded) {
+    const button = card.querySelector('.project-brief__expand');
+    card.classList.toggle('is-expanded', expanded);
+    button.setAttribute('aria-expanded', String(expanded));
+    button.setAttribute('aria-label', `${expanded ? 'Свернуть' : 'Развернуть'}: ${card.querySelector('h3').textContent}`);
   }
   expandableCards.forEach((card) => {
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'project-brief__expand';
-    button.setAttribute('aria-label', `Развернуть: ${card.querySelector('h3').textContent}`);
-    button.setAttribute('aria-expanded', 'false');
+    card.append(button);
     button.addEventListener('click', () => {
       const willExpand = !card.classList.contains('is-expanded');
-      expandableCards.forEach((otherCard) => {
-        otherCard.classList.remove('is-expanded');
-        const otherButton = otherCard.querySelector('.project-brief__expand');
-        otherButton.setAttribute('aria-expanded', 'false');
-        otherButton.setAttribute('aria-label', `Развернуть: ${otherCard.querySelector('h3').textContent}`);
-      });
-      if (willExpand) {
-        card.classList.add('is-expanded');
-        button.setAttribute('aria-expanded', 'true');
-        button.setAttribute('aria-label', `Свернуть: ${card.querySelector('h3').textContent}`);
-      }
-      updateBriefOverflow();
+      setBriefExpanded(card, willExpand);
     });
     card.addEventListener('click', (event) => {
-      if (window.matchMedia('(max-width:640px)').matches && !event.target.closest('.project-brief__expand')) button.click();
+      if (event.target.closest('h3')) button.click();
     });
-    card.append(button);
   });
-  window.addEventListener('resize', updateBriefOverflow);
+  function resetBriefForLayout() {
+    expandableCards.forEach((card) => setBriefExpanded(card, false));
+    setBriefExpanded(expandableCards[0], true);
+  }
+  resetBriefForLayout();
+  briefMobileLayout.addEventListener('change', resetBriefForLayout);
 }
 const resultMetrics = document.querySelector('.result-metrics');
 if (resultMetrics) {
@@ -104,15 +87,49 @@ if (resultMetrics) {
       updateMetricOverflow();
     });
     card.addEventListener('click', (event) => {
-      if (window.matchMedia('(max-width:640px)').matches && !card.classList.contains('is-expanded') && !event.target.closest('button')) button.click();
+      if (window.matchMedia('(max-width:640px)').matches && !event.target.closest('button')) button.click();
     });
   });
+  const hintCard = resultMetrics.querySelector('.result-metrics__card--save');
+  const mobileMetrics = window.matchMedia('(max-width:640px)');
+  const reducedMetricsMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  document.addEventListener('click', (event) => {
+    if (!mobileMetrics.matches || event.target.closest('.result-metrics__card')) return;
+    const expandedCard = resultMetrics.querySelector('.result-metrics__card.is-expanded');
+    if (!expandedCard) return;
+    setMetricExpanded(expandedCard, false);
+    updateMetricOverflow();
+  });
+  if (hintCard && 'IntersectionObserver' in window) {
+    let hintShown = false;
+    const hintObserver = new IntersectionObserver(([entry]) => {
+      if (hintShown || !mobileMetrics.matches || reducedMetricsMotion.matches || entry.intersectionRatio < .75) return;
+      hintShown = true;
+      hintObserver.disconnect();
+      hintCard.classList.add('is-tap-hint');
+      hintCard.addEventListener('animationend', () => hintCard.classList.remove('is-tap-hint'), { once:true });
+    }, { threshold:.75 });
+    hintObserver.observe(hintCard);
+    mobileMetrics.addEventListener('change', () => {
+      if (!hintShown && mobileMetrics.matches) {
+        hintObserver.unobserve(hintCard);
+        hintObserver.observe(hintCard);
+      }
+    });
+  }
   window.addEventListener('resize', updateMetricOverflow);
 }
 document.querySelectorAll('.process-tiles__illustration').forEach((image) => {
   image.addEventListener('error', () => image.classList.add('is-missing'));
   image.addEventListener('load', () => image.classList.remove('is-missing'));
   if (image.complete && image.naturalWidth === 0) image.classList.add('is-missing');
+});
+document.querySelectorAll('.process-tiles-v2__composite').forEach((image) => {
+  const art = image.closest('.process-tiles-v2__art');
+  const showUploadedImage = () => art.classList.toggle('has-composite', image.naturalWidth > 0);
+  image.addEventListener('load', showUploadedImage);
+  image.addEventListener('error', showUploadedImage);
+  if (image.complete) showUploadedImage();
 });
 const processTiles = document.querySelector('.process-tiles');
 const processMoreButton = processTiles?.querySelector('.process-tiles__more');

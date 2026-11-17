@@ -53,11 +53,48 @@ body { margin: 0; }
 .home-page .site-navigation { font-family: "Manrope", Arial, sans-serif; }
 
 .home-hero {
+  position: relative;
   min-height: 100svh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   padding: 110px clamp(24px, 4.85vw, 94px) 72px;
+}
+
+.home-hero__confetti {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.home-hero__confetti-dot {
+  position: absolute;
+  display: block;
+  width: var(--dot-size);
+  height: var(--dot-size);
+  border-radius: 50%;
+  background: var(--dot-color);
+  animation: home-confetti-appear 420ms ease-out both;
+}
+
+.home-hero__confetti-dot.is-falling {
+  animation: home-confetti-fall 550ms cubic-bezier(.35,0,.8,.5) both;
+}
+
+@keyframes home-confetti-appear {
+  from { opacity: 0; transform: scale(.55); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes home-confetti-fall {
+  from { opacity: 1; transform: translate(0,0) scale(1); }
+  to { opacity: 0; transform: translate(var(--dot-drift),45vh) scale(.75); }
+}
+
+@media (max-width: 900px), (prefers-reduced-motion: reduce) {
+  .home-hero__confetti { display: none; }
 }
 
 .home-hero__layout {
