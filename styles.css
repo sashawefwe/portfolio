@@ -183,7 +183,7 @@ button { font:inherit; }
   .process-tiles-v2__asset--delete { top:52.75%; left:26.4%; width:16.88%; aspect-ratio:24.053 / 52.031; border-radius:3px; box-shadow:0 3px 6px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.08); transform:rotate(-6deg); }
   .process-tiles-v2__asset--instagram { top:53.57%; left:42.63%; width:16.84%; aspect-ratio:24 / 52; border-radius:3px; box-shadow:0 3px 6px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.08); }
   .process-tiles-v2__asset--pinterest { top:52.75%; left:58.58%; width:16.88%; aspect-ratio:24.053 / 52.031; border-radius:3px; box-shadow:0 3px 6px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.08); transform:rotate(6deg); }
-  .process-tiles-v2__asset--jtbd { top:10.71%; left:20.53%; width:58.95%; aspect-ratio:84 / 112; }
+  .process-tiles-v2__asset--jtbd { top:10.71%; left:20.53%; width:58.95%; aspect-ratio:84 / 112; object-position:center top; }
   .process-tiles-v2__composite { display:none; position:absolute; inset:0; width:100%; height:100%; object-fit:contain; }
   .process-tiles-v2__art.has-composite .process-tiles-v2__asset { display:none; }
   .process-tiles-v2__art.has-composite .process-tiles-v2__composite { display:block; }
