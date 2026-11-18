@@ -136,11 +136,34 @@ const jtbdOverlay = document.querySelector('.jtbd-document-overlay');
 if (jtbdTrigger && jtbdOverlay) {
   const mobileDocument = window.matchMedia('(max-width:640px)');
   const scroller = jtbdOverlay.querySelector('.jtbd-document-overlay__scroll');
+  const toolbar = jtbdOverlay.querySelector('.jtbd-document-overlay__toolbar');
   const backButton = jtbdOverlay.querySelector('.jtbd-document-overlay__back');
+  const filename = jtbdOverlay.querySelector('.jtbd-document-overlay__filename');
+  const documentImage = jtbdOverlay.querySelector('.jtbd-document-overlay__image');
+  // Frames 23–49 of Frame 100.json, normalized from its animated frame width.
+  const motionSamples = [
+    0,.00088,.006139,.01662,.032941,.055784,.085874,.123941,.170609,
+    .226237,.290668,.362906,.440884,.521522,.601179,.676424,.744691,
+    .8045,.855337,.89736,.931094,.957232,.976515,.989646,.997275,.99998,1
+  ];
+  const motionDuration = (motionSamples.length - 1) / 60 * 1000;
   let previousBodyOverflow = '';
   let previousRootOverflow = '';
-  let closing = false;
-  let screenAnimation;
+  let animationFrame = 0;
+  let timeline = 0;
+  let sourceRect;
+  let targetRect;
+  let toolbarHeight = 0;
+  let pendingImage = false;
+
+  const clamp = (value) => Math.max(0, Math.min(1, value));
+  const mix = (from, to, amount) => from + (to - from) * amount;
+
+  function motionProgress(position) {
+    const samplePosition = clamp(position) * (motionSamples.length - 1);
+    const index = Math.min(Math.floor(samplePosition), motionSamples.length - 2);
+    return mix(motionSamples[index], motionSamples[index + 1], samplePosition - index);
+  }
 
   function thumbnailRect() {
     const art = jtbdTrigger.querySelector('.process-tiles-v2__art');
@@ -156,54 +179,111 @@ if (jtbdTrigger && jtbdOverlay) {
     };
   }
 
-  function zoomKeyframes() {
-    const from = thumbnailRect();
-    const screen = jtbdOverlay.getBoundingClientRect();
-    return [
-      { transform:`translate(${from.left}px, ${from.top}px) scale(${from.width / screen.width}, ${from.height / screen.height})`, borderRadius:'10px' },
-      { transform:'translate(0, 0) scale(1)', borderRadius:'0px' }
-    ];
+  function renderDocumentFrame(position) {
+    timeline = clamp(position);
+    const progress = motionProgress(timeline);
+    const radiusFinish = clamp((timeline - .83) / .17);
+    Object.assign(jtbdOverlay.style, {
+      left:`${mix(sourceRect.left, targetRect.left, progress)}px`,
+      top:`${mix(sourceRect.top, targetRect.top, progress)}px`,
+      right:'auto', bottom:'auto',
+      width:`${mix(sourceRect.width, targetRect.width, progress)}px`,
+      height:`${mix(sourceRect.height, targetRect.height, progress)}px`,
+      borderRadius:`${mix(10, 0, radiusFinish)}px`
+    });
+    scroller.style.paddingTop = `${toolbarHeight * progress}px`;
+    scroller.style.overflowY = timeline === 1 ? 'auto' : 'hidden';
+    backButton.style.transform = `scale(${progress})`;
+    filename.style.transform = `scale(${progress})`;
+  }
+
+  function clearAnimatedStyles() {
+    ['left','top','right','bottom','width','height','borderRadius'].forEach((property) => {
+      jtbdOverlay.style[property] = '';
+    });
+    backButton.style.transform = '';
+    filename.style.transform = '';
+    scroller.style.overflowY = '';
+    scroller.style.paddingTop = '';
   }
 
   function finishClose() {
+    cancelAnimationFrame(animationFrame);
     jtbdOverlay.hidden = true;
+    clearAnimatedStyles();
     document.body.style.overflow = previousBodyOverflow;
     document.documentElement.style.overflow = previousRootOverflow;
-    closing = false;
+    timeline = 0;
     jtbdTrigger.focus({ preventScroll:true });
   }
 
-  function openJtbdDocument() {
+  function animateTo(target) {
+    cancelAnimationFrame(animationFrame);
+    const start = timeline;
+    const duration = motionDuration * Math.abs(target - start);
+    if (!duration) return;
+    const startTime = performance.now();
+    const tick = (now) => {
+      const elapsed = clamp((now - startTime) / duration);
+      renderDocumentFrame(mix(start, target, elapsed));
+      if (elapsed < 1) {
+        animationFrame = requestAnimationFrame(tick);
+      } else if (target === 0) {
+        finishClose();
+      } else {
+        clearAnimatedStyles();
+        scroller.style.paddingTop = `${toolbar.getBoundingClientRect().height}px`;
+      }
+    };
+    animationFrame = requestAnimationFrame(tick);
+  }
+
+  function startOpen() {
     if (!mobileDocument.matches || !jtbdOverlay.hidden) return;
+    sourceRect = thumbnailRect();
     previousBodyOverflow = document.body.style.overflow;
     previousRootOverflow = document.documentElement.style.overflow;
     jtbdOverlay.hidden = false;
+    targetRect = jtbdOverlay.getBoundingClientRect();
+    toolbarHeight = toolbar.getBoundingClientRect().height;
     scroller.scrollTop = 0;
     document.body.style.overflow = 'hidden';
     document.documentElement.style.overflow = 'hidden';
-    backButton.focus({ preventScroll:true });
-    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      screenAnimation = jtbdOverlay.animate(
-        zoomKeyframes(),
-        { duration:420, easing:'cubic-bezier(.22,1,.36,1)' }
-      );
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      scroller.style.paddingTop = `${toolbarHeight}px`;
+      backButton.focus({ preventScroll:true });
+      timeline = 1;
+      return;
     }
+    renderDocumentFrame(0);
+    backButton.focus({ preventScroll:true });
+    animateTo(1);
+  }
+
+  function openJtbdDocument() {
+    if (!mobileDocument.matches || pendingImage || !jtbdOverlay.hidden) return;
+    if (documentImage && !documentImage.complete && documentImage.decode) {
+      pendingImage = true;
+      documentImage.decode().catch(() => {}).then(() => {
+        pendingImage = false;
+        startOpen();
+      });
+      return;
+    }
+    startOpen();
   }
 
   function closeJtbdDocument(immediate = false) {
-    if (jtbdOverlay.hidden || closing) return;
+    if (jtbdOverlay.hidden) return;
     if (immediate || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      screenAnimation?.cancel();
       finishClose();
       return;
     }
-    closing = true;
-    if (screenAnimation?.playState === 'running') screenAnimation.finish();
-    screenAnimation = jtbdOverlay.animate(
-      zoomKeyframes().reverse(),
-      { duration:300, easing:'cubic-bezier(.4,0,1,1)' }
-    );
-    screenAnimation.finished.then(finishClose, finishClose);
+    scroller.scrollTop = 0;
+    sourceRect = thumbnailRect();
+    if (timeline === 1) targetRect = jtbdOverlay.getBoundingClientRect();
+    toolbarHeight = toolbar.getBoundingClientRect().height;
+    animateTo(0);
   }
 
   jtbdTrigger.addEventListener('click', openJtbdDocument);
@@ -218,6 +298,16 @@ if (jtbdTrigger && jtbdOverlay) {
     if (event.key === 'Escape' && !jtbdOverlay.hidden) closeJtbdDocument();
   });
   mobileDocument.addEventListener('change', () => closeJtbdDocument(true));
+  window.addEventListener('resize', () => {
+    if (jtbdOverlay.hidden) return;
+    if (timeline === 1) {
+      scroller.style.paddingTop = `${toolbar.getBoundingClientRect().height}px`;
+      return;
+    }
+    targetRect = { left:0, top:0, width:window.innerWidth, height:window.innerHeight };
+    toolbarHeight = toolbar.getBoundingClientRect().height;
+    renderDocumentFrame(timeline);
+  });
 }
 const processTiles = document.querySelector('.process-tiles');
 const processMoreButton = processTiles?.querySelector('.process-tiles__more');

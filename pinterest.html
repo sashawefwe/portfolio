@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Pinterest case study</title>
   <meta name="description" content="Интерактивный summary-компонент UX/UI кейса">
+  <link rel="preload" as="image" href="assets/cases/pinterest/images/process-v2/first-jtbd-transition.png" media="(max-width: 640px)">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="navigation.css">
 </head>
@@ -401,32 +402,10 @@
       <button class="jtbd-document-overlay__back" type="button" aria-label="Назад к карте процесса">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 4-8 8 8 8"/></svg>
       </button>
-      <span class="jtbd-document-overlay__filename">Первые JTBD</span>
+      <span class="jtbd-document-overlay__filename" id="jtbd-document-title">Первые JTBD</span>
     </header>
     <div class="jtbd-document-overlay__scroll" tabindex="-1">
-      <article class="jtbd-document-page">
-        <header class="jtbd-document-page__header">
-          <h2 id="jtbd-document-title">JTBD (Jobs To Be Done)</h2>
-          <p>Описываю ключевые задачи пользователей в их контексте — что они хотят сделать, в какой ситуации и для чего.</p>
-        </header>
-        <section class="jtbd-document-page__job" aria-labelledby="jtbd-job-1">
-          <span class="jtbd-document-page__eyebrow" id="jtbd-job-1">JOB 1</span>
-          <p class="jtbd-document-page__statement">Когда я вижу пины, которые для меня уже неактуальны, я хочу их убрать, чтобы доска оставалась полезным инструментом, а не свалкой.</p>
-          <p class="jtbd-document-page__context">Контекст: плановая чистка, удаление отдельных пинов.</p>
-        </section>
-      </article>
-      <article class="jtbd-document-page" aria-label="Продолжение документа «Первые JTBD»">
-        <section class="jtbd-document-page__job" aria-labelledby="jtbd-job-2">
-          <span class="jtbd-document-page__eyebrow" id="jtbd-job-2">JOB 2</span>
-          <p class="jtbd-document-page__statement">Когда я случайно сохранила пин не на ту доску, я хочу быстро это изменить, чтобы найти его, когда понадобится.</p>
-          <p class="jtbd-document-page__context">Контекст: исправление ошибки. Пользователь хочет быстро поправить то, что пошло не так.</p>
-        </section>
-        <section class="jtbd-document-page__job" aria-labelledby="jtbd-job-3">
-          <span class="jtbd-document-page__eyebrow" id="jtbd-job-3">JOB 3</span>
-          <p class="jtbd-document-page__statement">Когда я вижу, что вся доска превратилась в свалку, я хочу быстро её реорганизовать целиком, чтобы она снова стала полезной.</p>
-          <p class="jtbd-document-page__context">Контекст: реорганизация всей доски сразу.</p>
-        </section>
-      </article>
+      <img class="jtbd-document-overlay__image" src="assets/cases/pinterest/images/process-v2/first-jtbd-transition.png" alt="Документ «Первые JTBD»" loading="eager" decoding="async" draggable="false">
     </div>
   </div>
   <script src="https://min30327.github.io/luxy.js/dist/js/luxy.js"></script>
