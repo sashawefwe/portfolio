@@ -209,6 +209,7 @@ if (jtbdTrigger && jtbdOverlay) {
 
   function finishClose() {
     cancelAnimationFrame(animationFrame);
+    jtbdOverlay.classList.remove('is-settled');
     jtbdOverlay.hidden = true;
     clearAnimatedStyles();
     document.body.style.overflow = previousBodyOverflow;
@@ -233,6 +234,7 @@ if (jtbdTrigger && jtbdOverlay) {
       } else {
         clearAnimatedStyles();
         scroller.style.paddingTop = `${toolbar.getBoundingClientRect().height}px`;
+        jtbdOverlay.classList.add('is-settled');
       }
     };
     animationFrame = requestAnimationFrame(tick);
@@ -240,6 +242,7 @@ if (jtbdTrigger && jtbdOverlay) {
 
   function startOpen() {
     if (!mobileDocument.matches || !jtbdOverlay.hidden) return;
+    jtbdOverlay.classList.remove('is-settled');
     sourceRect = thumbnailRect();
     previousBodyOverflow = document.body.style.overflow;
     previousRootOverflow = document.documentElement.style.overflow;
@@ -253,6 +256,7 @@ if (jtbdTrigger && jtbdOverlay) {
       scroller.style.paddingTop = `${toolbarHeight}px`;
       backButton.focus({ preventScroll:true });
       timeline = 1;
+      jtbdOverlay.classList.add('is-settled');
       return;
     }
     renderDocumentFrame(0);
@@ -275,6 +279,7 @@ if (jtbdTrigger && jtbdOverlay) {
 
   function closeJtbdDocument(immediate = false) {
     if (jtbdOverlay.hidden) return;
+    jtbdOverlay.classList.remove('is-settled');
     if (immediate || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       finishClose();
       return;
@@ -309,10 +314,9 @@ if (jtbdTrigger && jtbdOverlay) {
     renderDocumentFrame(timeline);
   });
 }
-const processTiles = document.querySelector('.process-tiles');
+const processTiles = document.querySelector('.process-tiles-v2');
 const processMoreButton = processTiles?.querySelector('.process-tiles__more');
 if (processMoreButton) {
-  processTiles.classList.add('has-mobile-collapse');
   processMoreButton.addEventListener('click', () => {
     const expanded = processTiles.classList.toggle('is-expanded');
     processMoreButton.setAttribute('aria-expanded', String(expanded));
