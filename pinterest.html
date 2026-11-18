@@ -210,7 +210,21 @@
             <h3>До</h3>
             <p>Вход в мультиселект спрятан за неочевидной иконкой, поэтому сам сценарий переноса нескольких пинов сложно обнаружить.</p>
           </div>
-          <div class="pin-save-video-test__media pin-save-video-test__media--empty" aria-hidden="true"></div>
+          <div class="pin-save-video-test__media pin-save-video-test__media--jitter">
+            <video muted loop playsinline preload="metadata">
+              <source src="assets/cases/pinterest/videos/11.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="video-controls">
+            <button class="video-progress" type="button" aria-label="Поставить видео на паузу" data-state="playing">
+              <svg class="video-progress__ring" width="44" height="44" viewBox="0 0 44 44" fill="none" aria-hidden="true">
+                <circle cx="22" cy="22" r="21" stroke="#DDDDDD" stroke-width="2"/>
+                <circle class="video-progress__arc" cx="22" cy="22" r="21" stroke="#969696" stroke-width="2" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" transform="rotate(-90 22 22)"/>
+              </svg>
+              <img class="video-progress__icon" src="assets/icons/video/pause.svg" width="20" height="20" alt="" aria-hidden="true">
+            </button>
+            <button class="video-replay" type="button" aria-label="Воспроизвести видео заново">Replay</button>
+          </div>
         </div>
         <div class="pin-save-video-test pin-save-video-test--after">
           <div class="pin-save-comparison__text pin-save-video-test__text">

@@ -255,7 +255,8 @@ button { font:inherit; }
 }
 .video-progress { --video-progress:0deg; position:relative; display:flex; align-items:center; justify-content:center; width:44px; height:44px; margin-top:20px; padding:0; border:0; border-radius:50%; background:transparent; color:#555451; cursor:pointer; }
 .pin-save-video-test__media { position:relative; width:100%; min-width:0; }
-.pin-save-video-test__media--empty { aspect-ratio:704 / 904; }
+.pin-save-video-test__media--jitter { aspect-ratio:704 / 904; overflow:hidden; }
+.pin-save-video-test__media--jitter video { width:100%; height:100%; object-fit:cover; object-position:center top; }
 .video-feedback { position:absolute; z-index:1; top:50%; left:50%; display:grid; place-items:center; width:clamp(56px,6vw,72px); aspect-ratio:1; border-radius:50%; background:rgba(28,28,30,.7); opacity:0; pointer-events:none; transform:translate(-50%,-50%) scale(.8); }
 .video-feedback img { display:block; width:32px; height:32px; filter:brightness(0) invert(1); }
 .video-feedback.is-visible { animation:video-feedback-pop .9s ease-out both; }
