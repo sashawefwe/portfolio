@@ -257,12 +257,30 @@
       <div class="case-section__title-reveal">
         <h2 class="case-section__title" id="result-title"><span>Результат</span></h2>
       </div>
-      <article class="result-feature">
+      <article class="result-feature result-feature--overview-desktop">
         <div class="result-feature__text">
           <h3>Действия с пином в одной панели</h3>
           <p>Сохранение, распределение по доскам, перенос и удаление теперь собраны в одном месте. Для мультиселекта я отдельно продумала поведение панели при выборе нескольких пинов.</p>
         </div>
         <div class="result-feature__image" aria-hidden="true"></div>
+      </article>
+      <article class="result-feature-mobile">
+        <div class="result-feature-mobile__text">
+          <h3>Пины и доски</h3>
+          <p>Сохранение, выбор доски, перенос и удаление пинов теперь собраны в одном месте.</p>
+          <p>Для мультиселекта я отдельно продумала поведение панели при выборе нескольких пинов.</p>
+          <ul class="result-feature-mobile__tags" aria-label="Возможности панели">
+            <li>Save</li>
+            <li>Boards</li>
+            <li>Move</li>
+            <li>Delete</li>
+            <li>Multiselect</li>
+            <li>Bottom sheet</li>
+          </ul>
+        </div>
+        <div class="result-feature-mobile__image">
+          <img src="assets/cases/pinterest/images/result-iphone.png" alt="Панель Saved со списком досок Pinterest" loading="lazy">
+        </div>
       </article>
       <div class="result-metrics" aria-labelledby="result-metrics-title">
         <h3 class="result-metrics__heading" id="result-metrics-title">По каким метрикам<br>оценивала бы эффект</h3>
@@ -302,12 +320,28 @@
           </div>
         </div>
       </div>
-      <article class="result-feature result-feature--contribution">
+      <article class="result-feature result-feature--contribution result-feature--contribution-desktop">
         <div class="result-feature__text">
           <h3>Мой вклад</h3>
           <p>Расширила задачу от локальных сценариев до общей модели управления пинами. Я увидела, что удаление и перенос нельзя рассматривать отдельно от сохранения. Поэтому пересобрала связи между сохранением, организацией и управлением пинами — общая коллекция стала базовым состоянием, а доски способом дальнейшей организации.</p>
         </div>
-        <div class="result-feature__image"><img src="assets/cases/pinterest/images/result-contribution.jpg" alt="Мем «Возьмите на работу пж»"></div>
+        <div class="result-feature__image"><img src="assets/cases/pinterest/images/result-contribution.png" alt="Мем «Возьмите на работу пж»"></div>
+      </article>
+      <article class="result-feature-mobile result-feature-mobile--contribution">
+        <div class="result-feature-mobile__text">
+          <h3>Мой вклад</h3>
+          <p>Задача начиналась с удаления и переноса пинов. Я объединила их с сохранением и выбором доски в одной панели.</p>
+          <p>Отдельно предложила новый принцип: сначала сохранить пин в общую коллекцию, а доску выбрать позже — когда захочется.</p>
+          <ul class="result-feature-mobile__tags" aria-label="Темы раздела">
+            <li>Save</li>
+            <li>Boards</li>
+            <li>Move</li>
+            <li>Delete</li>
+            <li>Collection</li>
+            <li>Flow</li>
+          </ul>
+        </div>
+        <img class="result-feature-mobile__contribution-image" src="assets/cases/pinterest/images/result-contribution.png" alt="Мем «Возьмите на работу пж»" loading="lazy">
       </article>
     </section>
     <section class="case-section project-brief" aria-labelledby="project-brief-title">
@@ -317,7 +351,7 @@
       </div>
       <div class="project-brief__deck">
       <div class="project-brief__grid" aria-label="Постановка задачи: пять пунктов">
-        <article class="project-brief__card project-brief__card--context is-expanded">
+        <article class="project-brief__card project-brief__card--context">
           <div>
             <h3>Контекст и боль</h3>
             <p class="project-brief__context-desktop">Pinterest годами игнорирует базовую гигиену управления контентом:</p>
@@ -377,7 +411,7 @@
         <div class="process-tiles__tile process-tiles__tile--testing" id="process-step-7"><span class="process-tiles__name">Тестирование</span><span class="process-tiles__number">7</span><img class="process-tiles__illustration" src="assets/cases/pinterest/images/process/testing.png" alt="" loading="lazy"></div>
         <div class="process-tiles__result-wrap" id="process-step-8"><div class="process-tiles__tile process-tiles__tile--result"><span class="process-tiles__name">hi-fi макеты</span><span class="process-tiles__number">8</span><img class="process-tiles__illustration" src="assets/cases/pinterest/images/process/hifi-mockups.png" alt="" loading="lazy"></div></div>
       </div>
-      <div class="process-tiles-v2" aria-label="Первые два этапа работы над проектом">
+      <div class="process-tiles-v2" aria-label="Этапы работы над проектом">
         <div class="process-tiles-v2__card">
           <div class="process-tiles-v2__heading"><span class="process-tiles-v2__name">Исследование</span><span class="process-tiles-v2__number">1</span></div>
           <div class="process-tiles-v2__art" aria-hidden="true">
@@ -389,11 +423,17 @@
             <img class="process-tiles-v2__composite" src="assets/cases/pinterest/images/process-v2/research-v2.png" alt="" loading="lazy">
           </div>
         </div>
-        <div class="process-tiles-v2__card process-tiles-v2__card--jtbd" role="button" tabindex="0" aria-label="Открыть документ «Первые JTBD»" aria-haspopup="dialog" aria-controls="jtbd-document-overlay">
+        <div class="process-tiles-v2__card process-tiles-v2__card--jtbd" role="button" tabindex="0" aria-label="Открыть документ «Первые JTBD»" aria-haspopup="dialog" aria-controls="jtbd-document-overlay" data-document-crop-top="266" data-document-crop-width="1428">
           <div class="process-tiles-v2__heading"><span class="process-tiles-v2__name">Первые JTBD</span><span class="process-tiles-v2__number">2</span></div>
           <div class="process-tiles-v2__art" aria-hidden="true">
-            <img class="process-tiles-v2__asset process-tiles-v2__asset--jtbd" src="assets/cases/pinterest/images/process-v2/first-jtbd-transition.png" alt="" loading="lazy">
+            <span class="process-tiles-v2__document-frame"><img class="process-tiles-v2__document-image" src="assets/cases/pinterest/images/process-v2/first-jtbd-transition.png" alt="" loading="lazy"></span>
             <img class="process-tiles-v2__composite" src="assets/cases/pinterest/images/process-v2/first-jtbd-v2.png" alt="" loading="lazy">
+          </div>
+        </div>
+        <div class="process-tiles-v2__card process-tiles-v2__card--interviews" role="button" tabindex="0" aria-label="Открыть документ «Глубинные интервью»" aria-haspopup="dialog" aria-controls="jtbd-document-overlay" data-document-crop-top="180" data-document-crop-width="1436">
+          <div class="process-tiles-v2__heading"><span class="process-tiles-v2__name">Глубинные интервью</span><span class="process-tiles-v2__number">4</span></div>
+          <div class="process-tiles-v2__art" aria-hidden="true">
+            <span class="process-tiles-v2__document-frame"><img class="process-tiles-v2__document-image" src="assets/cases/pinterest/images/process-v2/user-interviews.png" alt="" loading="lazy"></span>
           </div>
         </div>
         <button class="process-tiles__more" type="button" aria-expanded="false" hidden><span class="process-tiles__more-label">Развернуть</span><span class="process-tiles__more-chevron" aria-hidden="true"></span></button>

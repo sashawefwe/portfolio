@@ -49,7 +49,6 @@ if (briefDeck) {
   });
   function resetBriefForLayout() {
     expandableCards.forEach((card) => setBriefExpanded(card, false));
-    setBriefExpanded(expandableCards[0], true);
   }
   resetBriefForLayout();
   briefMobileLayout.addEventListener('change', resetBriefForLayout);
@@ -131,15 +130,17 @@ document.querySelectorAll('.process-tiles-v2__composite').forEach((image) => {
   image.addEventListener('error', showUploadedImage);
   if (image.complete) showUploadedImage();
 });
-const jtbdTrigger = document.querySelector('.process-tiles-v2__card--jtbd');
+const documentTriggers = document.querySelectorAll('.process-tiles-v2__card[aria-haspopup="dialog"]');
 const jtbdOverlay = document.querySelector('.jtbd-document-overlay');
-if (jtbdTrigger && jtbdOverlay) {
+if (documentTriggers.length && jtbdOverlay) {
   const mobileDocument = window.matchMedia('(max-width:640px)');
   const scroller = jtbdOverlay.querySelector('.jtbd-document-overlay__scroll');
   const toolbar = jtbdOverlay.querySelector('.jtbd-document-overlay__toolbar');
   const backButton = jtbdOverlay.querySelector('.jtbd-document-overlay__back');
   const filename = jtbdOverlay.querySelector('.jtbd-document-overlay__filename');
   const documentImage = jtbdOverlay.querySelector('.jtbd-document-overlay__image');
+  let activeTrigger = null;
+  let previewCropRatio = 0;
   // Frames 23–49 of Frame 100.json, normalized from its animated frame width.
   const motionSamples = [
     0,.00088,.006139,.01662,.032941,.055784,.085874,.123941,.170609,
@@ -166,9 +167,9 @@ if (jtbdTrigger && jtbdOverlay) {
   }
 
   function thumbnailRect() {
-    const art = jtbdTrigger.querySelector('.process-tiles-v2__art');
-    const image = art.querySelector('.process-tiles-v2__asset--jtbd');
-    if (!art.classList.contains('has-composite')) return image.getBoundingClientRect();
+    const art = activeTrigger.querySelector('.process-tiles-v2__art');
+    const frame = art.querySelector('.process-tiles-v2__document-frame');
+    if (!art.classList.contains('has-composite')) return frame.getBoundingClientRect();
     const artRect = art.getBoundingClientRect();
     const width = artRect.width * .5895;
     return {
@@ -183,16 +184,18 @@ if (jtbdTrigger && jtbdOverlay) {
     timeline = clamp(position);
     const progress = motionProgress(timeline);
     const radiusFinish = clamp((timeline - .83) / .17);
+    const frameWidth = mix(sourceRect.width, targetRect.width, progress);
     Object.assign(jtbdOverlay.style, {
       left:`${mix(sourceRect.left, targetRect.left, progress)}px`,
       top:`${mix(sourceRect.top, targetRect.top, progress)}px`,
       right:'auto', bottom:'auto',
-      width:`${mix(sourceRect.width, targetRect.width, progress)}px`,
+      width:`${frameWidth}px`,
       height:`${mix(sourceRect.height, targetRect.height, progress)}px`,
       borderRadius:`${mix(10, 0, radiusFinish)}px`
     });
     scroller.style.paddingTop = `${toolbarHeight * progress}px`;
     scroller.style.overflowY = timeline === 1 ? 'auto' : 'hidden';
+    documentImage.style.transform = `translateY(${-frameWidth * previewCropRatio * (1 - progress)}px)`;
     backButton.style.transform = `scale(${progress})`;
     filename.style.transform = `scale(${progress})`;
   }
@@ -203,6 +206,7 @@ if (jtbdTrigger && jtbdOverlay) {
     });
     backButton.style.transform = '';
     filename.style.transform = '';
+    documentImage.style.transform = '';
     scroller.style.overflowY = '';
     scroller.style.paddingTop = '';
   }
@@ -215,7 +219,8 @@ if (jtbdTrigger && jtbdOverlay) {
     document.body.style.overflow = previousBodyOverflow;
     document.documentElement.style.overflow = previousRootOverflow;
     timeline = 0;
-    jtbdTrigger.focus({ preventScroll:true });
+    activeTrigger.focus({ preventScroll:true });
+    activeTrigger = null;
   }
 
   function animateTo(target) {
@@ -264,9 +269,16 @@ if (jtbdTrigger && jtbdOverlay) {
     animateTo(1);
   }
 
-  function openJtbdDocument() {
+  function openDocument(trigger) {
     if (!mobileDocument.matches || pendingImage || !jtbdOverlay.hidden) return;
-    if (documentImage && !documentImage.complete && documentImage.decode) {
+    activeTrigger = trigger;
+    const previewImage = trigger.querySelector('.process-tiles-v2__document-image');
+    const title = trigger.querySelector('.process-tiles-v2__name').textContent.trim();
+    filename.textContent = title;
+    documentImage.alt = `Документ «${title}»`;
+    documentImage.src = previewImage.src;
+    previewCropRatio = Number(trigger.dataset.documentCropTop) / Number(trigger.dataset.documentCropWidth);
+    if (!documentImage.complete && documentImage.decode) {
       pendingImage = true;
       documentImage.decode().catch(() => {}).then(() => {
         pendingImage = false;
@@ -291,12 +303,14 @@ if (jtbdTrigger && jtbdOverlay) {
     animateTo(0);
   }
 
-  jtbdTrigger.addEventListener('click', openJtbdDocument);
-  jtbdTrigger.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      openJtbdDocument();
-    }
+  documentTriggers.forEach((trigger) => {
+    trigger.addEventListener('click', () => openDocument(trigger));
+    trigger.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        openDocument(trigger);
+      }
+    });
   });
   backButton.addEventListener('click', () => closeJtbdDocument());
   document.addEventListener('keydown', (event) => {
