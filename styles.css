@@ -197,7 +197,7 @@ button { font:inherit; }
   .process-tiles-v2__asset--instagram { top:53.57%; left:42.63%; width:16.84%; aspect-ratio:24 / 52; border-radius:3px; box-shadow:0 3px 6px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.08); }
   .process-tiles-v2__asset--pinterest { top:52.75%; left:58.58%; width:16.88%; aspect-ratio:24.053 / 52.031; border-radius:3px; box-shadow:0 3px 6px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.08); transform:rotate(6deg); }
   .process-tiles-v2__document-frame { position:absolute; top:10.71%; left:20.53%; display:block; width:58.95%; aspect-ratio:84 / 112; overflow:hidden; border-radius:1px; background:#fff; box-shadow:0 6px 12px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.08); }
-  .process-tiles-v2__document-image { display:block; width:100%; height:auto; max-width:none; }
+  .process-tiles-v2__document-image { position:absolute; top:0; left:0; display:block; width:100%; height:auto; max-width:none; }
   .process-tiles-v2__card--jtbd .process-tiles-v2__document-image { transform:translateY(-10.390625%); }
   .process-tiles-v2__card--interviews .process-tiles-v2__document-image { transform:translateY(-2.876318%); }
   .process-tiles-v2__composite { display:none; position:absolute; inset:0; width:100%; height:100%; object-fit:contain; }
