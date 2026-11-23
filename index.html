@@ -18,9 +18,9 @@
   <link rel="canonical" href="https://sashawefwe.github.io/portfolio/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="home.css">
-  <link rel="stylesheet" href="navigation.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&amp;family=Manrope:wght@400;500;600&amp;family=Onest:wght@400;450;500&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="home.css?v=20261123-15">
+  <link rel="stylesheet" href="navigation.css?v=20261123-1">
 </head>
 <body class="home-page">
   <nav class="site-navigation" aria-label="Основная навигация">
@@ -41,27 +41,31 @@
       <span class="site-navigation__item" aria-disabled="true">CV</span>
     </div>
   </nav>
-  <header class="home-header" aria-label="Местоположение и статус">
-    <div class="home-header__location">Москва <span aria-hidden="true">·</span> <time class="home-header__time"></time></div>
-    <div class="home-header__status"><span class="home-hero__status-indicator" aria-hidden="true"></span>В поиске</div>
-  </header>
-  <main>
-    <section class="home-hero" aria-label="Знакомство">
-      <div class="home-hero__layout">
-        <div class="home-hero__composition">
-          <figure class="home-hero__portrait">
-            <img src="assets/home/images/portrait.jpg" alt="Саша Пронченко" fetchpriority="high">
-          </figure>
-          <h1 class="home-hero__title">Саша Пронченко</h1>
-          <p class="home-hero__role">Продуктовый дизайнер (ux/ui)</p>
+  <div class="home-intro__menu"></div>
+  <main id="luxy">
+    <div class="home-hero">
+      <div class="home-intro-guides">
+        <div class="home-intro__controls">
+          <span class="home-intro__cv">CV</span>
         </div>
-        <p class="home-hero__aside">Сейчас я в поиске своей команды. Хочу растить продукт, а не просто закрывать таски. Ищу решения, полезные и пользователю, и бизнесу.</p>
+        <p class="home-intro__text">Я Саша, и я создаю дизайн цифровых продуктов. Не спешу исправлять шаги, пока не пойму, ту ли задачу мы решаем. Так решения часто выходят проще и полезнее.</p>
+        <figure class="home-hero__portrait">
+          <img src="assets/home/images/portrait.jpg" alt="Саша Пронченко">
+        </figure>
+      </div>
+      <div class="home-work-heading">
+        <img class="home-intro__daisy" src="assets/home/images/daisy.svg?v=20261123-1" width="1901" height="476" alt="">
+        <h1 class="home-work-heading__title">WORK</h1>
+      </div>
+      <div class="home-work-grid" aria-hidden="true">
+        <div class="home-work-grid__tile"></div>
+        <div class="home-work-grid__tile"></div>
       </div>
       <div class="home-hero__confetti" aria-hidden="true"></div>
-    </section>
+    </div>
   </main>
-  <script src="home.js"></script>
-  <script src="home-previews.js"></script>
-  <script src="navigation.js"></script>
+  <script defer src="https://min30327.github.io/luxy.js/dist/js/luxy.js"></script>
+  <script defer src="home.js?v=20261123-3"></script>
+  <script src="navigation.js?v=20261123-2"></script>
 </body>
 </html>

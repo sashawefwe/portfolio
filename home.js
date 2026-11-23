@@ -1,3 +1,15 @@
+const desktopScroll = window.matchMedia('(min-width: 901px) and (prefers-reduced-motion: no-preference)');
+let desktopScrollInitialized = false;
+
+function initDesktopScroll() {
+  if (desktopScrollInitialized || !desktopScroll.matches || !window.luxy) return;
+  window.luxy.init({ wrapper: '#luxy', wrapperSpeed: 0.055 });
+  desktopScrollInitialized = true;
+}
+
+initDesktopScroll();
+desktopScroll.addEventListener('change', initDesktopScroll);
+
 const moscowTime = document.querySelector('.home-header__time');
 
 if (moscowTime) {
@@ -25,20 +37,22 @@ if (moscowTime) {
   });
 }
 
-const heroConfetti = document.querySelector('.home-hero__confetti');
+const heroConfetti = document.querySelector('.home-hero__confetti:not([hidden])');
 
 if (heroConfetti) {
   const supportsEffect = window.matchMedia('(min-width: 901px) and (pointer: fine)');
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const colors = ['#FF477E', '#FF6B35', '#FFC328', '#B6E735', '#20CA85', '#1CC5D8', '#5A8BFF', '#9B62E8'];
   const idleDelay = 8000;
-  const maximumDots = 64;
-  const dotSize = 12;
+  const dotWidth = 7;
+  const dotHeight = 9;
+  const gridSpacing = 110;
+  let availableCells = [];
   let idleTimer;
   let dotTimer;
 
   function canShowDots() {
-    return supportsEffect.matches && !reducedMotion.matches && !document.hidden && window.scrollY < 8
+    return supportsEffect.matches && !reducedMotion.matches && window.scrollY < 8
       && !document.querySelector('.desktop-navigation__overlay:not([hidden])');
   }
 
@@ -48,29 +62,46 @@ if (heroConfetti) {
   }
 
   function addDot() {
-    if (!canShowDots()) {
-      stopDotTimer();
-      return;
-    }
-    if (heroConfetti.childElementCount >= maximumDots) {
-      stopDotTimer();
-      return;
-    }
-
     const dot = document.createElement('span');
+    const cellIndex = Math.floor(Math.random() * availableCells.length);
+    const [cell] = availableCells.splice(cellIndex, 1);
     dot.className = 'home-hero__confetti-dot';
-    dot.style.left = `${Math.random() * Math.max(0, heroConfetti.clientWidth - dotSize)}px`;
-    dot.style.top = `${Math.random() * Math.max(0, heroConfetti.clientHeight - dotSize)}px`;
-    dot.style.setProperty('--dot-size', `${dotSize}px`);
+    dot.style.left = `${cell.x}px`;
+    dot.style.top = `${cell.y}px`;
+    dot.style.setProperty('--dot-width', `${dotWidth}px`);
+    dot.style.setProperty('--dot-height', `${dotHeight}px`);
     dot.style.setProperty('--dot-color', colors[Math.floor(Math.random() * colors.length)]);
     dot.style.setProperty('--dot-drift', `${Math.round((Math.random() - .5) * 100)}px`);
     heroConfetti.append(dot);
   }
 
+  function prepareGrid() {
+    const right = Math.max(0, heroConfetti.clientWidth - dotWidth);
+    const bottom = Math.max(0, Math.min(heroConfetti.clientHeight, document.documentElement.clientHeight) - dotHeight);
+    const columnIntervals = Math.max(1, Math.round(right / gridSpacing));
+    const rowIntervals = Math.max(1, Math.round(bottom / gridSpacing));
+    availableCells = [];
+    for (let row = 0; row <= rowIntervals; row += 1) {
+      for (let column = 0; column <= columnIntervals; column += 1) {
+        availableCells.push({
+          x: column * right / columnIntervals,
+          y: row * bottom / rowIntervals
+        });
+      }
+    }
+  }
+
   function startDots() {
     if (!canShowDots()) return;
+    prepareGrid();
     addDot();
-    dotTimer = window.setInterval(addDot, 180);
+    dotTimer = window.setInterval(() => {
+      if (!canShowDots() || !availableCells.length) {
+        stopDotTimer();
+        return;
+      }
+      addDot();
+    }, 180);
   }
 
   function scheduleDots() {
@@ -90,17 +121,15 @@ if (heroConfetti) {
   window.addEventListener('pointermove', reactToActivity, { passive: true });
   window.addEventListener('pointerdown', reactToActivity, { passive: true });
   window.addEventListener('scroll', reactToActivity, { passive: true });
+  window.addEventListener('resize', reactToActivity);
   window.addEventListener('keydown', reactToActivity);
   supportsEffect.addEventListener('change', reactToActivity);
   reducedMotion.addEventListener('change', reactToActivity);
+
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) {
-      window.clearTimeout(idleTimer);
-      stopDotTimer();
-      heroConfetti.replaceChildren();
-    } else {
-      scheduleDots();
-    }
+    if (!document.hidden || dotTimer !== undefined || heroConfetti.querySelector('.home-hero__confetti-dot:not(.is-falling)')) return;
+    window.clearTimeout(idleTimer);
+    startDots();
   });
 
   scheduleDots();

@@ -1,6 +1,7 @@
 (() => {
   const desktopNavigation = document.querySelector('.site-navigation');
   if (!desktopNavigation) return;
+  const homeMenuSlot = document.querySelector('.home-intro__menu');
 
   const currentHref = desktopNavigation.querySelector('[aria-current="page"]')?.getAttribute('href');
   const entries = [
@@ -9,6 +10,7 @@
     { label:'Орбита' }
   ];
   const morphIcon = '<span class="navigation-morph-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><rect x="3" y="3" width="6" height="6" rx="3"/><rect x="15" y="3" width="6" height="6" rx="3"/><rect x="3" y="15" width="6" height="6" rx="3"/><rect x="15" y="15" width="6" height="6" rx="3"/></svg></span>';
+  const toggleContents = `<span class="navigation-toggle__label" aria-hidden="true"><span>Menu</span><span>Close</span></span>${morphIcon}`;
   // Each outer cap travels to the next corner counterclockwise; its inner cap grows toward the center.
   const morphPaths = [
     { direction:1, points:[{ x:6, y:6, angle:0 }, { x:4.3, y:11.6, angle:-25 }, { x:5.56, y:18.44, angle:-45 }] },
@@ -80,7 +82,7 @@
   trigger.setAttribute('aria-expanded', 'false');
   trigger.setAttribute('aria-controls', 'mobile-navigation-menu');
   trigger.setAttribute('aria-label', 'Открыть меню');
-  trigger.innerHTML = morphIcon;
+  trigger.innerHTML = toggleContents;
   const animateMobileMorph = createMorphAnimation(trigger);
 
   const menu = document.createElement('nav');
@@ -111,7 +113,8 @@
     menu.append(item);
   });
 
-  navigation.append(trigger, mobileBackdrop, menu);
+  (homeMenuSlot || navigation).prepend(trigger);
+  navigation.append(mobileBackdrop, menu);
   document.body.append(navigation);
 
   let previousMobileHtmlOverflow = '';
@@ -145,7 +148,7 @@
   mobileBackdrop.addEventListener('pointerdown', () => setOpen(false));
 
   document.addEventListener('pointerdown', (event) => {
-    if (!navigation.contains(event.target)) setOpen(false);
+    if (!navigation.contains(event.target) && !trigger.contains(event.target)) setOpen(false);
   });
 
   document.addEventListener('keydown', (event) => {
@@ -175,7 +178,7 @@
   desktopTrigger.setAttribute('aria-label', 'Открыть меню');
   desktopTrigger.setAttribute('aria-expanded', 'false');
   desktopTrigger.setAttribute('aria-controls', 'desktop-navigation-menu');
-  desktopTrigger.innerHTML = morphIcon;
+  desktopTrigger.innerHTML = toggleContents;
   const animateDesktopMorph = createMorphAnimation(desktopTrigger);
 
   const desktopOverlay = document.createElement('div');
@@ -216,11 +219,12 @@
 
   desktopMenu.append(closeButton, desktopLinks);
   desktopOverlay.append(desktopMenu);
-  document.body.append(desktopTrigger, desktopOverlay);
+  if (homeMenuSlot) homeMenuSlot.prepend(desktopTrigger);
+  else document.body.append(desktopTrigger);
+  document.body.append(desktopOverlay);
 
   let desktopOpen = false;
-  let previousHtmlOverflow = '';
-  let previousBodyOverflow = '';
+  let desktopScrollY = 0;
   function setDesktopOpen(open) {
     if (desktopOpen === open) return;
     desktopOpen = open;
@@ -229,17 +233,26 @@
     desktopTrigger.setAttribute('aria-label', open ? 'Закрыть меню' : 'Открыть меню');
     animateDesktopMorph(open);
     if (open) {
-      previousHtmlOverflow = document.documentElement.style.overflow;
-      previousBodyOverflow = document.body.style.overflow;
-      document.documentElement.style.overflow = 'hidden';
-      document.body.style.overflow = 'hidden';
-      desktopTrigger.focus();
-    } else {
-      document.documentElement.style.overflow = previousHtmlOverflow;
-      document.body.style.overflow = previousBodyOverflow;
-      if (desktopLayout.matches) desktopTrigger.focus();
+      desktopScrollY = window.scrollY;
+      desktopTrigger.focus({ preventScroll: true });
+    } else if (desktopLayout.matches) {
+      desktopTrigger.focus({ preventScroll: true });
     }
   }
+
+  function preventDesktopPageScroll(event) {
+    if (!desktopOpen) return;
+    if (desktopMenu.contains(event.target) && desktopMenu.scrollHeight > desktopMenu.clientHeight) return;
+    event.preventDefault();
+  }
+
+  window.addEventListener('wheel', preventDesktopPageScroll, { passive: false });
+  window.addEventListener('touchmove', preventDesktopPageScroll, { passive: false });
+  window.addEventListener('scroll', () => {
+    if (desktopOpen && window.scrollY !== desktopScrollY) {
+      window.scrollTo({ top: desktopScrollY, behavior: 'instant' });
+    }
+  }, { passive: true });
 
   desktopTrigger.addEventListener('click', () => setDesktopOpen(!desktopOpen));
   closeButton.addEventListener('click', () => setDesktopOpen(false));
@@ -251,6 +264,10 @@
     if (event.key === 'Escape') {
       setDesktopOpen(false);
       desktopTrigger.focus();
+      return;
+    }
+    if (['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '].includes(event.key)) {
+      if (event.key !== ' ' || document.activeElement !== desktopTrigger) event.preventDefault();
       return;
     }
     if (event.key !== 'Tab') return;
