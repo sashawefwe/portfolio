@@ -457,3 +457,70 @@ body { margin: 0; }
   }
 }
 
+@media (width < 64em) {
+  .home-intro-guides {
+    background:
+      var(--guide-nodes) left / 2px 100%,
+      var(--guide-nodes) right / 2px 100%;
+    background-repeat: no-repeat;
+    box-shadow: inset 0 0 0 1px var(--guide-line);
+  }
+
+  .home-intro__text {
+    grid-area: 2 / 1;
+    padding: 1.125rem;
+  }
+
+  .home-intro-guides .home-hero__portrait {
+    justify-self: start;
+    width: auto;
+    max-width: calc(100% - 12px);
+    height: calc(100% - 12px);
+  }
+}
+
+@media (width < 40em) {
+  .home-intro-guides {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 9.5rem minmax(13.25rem, auto) minmax(17rem, auto);
+  }
+
+  .home-intro__text {
+    align-self: stretch;
+    background:
+      var(--guide-nodes) left / 2px 100%,
+      var(--guide-nodes) right / 2px 100%,
+      var(--guide-divider) top / 100% 1px,
+      var(--guide-divider) bottom / 100% 1px;
+    background-repeat: no-repeat;
+  }
+
+  .home-intro-guides .home-hero__portrait { grid-area: 3 / 1; }
+}
+
+@media (40em <= width < 64em) {
+  .home-intro-guides {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(14rem, 1fr));
+    background:
+      var(--guide-nodes) left / 2px 100%,
+      var(--guide-nodes) right / 2px 100%,
+      var(--guide-divider) center / 100% 1px;
+    background-repeat: no-repeat;
+  }
+
+  .home-intro-guides::after {
+    content: "";
+    position: absolute;
+    inset: 50% auto 0 50%;
+    width: 2px;
+    background:
+      var(--guide-nodes) center / 2px 100%,
+      var(--guide-divider) left / 1px 100%;
+    background-repeat: no-repeat;
+    pointer-events: none;
+  }
+
+  .home-intro-guides .home-hero__portrait { grid-area: 2 / 2; }
+}
+
