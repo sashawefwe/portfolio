@@ -19,8 +19,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&amp;family=Manrope:wght@400;500;600&amp;family=Onest:wght@400;450;500&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="home.css?v=20261123-24">
-  <link rel="stylesheet" href="navigation.css?v=20261123-1">
+  <link rel="stylesheet" href="home.css?v=20261124-4">
+  <link rel="stylesheet" href="navigation.css?v=20261123-7">
 </head>
 <body class="home-page">
   <nav class="site-navigation" aria-label="Основная навигация">
@@ -48,13 +48,16 @@
         <div class="home-intro__controls">
           <span class="home-intro__cv">CV</span>
         </div>
-        <p class="home-intro__text">Я Саша, и я создаю дизайн цифровых продуктов. Не спешу исправлять шаги, пока не пойму, ту ли задачу мы решаем. Так решения часто выходят проще и полезнее.</p>
+        <p class="home-intro__text">Я Саша, и я проектирую цифровые продукты. Не спешу исправлять шаги, пока не пойму, ту ли задачу мы решаем. Так решения часто выходят проще и полезнее.</p>
         <figure class="home-hero__portrait">
           <img src="assets/home/images/portrait.jpg" alt="Саша Пронченко">
         </figure>
       </div>
       <div class="home-work-heading">
-        <img class="home-intro__daisy" src="assets/home/images/daisy.svg?v=20261123-1" width="1901" height="476" alt="">
+        <picture>
+          <source media="(width < 40em)" srcset="assets/home/images/daisy_mobile.svg" width="484" height="484">
+          <img class="home-intro__daisy" src="assets/home/images/daisy.svg?v=20261123-1" width="1901" height="476" alt="">
+        </picture>
         <h1 class="home-work-heading__title">WORK</h1>
       </div>
       <div class="home-work-grid" aria-hidden="true">
@@ -66,6 +69,6 @@
   </main>
   <script defer src="https://min30327.github.io/luxy.js/dist/js/luxy.js"></script>
   <script defer src="home.js?v=20261123-3"></script>
-  <script src="navigation.js?v=20261123-2"></script>
+  <script src="navigation.js?v=20261123-7"></script>
 </body>
 </html>

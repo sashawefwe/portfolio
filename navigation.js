@@ -9,8 +9,7 @@
     { label:'Pinterest', href:'pinterest.html' },
     { label:'Орбита' }
   ];
-  const morphIcon = '<span class="navigation-morph-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><rect x="3" y="3" width="6" height="6" rx="3"/><rect x="15" y="3" width="6" height="6" rx="3"/><rect x="3" y="15" width="6" height="6" rx="3"/><rect x="15" y="15" width="6" height="6" rx="3"/></svg></span>';
-  const toggleContents = `<span class="navigation-toggle__label" aria-hidden="true"><span>Menu</span><span>Close</span></span>${morphIcon}`;
+  const morphIcon = '<span class="navigation-morph-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><rect x="3" y="3" width="6" height="6"/><rect x="15" y="3" width="6" height="6"/><rect x="3" y="15" width="6" height="6"/><rect x="15" y="15" width="6" height="6"/></svg></span>';
   // Each outer cap travels to the next corner counterclockwise; its inner cap grows toward the center.
   const morphPaths = [
     { direction:1, points:[{ x:6, y:6, angle:0 }, { x:4.3, y:11.6, angle:-25 }, { x:5.56, y:18.44, angle:-45 }] },
@@ -31,6 +30,7 @@
       const heights = [6, 4.8, 4.2];
       const width = interpolate(widths[segment], widths[segment + 1]);
       const height = interpolate(heights[segment], heights[segment + 1]);
+      const radius = height / 2 * Math.min(1, value / midpoint);
       rects.forEach((rect, index) => {
         const path = morphPaths[index];
         const from = path.points[segment];
@@ -46,7 +46,7 @@
         rect.setAttribute('y', String(y - height / 2));
         rect.setAttribute('width', String(width));
         rect.setAttribute('height', String(height));
-        rect.setAttribute('rx', String(height / 2));
+        rect.setAttribute('rx', String(radius));
         rect.setAttribute('transform', `rotate(${angle} ${x} ${y})`);
       });
     }
@@ -82,8 +82,9 @@
   trigger.setAttribute('aria-expanded', 'false');
   trigger.setAttribute('aria-controls', 'mobile-navigation-menu');
   trigger.setAttribute('aria-label', 'Открыть меню');
-  trigger.innerHTML = toggleContents;
-  const animateMobileMorph = createMorphAnimation(trigger);
+  if (homeMenuSlot) trigger.textContent = 'Menu';
+  else trigger.innerHTML = morphIcon;
+  const animateMobileMorph = homeMenuSlot ? null : createMorphAnimation(trigger);
 
   const menu = document.createElement('nav');
   menu.className = 'mobile-navigation__menu';
@@ -99,8 +100,10 @@
   mobileClose.setAttribute('aria-label', 'Закрыть меню');
   mobileClose.innerHTML = '<span aria-hidden="true"></span>';
   menu.append(mobileClose);
+  const mobileMenuControl = homeMenuSlot ? mobileClose : trigger;
 
-  entries.forEach(({ label, href }) => {
+  const mobileEntries = homeMenuSlot ? entries : [...entries, { label: 'CV' }];
+  mobileEntries.forEach(({ label, href }) => {
     const item = document.createElement(href ? 'a' : 'span');
     item.className = href ? 'mobile-navigation__link' : 'mobile-navigation__label';
     item.textContent = label;
@@ -125,14 +128,14 @@
     trigger.setAttribute('aria-expanded', String(open));
     trigger.setAttribute('aria-label', open ? 'Закрыть меню' : 'Открыть меню');
     if (changed) {
-      animateMobileMorph(open);
+      animateMobileMorph?.(open);
       mobileBackdrop.hidden = !open;
       if (open) {
         previousMobileHtmlOverflow = document.documentElement.style.overflow;
         previousMobileBodyOverflow = document.body.style.overflow;
         document.documentElement.style.overflow = 'hidden';
         document.body.style.overflow = 'hidden';
-        trigger.focus();
+        mobileMenuControl.focus({ preventScroll: true });
       } else {
         document.documentElement.style.overflow = previousMobileHtmlOverflow;
         document.body.style.overflow = previousMobileBodyOverflow;
@@ -153,7 +156,7 @@
 
   document.addEventListener('keydown', (event) => {
     if (navigation.dataset.open === 'true' && event.key === 'Tab') {
-      const focusable = [trigger, ...menu.querySelectorAll('a')];
+      const focusable = [mobileMenuControl, ...menu.querySelectorAll('a')];
       const first = focusable[0];
       const last = focusable[focusable.length - 1];
       if (event.shiftKey && document.activeElement === first) {
@@ -178,8 +181,7 @@
   desktopTrigger.setAttribute('aria-label', 'Открыть меню');
   desktopTrigger.setAttribute('aria-expanded', 'false');
   desktopTrigger.setAttribute('aria-controls', 'desktop-navigation-menu');
-  desktopTrigger.innerHTML = toggleContents;
-  const animateDesktopMorph = createMorphAnimation(desktopTrigger);
+  desktopTrigger.textContent = 'Menu';
 
   const desktopOverlay = document.createElement('div');
   desktopOverlay.className = 'desktop-navigation__overlay';
@@ -231,10 +233,9 @@
     desktopOverlay.hidden = !open;
     desktopTrigger.setAttribute('aria-expanded', String(open));
     desktopTrigger.setAttribute('aria-label', open ? 'Закрыть меню' : 'Открыть меню');
-    animateDesktopMorph(open);
     if (open) {
       desktopScrollY = window.scrollY;
-      desktopTrigger.focus({ preventScroll: true });
+      closeButton.focus({ preventScroll: true });
     } else if (desktopLayout.matches) {
       desktopTrigger.focus({ preventScroll: true });
     }
@@ -263,15 +264,14 @@
     if (!desktopOpen) return;
     if (event.key === 'Escape') {
       setDesktopOpen(false);
-      desktopTrigger.focus();
       return;
     }
     if (['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '].includes(event.key)) {
-      if (event.key !== ' ' || document.activeElement !== desktopTrigger) event.preventDefault();
+      if (event.key !== ' ' || document.activeElement !== closeButton) event.preventDefault();
       return;
     }
     if (event.key !== 'Tab') return;
-    const focusable = [desktopTrigger, ...desktopLinks.querySelectorAll('a')];
+    const focusable = [closeButton, ...desktopLinks.querySelectorAll('a')];
     const first = focusable[0];
     const last = focusable[focusable.length - 1];
     if (event.shiftKey && document.activeElement === first) {
