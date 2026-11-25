@@ -353,7 +353,7 @@ a.desktop-navigation__link:not([aria-current="page"]):hover { opacity: .55; }
     border-radius: 24px;
   }
 
-  .desktop-navigation__link { font-size: clamp(20px, 6vw, 30px); }
+  .desktop-navigation__link { font-size: clamp(25px, calc(7vw + 1px), 33px); }
 }
 
 .desktop-navigation__trigger,
