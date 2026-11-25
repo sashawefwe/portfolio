@@ -180,7 +180,7 @@
   max-width: calc(100vw - 32px);
   max-height: calc(100dvh - 20px);
   aspect-ratio: 1;
-  padding: clamp(24px, 2.4vw, 46px);
+  padding: clamp(20px, calc(2.4vw - 4px), 42px);
   overflow-y: auto;
   overscroll-behavior-y: contain;
   border-radius: clamp(24px, 2vw, 38px);
@@ -201,6 +201,8 @@
   font: 500 clamp(14px, .95vw, 15px)/1.25 Inter, Arial, sans-serif;
   font-variant-numeric: tabular-nums;
 }
+
+.desktop-navigation__clock time { color: #000; }
 
 .desktop-navigation__close {
   position: relative;
@@ -261,12 +263,11 @@
 
 img.desktop-navigation__thumbnail { object-position: 50% 12%; }
 .desktop-navigation__link[aria-current="page"] .desktop-navigation__thumbnail { filter: grayscale(1); }
-.desktop-navigation__thumbnail--pinterest { background: #e60023; }
 .desktop-navigation__thumbnail--orbita { background: #fff; border: 1px solid #d9d9d9; }
 
 a.desktop-navigation__link:not([aria-current="page"]):hover { opacity: .55; }
 .desktop-navigation__link[aria-disabled="true"] { cursor: default; }
-.desktop-navigation__link[aria-current="page"] { color: #757575; }
+.desktop-navigation__link[aria-current="page"] { color: #757575; cursor: default; }
 .desktop-navigation__link[aria-current="page"]::after {
   content: "";
   flex: none;
@@ -386,19 +387,30 @@ a.desktop-navigation__link:not([aria-current="page"]):hover { opacity: .55; }
   .mobile-navigation__trigger {
     display: grid;
     place-items: center;
-    width: 48px;
-    height: 48px;
-    padding: 0;
-    border-radius: 50%;
   }
+}
 
-  .home-intro__menu .mobile-navigation__trigger {
-    width: max-content;
-    height: var(--navigation-toggle-height);
-    padding: 0 var(--navigation-toggle-padding);
-    border-radius: 9999px;
+.pinterest-page .mobile-navigation__trigger,
+.pinterest-page .desktop-navigation__trigger {
+  top: 2.1875rem;
+  right: auto;
+  left: 1.8125rem;
+}
+
+@media (min-width: 901px) {
+  .pinterest-page .desktop-navigation__menu {
+    top: 1.375rem;
+    right: auto;
+    left: 1.25rem;
+    max-height: calc(100dvh - 20px - 1.375rem);
   }
+}
 
+@media (width < 40em) {
+  .desktop-navigation__menu { min-height: min(424px, calc(100dvh - 24px)); }
+  .desktop-navigation__links { gap: 16px; }
+  .desktop-navigation__link { font-size: clamp(30px, 8.5vw, 36px); }
+  .desktop-navigation__footer { padding-top: calc(clamp(24px, 5vh, 48px) + 64px); }
 }
 
 @media (prefers-reduced-motion: reduce) {

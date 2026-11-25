@@ -73,8 +73,7 @@
   mobileTrigger.setAttribute('aria-expanded', 'false');
   mobileTrigger.setAttribute('aria-controls', 'desktop-navigation-menu');
   mobileTrigger.setAttribute('aria-label', 'Открыть меню');
-  if (homeMenuSlot) mobileTrigger.textContent = 'Menu';
-  else mobileTrigger.innerHTML = morphIcon;
+  mobileTrigger.textContent = 'Menu';
 
   const desktopLayout = window.matchMedia('(min-width: 901px)');
   const desktopTrigger = document.createElement('button');
@@ -111,10 +110,11 @@
   desktopLinks.className = 'desktop-navigation__links';
   [
     { label:'Саша Пронченко', href:'index.html', image:'assets/home/images/portrait.jpg' },
-    { label:'Pinterest', href:'pinterest.html', icon:'pinterest' },
+    { label:'Pinterest', href:'pinterest.html', image:'assets/icons/navigation/pinterest-menu.png' },
     { label:'Орбита', icon:'orbita' }
   ].forEach(({ label, href, image, icon }) => {
-    const item = document.createElement(href ? 'a' : 'span');
+    const isCurrent = Boolean(href && href === currentHref);
+    const item = document.createElement(href && !isCurrent ? 'a' : 'span');
     item.className = 'desktop-navigation__link';
     const thumbnail = document.createElement(image ? 'img' : 'span');
     thumbnail.className = 'desktop-navigation__thumbnail';
@@ -126,9 +126,10 @@
       thumbnail.setAttribute('aria-hidden', 'true');
     }
     item.append(thumbnail, label);
-    if (href) {
+    if (isCurrent) {
+      item.setAttribute('aria-current', 'page');
+    } else if (href) {
       item.href = href;
-      if (href === currentHref) item.setAttribute('aria-current', 'page');
     } else {
       item.setAttribute('aria-disabled', 'true');
     }
