@@ -4,11 +4,6 @@
   const homeMenuSlot = document.querySelector('.home-intro__menu');
 
   const currentHref = desktopNavigation.querySelector('[aria-current="page"]')?.getAttribute('href');
-  const entries = [
-    { label:'Саша Пронченко', href:'index.html' },
-    { label:'Pinterest', href:'pinterest.html' },
-    { label:'Орбита' }
-  ];
   const morphIcon = '<span class="navigation-morph-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><rect x="3" y="3" width="6" height="6"/><rect x="15" y="3" width="6" height="6"/><rect x="3" y="15" width="6" height="6"/><rect x="15" y="15" width="6" height="6"/></svg></span>';
   // Each outer cap travels to the next corner counterclockwise; its inner cap grows toward the center.
   const morphPaths = [
@@ -72,107 +67,14 @@
     };
   }
 
-  const navigation = document.createElement('div');
-  navigation.className = 'mobile-navigation';
-  navigation.dataset.open = 'false';
-
-  const trigger = document.createElement('button');
-  trigger.className = 'mobile-navigation__trigger';
-  trigger.type = 'button';
-  trigger.setAttribute('aria-expanded', 'false');
-  trigger.setAttribute('aria-controls', 'mobile-navigation-menu');
-  trigger.setAttribute('aria-label', 'Открыть меню');
-  if (homeMenuSlot) trigger.textContent = 'Menu';
-  else trigger.innerHTML = morphIcon;
-  const animateMobileMorph = homeMenuSlot ? null : createMorphAnimation(trigger);
-
-  const menu = document.createElement('nav');
-  menu.className = 'mobile-navigation__menu';
-  menu.id = 'mobile-navigation-menu';
-  menu.setAttribute('aria-label', 'Мобильная навигация');
-
-  const mobileBackdrop = document.createElement('div');
-  mobileBackdrop.className = 'mobile-navigation__backdrop';
-  mobileBackdrop.hidden = true;
-  const mobileClose = document.createElement('button');
-  mobileClose.className = 'mobile-navigation__close';
-  mobileClose.type = 'button';
-  mobileClose.setAttribute('aria-label', 'Закрыть меню');
-  mobileClose.innerHTML = '<span aria-hidden="true"></span>';
-  menu.append(mobileClose);
-  const mobileMenuControl = homeMenuSlot ? mobileClose : trigger;
-
-  const mobileEntries = homeMenuSlot ? entries : [...entries, { label: 'CV' }];
-  mobileEntries.forEach(({ label, href }) => {
-    const item = document.createElement(href ? 'a' : 'span');
-    item.className = href ? 'mobile-navigation__link' : 'mobile-navigation__label';
-    item.textContent = label;
-    if (href) {
-      item.href = href;
-      if (href === currentHref) item.setAttribute('aria-current', 'page');
-    } else {
-      item.setAttribute('aria-disabled', 'true');
-    }
-    menu.append(item);
-  });
-
-  (homeMenuSlot || navigation).prepend(trigger);
-  navigation.append(mobileBackdrop, menu);
-  document.body.append(navigation);
-
-  let previousMobileHtmlOverflow = '';
-  let previousMobileBodyOverflow = '';
-  function setOpen(open) {
-    const changed = (navigation.dataset.open === 'true') !== open;
-    navigation.dataset.open = String(open);
-    trigger.setAttribute('aria-expanded', String(open));
-    trigger.setAttribute('aria-label', open ? 'Закрыть меню' : 'Открыть меню');
-    if (changed) {
-      animateMobileMorph?.(open);
-      mobileBackdrop.hidden = !open;
-      if (open) {
-        previousMobileHtmlOverflow = document.documentElement.style.overflow;
-        previousMobileBodyOverflow = document.body.style.overflow;
-        document.documentElement.style.overflow = 'hidden';
-        document.body.style.overflow = 'hidden';
-        mobileMenuControl.focus({ preventScroll: true });
-      } else {
-        document.documentElement.style.overflow = previousMobileHtmlOverflow;
-        document.body.style.overflow = previousMobileBodyOverflow;
-        trigger.focus();
-      }
-    }
-  }
-
-  trigger.addEventListener('click', () => {
-    setOpen(navigation.dataset.open !== 'true');
-  });
-  mobileClose.addEventListener('click', () => setOpen(false));
-  mobileBackdrop.addEventListener('pointerdown', () => setOpen(false));
-
-  document.addEventListener('pointerdown', (event) => {
-    if (!navigation.contains(event.target) && !trigger.contains(event.target)) setOpen(false);
-  });
-
-  document.addEventListener('keydown', (event) => {
-    if (navigation.dataset.open === 'true' && event.key === 'Tab') {
-      const focusable = [mobileMenuControl, ...menu.querySelectorAll('a')];
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault();
-        last.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault();
-        first.focus();
-      }
-    }
-    if (event.key !== 'Escape' || navigation.dataset.open !== 'true') return;
-    setOpen(false);
-    trigger.focus();
-  });
-
-  window.matchMedia('(min-width: 901px)').addEventListener('change', () => setOpen(false));
+  const mobileTrigger = document.createElement('button');
+  mobileTrigger.className = 'mobile-navigation__trigger';
+  mobileTrigger.type = 'button';
+  mobileTrigger.setAttribute('aria-expanded', 'false');
+  mobileTrigger.setAttribute('aria-controls', 'desktop-navigation-menu');
+  mobileTrigger.setAttribute('aria-label', 'Открыть меню');
+  if (homeMenuSlot) mobileTrigger.textContent = 'Menu';
+  else mobileTrigger.innerHTML = morphIcon;
 
   const desktopLayout = window.matchMedia('(min-width: 901px)');
   const desktopTrigger = document.createElement('button');
@@ -200,16 +102,30 @@
   closeButton.setAttribute('aria-label', 'Закрыть меню');
   closeButton.innerHTML = '<span aria-hidden="true"></span>';
 
+  const desktopHeader = document.createElement('div');
+  desktopHeader.className = 'desktop-navigation__header';
+  desktopHeader.innerHTML = '<p class="desktop-navigation__clock">Moscow, RU · <time></time></p>';
+  desktopHeader.append(closeButton);
+
   const desktopLinks = document.createElement('div');
   desktopLinks.className = 'desktop-navigation__links';
   [
-    { label:'Саша Пронченко', href:'index.html' },
-    { label:'Pinterest', href:'pinterest.html' },
-    { label:'Орбита' }
-  ].forEach(({ label, href }) => {
+    { label:'Саша Пронченко', href:'index.html', image:'assets/home/images/portrait.jpg' },
+    { label:'Pinterest', href:'pinterest.html', icon:'pinterest' },
+    { label:'Орбита', icon:'orbita' }
+  ].forEach(({ label, href, image, icon }) => {
     const item = document.createElement(href ? 'a' : 'span');
     item.className = 'desktop-navigation__link';
-    item.textContent = label;
+    const thumbnail = document.createElement(image ? 'img' : 'span');
+    thumbnail.className = 'desktop-navigation__thumbnail';
+    if (image) {
+      thumbnail.src = image;
+      thumbnail.alt = '';
+    } else {
+      thumbnail.classList.add(`desktop-navigation__thumbnail--${icon}`);
+      thumbnail.setAttribute('aria-hidden', 'true');
+    }
+    item.append(thumbnail, label);
     if (href) {
       item.href = href;
       if (href === currentHref) item.setAttribute('aria-current', 'page');
@@ -219,30 +135,94 @@
     desktopLinks.append(item);
   });
 
-  desktopMenu.append(closeButton, desktopLinks);
+  const desktopFooter = document.createElement('div');
+  desktopFooter.className = 'desktop-navigation__footer';
+  desktopFooter.innerHTML = `<div>Product Designer
+    <div class="desktop-navigation__status"><span class="desktop-navigation__pulse" aria-hidden="true"></span>Open to work</div>
+  </div><span class="desktop-navigation__telegram">Telegram<img src="assets/home/images/arrow-up-right.svg" alt="" width="20" height="20"></span>`;
+  desktopMenu.append(desktopHeader, desktopLinks, desktopFooter);
   desktopOverlay.append(desktopMenu);
-  if (homeMenuSlot) homeMenuSlot.prepend(desktopTrigger);
-  else document.body.append(desktopTrigger);
+  (homeMenuSlot || document.body).append(desktopTrigger, mobileTrigger);
   document.body.append(desktopOverlay);
 
   let desktopOpen = false;
   let desktopScrollY = 0;
-  function setDesktopOpen(open) {
+  let desktopMotion = [];
+  let activeTrigger;
+  let clockTimer;
+  const clock = desktopHeader.querySelector('time');
+  const formatMoscowTime = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Europe/Moscow', hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+  });
+
+  function updateClock() {
+    const now = new Date();
+    clock.textContent = formatMoscowTime.format(now);
+    clock.dateTime = clock.textContent;
+    clockTimer = window.setTimeout(updateClock, 60000 - now.getTime() % 60000 + 50);
+  }
+
+  function desktopClipFrames() {
+    const capsule = activeTrigger.getBoundingClientRect();
+    const card = desktopMenu.getBoundingClientRect();
+    const radius = getComputedStyle(desktopMenu).borderTopLeftRadius;
+    return [
+      { clipPath: `inset(${capsule.top - card.top}px ${card.right - capsule.right}px ${card.bottom - capsule.bottom}px ${capsule.left - card.left}px round ${capsule.height / 2}px)` },
+      { clipPath: `inset(0px 0px 0px 0px round ${radius})` }
+    ];
+  }
+
+  function startDesktopMotion() {
+    const timing = { duration: 420, easing: 'cubic-bezier(.22, .75, .25, 1)', fill: 'both' };
+    const contentFrames = [{ opacity: 0 }, { opacity: 0, offset: .18 }, { opacity: 1 }];
+    desktopMotion = [
+      desktopMenu.animate(desktopClipFrames(), timing),
+      desktopOverlay.animate([{ backgroundColor: 'transparent' }, { backgroundColor: 'rgba(0, 0, 0, .5)' }], timing),
+      activeTrigger.animate([{ opacity: 1 }, { opacity: 0, offset: .45 }, { opacity: 0 }], timing),
+      ...[desktopHeader, desktopLinks, desktopFooter].map(node => node.animate(contentFrames, timing))
+    ];
+  }
+
+  function finishDesktopClose() {
+    desktopOverlay.hidden = true;
+    desktopMotion.forEach(animation => animation.cancel());
+    desktopMotion = [];
+    activeTrigger.inert = false;
+    (desktopLayout.matches ? desktopTrigger : mobileTrigger).focus({ preventScroll: true });
+  }
+
+  function setDesktopOpen(open, trigger = activeTrigger) {
     if (desktopOpen === open) return;
     desktopOpen = open;
-    desktopOverlay.hidden = !open;
-    desktopTrigger.setAttribute('aria-expanded', String(open));
-    desktopTrigger.setAttribute('aria-label', open ? 'Закрыть меню' : 'Открыть меню');
+    activeTrigger = trigger;
+    activeTrigger.setAttribute('aria-expanded', String(open));
     if (open) {
       desktopScrollY = window.scrollY;
+      desktopOverlay.hidden = false;
+      activeTrigger.inert = true;
+      updateClock();
+      if (desktopMenu.animate && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        startDesktopMotion();
+      }
       closeButton.focus({ preventScroll: true });
-    } else if (desktopLayout.matches) {
-      desktopTrigger.focus({ preventScroll: true });
+    } else {
+      window.clearTimeout(clockTimer);
+      const [cardMotion] = desktopMotion;
+      if ((activeTrigger === desktopTrigger) !== desktopLayout.matches || !cardMotion?.currentTime) {
+        finishDesktopClose();
+        return;
+      }
+      cardMotion.effect.setKeyframes(desktopClipFrames());
+      cardMotion.onfinish = finishDesktopClose;
+      desktopMotion.forEach(animation => {
+        animation.updatePlaybackRate(-420 / 330);
+        animation.play();
+      });
     }
   }
 
   function preventDesktopPageScroll(event) {
-    if (!desktopOpen) return;
+    if (desktopOverlay.hidden) return;
     if (desktopMenu.contains(event.target) && desktopMenu.scrollHeight > desktopMenu.clientHeight) return;
     event.preventDefault();
   }
@@ -250,12 +230,13 @@
   window.addEventListener('wheel', preventDesktopPageScroll, { passive: false });
   window.addEventListener('touchmove', preventDesktopPageScroll, { passive: false });
   window.addEventListener('scroll', () => {
-    if (desktopOpen && window.scrollY !== desktopScrollY) {
+    if (!desktopOverlay.hidden && window.scrollY !== desktopScrollY) {
       window.scrollTo({ top: desktopScrollY, behavior: 'instant' });
     }
   }, { passive: true });
 
-  desktopTrigger.addEventListener('click', () => setDesktopOpen(!desktopOpen));
+  desktopTrigger.addEventListener('click', () => setDesktopOpen(true, desktopTrigger));
+  mobileTrigger.addEventListener('click', () => setDesktopOpen(true, mobileTrigger));
   closeButton.addEventListener('click', () => setDesktopOpen(false));
   desktopOverlay.addEventListener('pointerdown', (event) => {
     if (event.target === desktopOverlay) setDesktopOpen(false);
@@ -282,5 +263,8 @@
       first.focus();
     }
   });
-  desktopLayout.addEventListener('change', () => setDesktopOpen(false));
+  desktopLayout.addEventListener('change', () => {
+    if (desktopOpen) setDesktopOpen(false);
+    else if (!desktopOverlay.hidden) finishDesktopClose();
+  });
 })();

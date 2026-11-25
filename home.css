@@ -122,7 +122,7 @@ body { margin: 0; }
   to { opacity: 0; transform: translate(var(--dot-drift),45vh) scale(.75); }
 }
 
-@media (max-width: 900px), (prefers-reduced-motion: reduce) {
+@media (prefers-reduced-motion: reduce) {
   .home-hero__confetti { display: none; }
 }
 
@@ -389,11 +389,6 @@ body { margin: 0; }
   position: static;
 }
 
-.home-page .desktop-navigation__overlay,
-.home-page .desktop-navigation__menu { animation: none; }
-
-.home-page .mobile-navigation[data-open="true"] .mobile-navigation__menu { transition: none; }
-
 .home-work-heading {
   position: relative;
   width: calc(100% + 2 * var(--home-intro-gutter));
@@ -426,7 +421,7 @@ body { margin: 0; }
 
 .home-work-grid__tile {
   aspect-ratio: 1;
-  background: #EFEFEF;
+  background: #F2F2F2;
 }
 
 .home-intro__text {
@@ -456,6 +451,23 @@ body { margin: 0; }
     left: var(--home-intro-gutter);
     max-height: calc(100dvh - 20px - var(--home-intro-top));
   }
+}
+
+@media (width >= 64em) {
+  .home-intro__controls::before { content: none; }
+
+  .home-intro__menu {
+    display: flex;
+    gap: .125rem;
+    pointer-events: none;
+  }
+
+  .home-intro__menu::before {
+    content: "CV";
+    visibility: hidden;
+  }
+
+  .home-intro__menu button { pointer-events: auto; }
 }
 
 @media (width < 64em) {

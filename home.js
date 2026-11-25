@@ -40,7 +40,6 @@ if (moscowTime) {
 const heroConfetti = document.querySelector('.home-hero__confetti:not([hidden])');
 
 if (heroConfetti) {
-  const supportsEffect = window.matchMedia('(min-width: 901px) and (pointer: fine)');
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const colors = ['#FF477E', '#FF6B35', '#FFC328', '#B6E735', '#20CA85', '#1CC5D8', '#5A8BFF', '#9B62E8'];
   const idleDelay = 8000;
@@ -52,7 +51,7 @@ if (heroConfetti) {
   let dotTimer;
 
   function canShowDots() {
-    return supportsEffect.matches && !reducedMotion.matches && window.scrollY < 8
+    return !reducedMotion.matches && window.scrollY < 8
       && !document.querySelector('.desktop-navigation__overlay:not([hidden])');
   }
 
@@ -123,7 +122,6 @@ if (heroConfetti) {
   window.addEventListener('scroll', reactToActivity, { passive: true });
   window.addEventListener('resize', reactToActivity);
   window.addEventListener('keydown', reactToActivity);
-  supportsEffect.addEventListener('change', reactToActivity);
   reducedMotion.addEventListener('change', reactToActivity);
 
   document.addEventListener('visibilitychange', () => {
