@@ -144,7 +144,7 @@
   desktopMenu.append(desktopHeader, desktopLinks, desktopFooter);
   desktopOverlay.append(desktopMenu);
   (homeMenuSlot || document.body).append(desktopTrigger, mobileTrigger);
-  document.body.append(desktopOverlay);
+  (homeMenuSlot || document.body).append(desktopOverlay);
 
   let desktopOpen = false;
   let desktopScrollY = 0;

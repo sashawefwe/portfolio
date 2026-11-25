@@ -19,8 +19,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&amp;family=Manrope:wght@400;500;600&amp;family=Onest:wght@400;450;500&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="home.css?v=20261125-1">
-  <link rel="stylesheet" href="navigation.css?v=20261125-12">
+  <link rel="stylesheet" href="home.css?v=20261125-14">
+  <link rel="stylesheet" href="navigation.css?v=20261125-13">
 </head>
 <body class="home-page">
   <nav class="site-navigation" aria-label="Основная навигация">
@@ -41,13 +41,12 @@
       <span class="site-navigation__item" aria-disabled="true">CV</span>
     </div>
   </nav>
-  <div class="home-intro__menu"></div>
+  <div class="home-intro__menu">
+    <span class="home-intro__cv">CV</span>
+  </div>
   <main id="luxy">
     <div class="home-hero">
       <div class="home-intro-guides">
-        <div class="home-intro__controls">
-          <span class="home-intro__cv">CV</span>
-        </div>
         <p class="home-intro__text">Я Саша, и я проектирую цифровые продукты. Не спешу исправлять шаги, пока не пойму, ту ли задачу мы решаем. Так решения часто выходят проще и полезнее.</p>
         <figure class="home-hero__portrait">
           <img src="assets/home/images/portrait.jpg" alt="Саша Пронченко">
@@ -60,15 +59,24 @@
         </picture>
         <h1 class="home-work-heading__title">WORK</h1>
       </div>
-      <div class="home-work-grid" aria-hidden="true">
-        <div class="home-work-grid__tile"></div>
-        <div class="home-work-grid__tile"></div>
+      <div class="home-work-grid">
+        <article class="home-work-grid__tile home-work-grid__tile--pinterest">
+          <h2 class="home-work-grid__badge">Pinterest</h2>
+        </article>
+        <article class="home-work-grid__tile home-work-grid__tile--orbita">
+          <h2 class="home-work-grid__badge">Орбита</h2>
+          <p class="home-work-grid__status">
+            <img src="assets/home/images/circle-progress.svg" width="15" height="15" alt="">
+            In progress
+          </p>
+          <p class="home-work-grid__phrase">Собираю интерфейс</p>
+        </article>
       </div>
       <div class="home-hero__confetti" aria-hidden="true"></div>
     </div>
   </main>
   <script defer src="https://min30327.github.io/luxy.js/dist/js/luxy.js"></script>
-  <script defer src="home.js?v=20261125-1"></script>
-  <script src="navigation.js?v=20261125-4"></script>
+  <script defer src="home.js?v=20261125-4"></script>
+  <script src="navigation.js?v=20261125-5"></script>
 </body>
 </html>

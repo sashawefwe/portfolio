@@ -359,8 +359,6 @@ a.desktop-navigation__link:not([aria-current="page"]):hover { opacity: .55; }
 
 .desktop-navigation__trigger,
 .mobile-navigation__trigger,
-.home-intro__controls::before,
-.home-intro__menu::before,
 .home-intro__cv {
   --navigation-toggle-padding: .75rem;
   --navigation-toggle-height: 2.5rem;

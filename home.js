@@ -10,6 +10,50 @@ function initDesktopScroll() {
 initDesktopScroll();
 desktopScroll.addEventListener('change', initDesktopScroll);
 
+const floatingMenu = document.querySelector('.home-intro__menu');
+
+if (floatingMenu) {
+  let previousScrollY = Math.max(0, window.scrollY);
+  let touchStartY;
+  let hideMenuTimer;
+
+  function hideFloatingMenu() {
+    floatingMenu.dataset.scrollHidden = 'true';
+  }
+
+  function showFloatingMenu() {
+    floatingMenu.dataset.scrollHidden = 'false';
+    window.clearTimeout(hideMenuTimer);
+    hideMenuTimer = window.setTimeout(hideFloatingMenu, 2400);
+  }
+
+  window.addEventListener('scroll', () => {
+    const scrollY = Math.max(0, window.scrollY);
+    if (scrollY < previousScrollY) {
+      showFloatingMenu();
+    } else if (scrollY > previousScrollY) {
+      window.clearTimeout(hideMenuTimer);
+      hideFloatingMenu();
+    }
+    previousScrollY = scrollY;
+  }, { passive: true });
+
+  window.addEventListener('wheel', (event) => {
+    if (window.scrollY <= 0 && event.deltaY < 0) showFloatingMenu();
+  }, { passive: true });
+
+  window.addEventListener('touchstart', (event) => {
+    touchStartY = event.touches[0]?.clientY;
+  }, { passive: true });
+
+  window.addEventListener('touchmove', (event) => {
+    if (window.scrollY <= 0 && event.touches[0]?.clientY > touchStartY + 4) showFloatingMenu();
+  }, { passive: true });
+
+  floatingMenu.addEventListener('focusin', showFloatingMenu);
+  showFloatingMenu();
+}
+
 const moscowTime = document.querySelector('.home-header__time');
 
 if (moscowTime) {
@@ -35,6 +79,60 @@ if (moscowTime) {
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden) updateMoscowTime();
   });
+}
+
+const workPhrase = document.querySelector('.home-work-grid__phrase');
+
+if (workPhrase) {
+  const phrases = [workPhrase.textContent, 'Проверяю пиксели', 'Оттачиваю детали', 'Причёсываю макеты'];
+  const reducedPhraseMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let phraseIndex = 0;
+  let phraseTimer;
+
+  function createPhraseLine(text) {
+    const line = document.createElement('span');
+    line.className = 'home-work-grid__phrase-line';
+    let letterIndex = 0;
+    for (const letter of text) {
+      if (letter === ' ') {
+        line.append(' ');
+        continue;
+      }
+      const letterElement = document.createElement('span');
+      letterElement.className = 'home-work-grid__phrase-letter';
+      letterElement.textContent = letter;
+      letterElement.style.setProperty('--letter-delay', `${letterIndex++ * 16}ms`);
+      line.append(letterElement);
+    }
+    return line;
+  }
+
+  function updatePhraseMotion() {
+    window.clearInterval(phraseTimer);
+    if (reducedPhraseMotion.matches) {
+      workPhrase.textContent = phrases[phraseIndex];
+      return;
+    }
+    const phraseWindow = document.createElement('span');
+    phraseWindow.className = 'home-work-grid__phrase-window';
+    let currentLine = createPhraseLine(phrases[phraseIndex]);
+    phraseWindow.append(currentLine);
+    workPhrase.replaceChildren(phraseWindow);
+    phraseTimer = window.setInterval(() => {
+      phraseIndex = (phraseIndex + 1) % phrases.length;
+      const outgoingLine = currentLine;
+      currentLine = createPhraseLine(phrases[phraseIndex]);
+      currentLine.classList.add('is-entering');
+      outgoingLine.classList.remove('is-entering');
+      outgoingLine.classList.add('is-leaving');
+      outgoingLine.setAttribute('aria-hidden', 'true');
+      outgoingLine.lastElementChild.addEventListener('animationend', () => outgoingLine.remove(), { once: true });
+      phraseWindow.replaceChildren(outgoingLine, currentLine);
+    }, 2900);
+  }
+
+  reducedPhraseMotion.addEventListener('change', updatePhraseMotion);
+  updatePhraseMotion();
 }
 
 const heroConfetti = document.querySelector('.home-hero__confetti:not([hidden])');
