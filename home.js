@@ -7,9 +7,6 @@ function initDesktopScroll() {
   desktopScrollInitialized = true;
 }
 
-initDesktopScroll();
-desktopScroll.addEventListener('change', initDesktopScroll);
-
 const floatingMenu = document.querySelector('.home-intro__menu');
 
 if (floatingMenu) {
@@ -449,3 +446,7 @@ if (heroConfetti) {
 
   scheduleDots();
 }
+
+document.getElementById('home-luxy')?.addEventListener('load', initDesktopScroll);
+desktopScroll.addEventListener('change', initDesktopScroll);
+initDesktopScroll();
