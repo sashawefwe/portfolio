@@ -1,0 +1,21 @@
+# Local tools and dependencies
+node_modules/
+.agents/
+.codex/
+.aws/
+
+# Local secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pfx
+
+# Temporary files
+*.log
+*.tmp
+*.bak
+Thumbs.db
+Desktop.ini
+.DS_Store
