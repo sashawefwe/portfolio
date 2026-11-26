@@ -19,7 +19,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&amp;family=Manrope:wght@400;500;600&amp;family=Onest:wght@400;450;500&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="home.css?v=20261125-14">
+  <link rel="stylesheet" href="home.css?v=20261126-3">
   <link rel="stylesheet" href="navigation.css?v=20261125-13">
 </head>
 <body class="home-page">
@@ -72,11 +72,30 @@
           <p class="home-work-grid__phrase">Собираю интерфейс</p>
         </article>
       </div>
+      <section class="home-player" aria-label="Аудиоплеер">
+        <div class="home-player__record-window">
+          <img class="home-player__record" src="assets/home/images/vinyl%20disk.png" width="1254" height="1254" alt="">
+        </div>
+        <button class="home-player__toggle" type="button" aria-label="Воспроизвести" disabled>
+          <img class="home-player__play" src="assets/home/images/player-play.svg" width="20" height="20" alt="">
+          <img class="home-player__pause" src="assets/icons/video/pause.svg" width="20" height="20" alt="">
+          <span class="home-player__equalizer" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+        </button>
+        <h2 class="home-player__title">2000</h2>
+        <p class="home-player__artist">Mietze Conte</p>
+        <div class="home-player__progress">
+          <span class="home-player__elapsed">0:00</span>
+          <input class="home-player__seek" type="range" min="0" max="1" step="0.01" value="0" aria-label="Позиция воспроизведения" disabled>
+          <span class="home-player__duration">–:––</span>
+        </div>
+        <p class="home-player__error" role="status" hidden></p>
+        <audio preload="metadata" src="assets/home/images/mietze_conte_2000.mp3"></audio>
+      </section>
       <div class="home-hero__confetti" aria-hidden="true"></div>
     </div>
   </main>
   <script defer src="https://min30327.github.io/luxy.js/dist/js/luxy.js"></script>
-  <script defer src="home.js?v=20261125-4"></script>
+  <script defer src="home.js?v=20261126-5"></script>
   <script src="navigation.js?v=20261125-5"></script>
 </body>
 </html>
